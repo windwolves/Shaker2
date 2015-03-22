@@ -1,11 +1,11 @@
 {
-  "name": "Shaker",
+  "name": "Shaker2",
   "version": "0.0.1",
   "private": true,
-  "description": "Shaker website",
+  "description": "Shaker2 website",
   "main": "bin/www",
   "author": "Smadey",
-  "repository": "https://github.com/windwolves/Shaker.git",
+  "repository": "https://github.com/windwolves/Shaker2.git",
   "license": "MIT",
   "dependencies": {
     "apn": "~1.7.3",
