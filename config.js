@@ -19,7 +19,7 @@ var dbInfo = {
     password: '',
     host: '127.0.0.1',
     port: '3306',
-    name: 'shaker'
+    name: 'shaker2'
 };
 
 function getConnectionUrl(type, username, password, host, port, name) {
