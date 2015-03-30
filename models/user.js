@@ -15,8 +15,7 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         },
         type: {
-            type: DataTypes.STRING(10),
-            allowNull: false
+            type: DataTypes.STRING(10)
         },
         deviceToken: {
             type: DataTypes.STRING(50)
