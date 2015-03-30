@@ -1,0 +1,226 @@
+@import "../../../css/sass/mixin";
+@import "../../../css/sass/normalize";
+@import "../../../css/sass/reset";
+
+@include keyframe(next-guide) {
+    0%, 100% { @include transform(translate3d(0, -10px, 0)); }
+    50% { @include transform(translate3d(0, 0, 0)); }
+}
+
+html, body, .panel {
+    height: 100%;
+}
+
+img {
+    max-width: 100%;
+    width: 100%;
+}
+
+.hide {
+    display: none;
+}
+
+.swiper-container {
+    @include backface-visibility(hidden);
+    height: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    @include transform-style(preserve-3d);
+    width: 100%;
+    z-index: 1;
+
+    & > .swiper-wrapper {
+        @include box-sizing(content-box);
+        height: 100%;
+        @include transform(translate3d(0px, 0, 0));
+        -webkit-transition-property: -webkit-transform, left, top;
+        -moz-transition-property: -moz-transform, left, top;
+        -ms-transition-property: -ms-transform, left, top;
+        -o-transition-property: -o-transform, left, top;
+        transition-property: transform, left, top;
+        @include transition-duration(0s);
+        @include transform-style(preserve-3d);
+        @include transition-timing-function(ease);
+        width: 100%;
+
+        & > .swiper-slide {
+            height: 100%;
+            float: left;
+            @include transform-style(preserve-3d);
+            width: 100%;
+
+            & > .back-hidden {
+                @include backface-visibility(hidden);
+                overflow: hidden;
+                @include transform-style(preserve-3d);
+            }
+
+            & > .slide-inner {
+                @include backface-visibility(hidden);
+                height: 100%;
+                overflow: hidden;
+                position: relative;
+                @include transform-style(preserve-3d);
+                width: 100%;
+
+                .flip-item {
+                    @include transform-style(preserve-3d);
+                }
+            }
+        }
+    }
+
+    & > .swiper-pagination {
+        bottom: 0;
+        height: 35px;
+        line-height: 35px;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+
+        & > .swiper-pagination-switch {
+            background-color: rgba(255, 255, 255, .2);
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-block;
+            height: 8px;
+            margin: 0 3px;
+            width: 8px;
+        }
+
+        & > .swiper-active-switch {
+            background-color: #fff;
+        }
+    }
+
+    &.scroll-v {
+        & > .swiper-wrapper {
+            & > .swiper-slide {
+                height: auto;
+            }
+        }
+    }
+
+    &.scroll-h {
+        & > .swiper-wrapper {
+            margin-left: auto;
+            margin-right: auto;
+
+            & > .swiper-slide {
+                width: auto;
+            }
+        }
+    }
+
+    .swiper-scrollbar {
+        background-color: transparent;
+        border-radius: 2px;
+        position: absolute;
+        z-index: 9999;
+
+        &.swiper-scrollbar-h {
+            bottom: 3px;
+            height: 2px;
+            left: 2px;
+            right: 2px;
+        }
+
+        &.swiper-scrollbar-v {
+            bottom: 2px;
+            right: 3px;
+            top: 2px;
+            width: 2px;
+        }
+
+        .swiper-scrollbar-drag {
+            background-color: rgba(255, 255, 255, .5);
+            border-radius: 2px;
+            cursor: move;
+            height: 100%;
+            width: 100%;
+            position: relative;
+        }
+    }
+
+    /* IE10 Windows Phone 8 Fixes */
+    &.swiper-wp8-horizontal {
+        -ms-touch-action: pan-y;
+    }
+    &.swiper-wp8-vertical {
+        -ms-touch-action: pan-x;
+    }
+}
+
+.swiper-slide:not(.last) {
+    &:after {
+        @include animation(next-guide 3s ease-in-out infinite);
+        background: transparent url('../img/next-guide.png') 50% 50% / 100% 100% no-repeat;
+        bottom: 10px;
+        content: '';
+        height: 10px;
+        left: 50%;
+        margin-left: -8px;
+        position: absolute;
+        width: 16px;
+        z-index: 999;
+    }
+}
+
+.wrapper {
+    height: 100%;
+    line-height: 0;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+
+    & > img {
+        height: 100%;
+        width: 100%;
+    }
+}
+
+
+.photo-frame {
+    position: absolute;
+
+    img {
+        position: relative;
+    }
+
+    .photo {
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+}
+
+.guide-page {
+    display: none;
+    height: 100%;
+    width: 100%;
+
+    &-inner {
+        position: relative;
+        top: size-v(200px);
+        width: 100%;
+    }
+
+    .category-thumbnail {
+        margin: 0 auto;
+        @include wh(250px, 250px);
+    }
+
+    .shaker-declare {
+        margin: size-h(26px) auto 0;
+        @include wh(191px, 243px);
+    }
+
+    .shaker-link {
+        display: block;
+        margin: size-h(26px) auto 0;
+        @include wh(290px, 78px);
+    }
+}

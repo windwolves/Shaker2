@@ -1,0 +1,33 @@
+@import "../../../css/sass/mixin";
+
+.theme_01 {
+
+    .wrapper {
+        background-color: #fff;
+    }
+
+    .skin_01 {
+        .text {
+            color: #000;
+        }
+    }
+
+    .skin_02 {
+        .text {
+            color: #fff;
+        }
+    }
+
+    .text {
+        font-size: size(32px);
+        left: 50%;
+        line-height: size(40px);
+        max-height: 100% - size-v(142px * 2);
+        overflow: hidden;
+        position: absolute;
+        top: 50%;
+        @include transform(translate3d(-50%, -50%, 0));
+        width: 100% - size-h(118px * 2);
+    }
+
+}

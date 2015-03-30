@@ -1,0 +1,86 @@
+
+*, *:before, *:after {
+    @include box-sizing(border-box);
+}
+
+a, a:focus, a:active, a:hover,
+button, button:focus,
+:focus {
+    outline: 0;
+}
+
+address, caption, cite, code, dfn, i, em, th, var {
+    font-style: normal;
+    font-weight: 500;
+}
+
+button {
+    padding: 0;
+    border-width: 0;
+}
+
+dd {
+    margin-left: 0;
+}
+
+dl, p {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+dt {
+    font-weight: normal;
+}
+
+h1, h2, h3, h4, h5 {
+    font-weight: normal;
+    line-height: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+ul, ol {
+    list-style: none;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
+}
+
+html, body {
+    background-color: #fff;
+}
+
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, img, dl, dt, dd, ol, ul, li, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, footer, header, menu, nav, section, input, button, select, textarea {
+    font-family: 'Microsoft YaHei';
+}
+
+body {
+    -webkit-touch-callout: none;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: none;
+    text-size-adjust: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    color: #000;
+    word-wrap: break-word;
+    font-size: 14px;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    line-height: 1.428;
+    text-rendering: optimizeLegibility;
+    -webkit-backface-visibility: hidden;
+    -webkit-user-drag: none;
+}
