@@ -84,13 +84,12 @@ function removeContentPic(model, req) {
             });
         }
     }
-
 }
 
 function setContentPic(req) {
     var entityId = req.body.entityId;
     var photoIndexs = req.body.content_pic;
-    var photos = req.files.photos;
+    var photos = req.files && req.files.photos;
 
     var photoDir = '/upload/entity/' + entityId;
     var dir = path.join(__dirname, '/../src' + photoDir);
@@ -104,7 +103,7 @@ function setContentPic(req) {
 
         photoIndexs.forEach(function(photoIndex, index) {
             var photo = photos[photoIndex];
-            var name = getPhotoName(photo.name);
+            var name = getRandom(photo.name);
 
             fs.renameSync(photo.path, path.join(dir, name));
 
@@ -118,6 +117,6 @@ function setContentPic(req) {
     }
 }
 
-function getPhotoName(name) {
-    return Date.now() + '-' + Math.round(Math.random() * 10000) + '-' + name;
+function getRandom(key) {
+    return Date.now() + '-' + Math.round(Math.random() * 10000) + '-' + key;
 }

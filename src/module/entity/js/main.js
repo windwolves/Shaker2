@@ -32,10 +32,10 @@ require([
         initEntity({
             'title': '',
             'content': '',
-            'theme': { 'code': 'theme_01' },
-            'posts': [{
-                'skin': { 'code': 'skin_02' },
-                'layout': { 'code': 'layout_01' },
+            'Theme': { 'code': 'theme_01' },
+            'Posts': [{
+                'Skin': { 'code': 'skin_02' },
+                'Layout': { 'code': 'layout_01' },
                 'content_pic': ['/page/theme_01/img/skin_02.png'],
                 'content_text': ['在空寂荒凉的高处，太阳灿烂的金丝，迎着白云奔跑，红色明媚的阳光，飞越百川峡谷和瀑布，诞生在它熟悉的空山绝谷。光芒搅动甘泉，万物微笑，神灵雕琢大自然灵魂的画面：雄鹰翱翔的彩影，畅快的逃离无语的呼吸。腾飞的百鸟，抚摸春光，唱响大好河山，呼唤田野上空飘动的一切生命。窗外飞鹰粗厉的呜叫，凄切的啼呜，撕碎沉睡的世界，把消逝的美丽收回。春燕拾起疯狂的音符塞进荒原，召唤魂魄消磨春天的时光。大雁掠过冰霜，穿过阳光，消逝在风窝里。旋风带着沙粒卷起温暖，亲吻蜻蜓身上的色彩，飞鸟叼走几丝云雾，将太阳不朽的喃喃自语，留在沙滩上，送给阳光下的寂寞。风屏被鸟嘴啄通，填实记忆长河。巨鸟叼着玫瑰飞来，让清香做了一次腾空表演。阳光下杨柳，轻柔飘逸发丝，随风神指挥，填满零点的平静。河流水溅拍岸声，纹丝没有改变风向。'],
             }]
@@ -84,11 +84,10 @@ require([
 
         var deps = [];
 
-        deps.push('text!/page/' + entity.theme.code + '/index.html');
-        deps.push('css!/page/' + entity.theme.code + '/css/style.css');
-        deps.push('/page/' + entity.theme.code + '/js/index.js');
+        deps.push('text!/page/' + entity.Theme.code + '/index.html');
+        deps.push('css!/page/' + entity.Theme.code + '/css/style.css');
+        deps.push('/page/' + entity.Theme.code + '/js/index.js');
 
-        initPanel(entity);
 
         require(deps, function(html, css, js) {
             var args = [].slice.call(arguments, 0);
@@ -98,7 +97,7 @@ require([
                 js: js
             };
 
-            initPages(entity.posts, theme);
+            initSwiper(entity, theme);
         });
     }
 
@@ -192,23 +191,27 @@ require([
         });
     }
 
-    function initPanel(entity) {
+    function initSwiper(entity, themeConfig) {
+        var theme = entity.Theme.code;
+
+        var $panel = $('.panel').addClass(theme);
+        var $swiperContainer = $panel.find('.swiper-container');
+        var $swiperWrapper = $panel.find('.swiper-wrapper');
+
+
         // @todo 显示“标题”和“点赞数”和“发起人”等信息
-        $('.panel').addClass(entity.theme.code);
-    }
+        var $cover = $panel.find('.cover').addClass(theme + '-cover').appendTo($swiperWrapper);
+        var $list = $panel.find('.post-list').addClass(theme + '-poss-list').appendTo($swiperWrapper);
 
-    function initPages(posts, theme) {
-        var $panel = $('.panel');
-        var $swiperContainer = $('<div class="swiper-container"/>').appendTo($panel);
-        var $swiperWrapper = $('<div class="swiper-wrapper"/>').appendTo($swiperContainer);
+        $cover.append($(themeConfig.html));
 
-        posts.forEach(function(post, index) {
-            var skin = post.skin.code;
-            var layout = post.layout.code;
+        entity.Posts.forEach(function(post, index) {
+            var skin = post.Skin && post.Skin.code;
+            var layout = post.Layout.code;
 
             var $slide = $('<div class="swiper-slide"/>').addClass(skin).addClass(layout).appendTo($swiperWrapper);
 
-            $slide.html(theme.html);
+            $slide.html(themeConfig.html);
 
             $slide.find('.text').each(function(i) {
                 if(post.content_text && post.content_text[i]) {
@@ -222,18 +225,14 @@ require([
                 }
             });
 
-            if($.isFunction(theme.js)) {
-                theme.js($slide, post);
+            if($.isFunction(themeConfig.js)) {
+                themeConfig.js($slide, post);
             }
         });
 
-        initSwiper($swiperContainer);
-    }
-
-    function initSwiper($element, callbacks) {
         var nextLength = 1;
 
-        var swiper = $element.swiper({
+        var swiper = $swiperContainer.swiper({
             mode: 'vertical',
             slideActiveClass: 'active',
             onSlideChangeStart: function(swiper) {

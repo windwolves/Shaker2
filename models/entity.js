@@ -9,9 +9,13 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.TEXT,
             allowNull: false
         },
-        content: {
+        content_text: {
             type: DataTypes.TEXT,
-            defaultValue: ''
+            allowNull: true
+        },
+        content_pic: {
+            type: DataTypes.TEXT,
+            allowNull: true
         },
         type: {
             type: DataTypes.STRING(50),

@@ -29,7 +29,7 @@ var user = new Rest({
         requireKeys: [],
         uniqueKeys: [],
         updateKeys: ['nickname', 'phone', 'weibo', 'wechat', 'qq', 'deviceToken'],
-        beforeUpdate: function(model, req, res) {
+        beforeUpdate: function(oldModel, newModel, req, res) {
         },
         afterUpdate: function(model, req, res) {
         }
