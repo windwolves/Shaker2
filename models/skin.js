@@ -7,12 +7,11 @@ module.exports = function(sequelize, DataTypes) {
         },
         name: {
             type: DataTypes.STRING(50),
-            allowNull: false,
-            unique: true
+            allowNull: false
         },
         description: {
             type: DataTypes.TEXT,
-            allowNull: true
+            defaultValue: ''
         },
         code: {
             type: DataTypes.STRING(50),

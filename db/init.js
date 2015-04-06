@@ -7,29 +7,62 @@ if (!config.isProduction) {
     async.waterfall([
         syncDB,
         function(callback) {
-            var user = {
-                username: 'admin',
-                password: '21232f297a57a5a743894a0e4a801fc3',
-                nickname: 'Shaker'
-            };
+            async.parallel([
+                function(callback) {
+                    var user = {
+                        username: 'admin',
+                        password: '21232f297a57a5a743894a0e4a801fc3',
+                        nickname: 'Shaker'
+                    };
 
-            createUser(user, callback);
+                    createUser(user, callback);
+                },
+                function(callback) {
+                    var categorys = [ { name: '反现实' }, { name: '超现实' } ];
+
+                    async.map(categorys, createCategory, callback);
+                },
+                function(callback) {
+                    var themes = [
+                        { name: '主题1', code: 'theme_01' },
+                        { name: '主题2', code: 'theme_02' },
+                        { name: '主题3', code: 'theme_03' },
+                        { name: '主题4', code: 'theme_04' },
+                        { name: '主题5', code: 'theme_05' },
+                        { name: '主题6', code: 'theme_06' },
+                    ];
+
+                    async.map(themes, createTheme, callback);
+                }
+            ], callback);
         },
-        function(user, callback) {
-            var themes = [
-                { name: '主题1', description: '主题1描述', code: 'theme-1' },
-                { name: '主题2', description: '主题2描述', code: 'theme-2' },
-                { name: '主题3', description: '主题3描述', code: 'theme-3' },
-            ];
+        function(datas, callback) {
+            var user = datas[0];
+            var categorys = datas[1];
+            var themes = datas[2];
 
-            async.eachSeries(themes, function(theme, callback) {
-                var skins = [
-                    { name: '皮肤1', description: '皮肤1描述', code: 'skin-1' },
-                    { name: '皮肤2', description: '皮肤2描述', code: 'skin-2' },
-                ];
+            var entitys = [];
+            var layouts = [];
 
-                createTheme(theme, skins, callback);
-            }, callback);
+            categorys.forEach(function(category) {
+                entitys.push({ title: '反 Or 超', postLimit: 2, ownerId: user.id, categoryId: category.id });
+            });
+
+            themes.forEach(function(theme, index) {
+                entitys[index] && (entitys[index].themeId = theme.id);
+
+                layouts.push({ name: '板式1', code: theme.code + '-layout_01', themeId: theme.id });
+                layouts.push({ name: '板式2', code: theme.code + '-layout_02', themeId: theme.id });
+            });
+
+            async.parallel([
+                function(callback) {
+                    async.each(entitys, createEntity, callback);
+                },
+                function(callback) {
+                    async.each(layouts, createLayout, callback);
+                }
+            ], callback);
         }
     ], function(err) {
         console.log(err || '\nInitialize database successful!\n');
@@ -51,32 +84,34 @@ function createUser(user, callback) {
     }, callback);
 }
 
-function createTheme(theme, skins, callback) {
-    async.waterfall([
-        function(callback) {
-            db.Theme.findOrCreate({ where: theme, defaults: theme }).spread(function(theme) {
-                console.log('\nCreate Theme "' + theme.name + '" successful!\n');
+function createTheme(theme, callback) {
+    db.Theme.findOrCreate({ where: theme, defaults: theme }).spread(function(theme) {
+        console.log('\nCreate Theme "' + theme.name + '" successful!\n');
 
-                callback(null, theme);
-            }, callback);
-        },
-        function(theme, callback) {
-            skins.forEach(function(skin) {
-                skin.themeId = theme.id;
-                skin.name = theme.name + skin.name;
-            });
-
-            async.eachSeries(skins, function(skin, callback) {
-                createSkin(skin, callback);
-            }, callback);
-        }
-    ], callback);
+        callback(null, theme);
+    }, callback);
 }
 
-function createSkin(skin, callback) {
-    db.Skin.findOrCreate({ where: skin, defaults: skin }).spread(function(skin) {
-        console.log('\nCreate Skin "' + skin.name + '" successful!\n');
+function createLayout(layout, callback) {
+    db.Layout.findOrCreate({ where: layout, defaults: layout }).spread(function(layout) {
+        console.log('\nCreate Layout "' + layout.name + '" successful!\n');
 
-        callback(null, skin);
+        callback(null, layout);
+    }, callback);
+}
+
+function createCategory(category, callback) {
+    db.Category.findOrCreate({ where: category, defaults: category }).spread(function(category) {
+        console.log('\nCreate Category "' + category.name + '" successful!\n');
+
+        callback(null, category);
+    }, callback);
+}
+
+function createEntity(entity, callback) {
+    db.Entity.findOrCreate({ where: entity, defaults: entity }).spread(function(entity) {
+        console.log('\nCreate Entity "' + entity.title + '" successful!\n');
+
+        callback(null, entity);
     }, callback);
 }

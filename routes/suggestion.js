@@ -1,6 +1,6 @@
 var db = require('../models');
 
-var utils = require('../common/utils');
+var handler = require('../common/handler');
 var Rest = require('../common/rest');
 
 var suggestion = new Rest({
@@ -17,7 +17,7 @@ var suggestion = new Rest({
         order: ''
     },
     post: {
-        beforeCallbacks: [utils.needLogin],
+        beforeCallbacks: [handler.needLogin],
         requireKeys: ['content'],
         uniqueKeys: [],
         createKeys: ['content'],

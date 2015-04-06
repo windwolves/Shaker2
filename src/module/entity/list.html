@@ -46,7 +46,7 @@
     <script src="/js/device.js"></script>
     <script src="/lib/zepto.js"></script>
     <script>
-        $.getJSON('/services/entity/demo', function(result) {
+        $.getJSON('/services/entity', function(result) {
             if(result.status) {
                 init(result.data);
             }

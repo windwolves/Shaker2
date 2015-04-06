@@ -19,7 +19,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         type: {
             type: DataTypes.STRING(50),
-            allowNull: false
+            defaultValue: ''
         },
     }, {
         freezeTableName: true,

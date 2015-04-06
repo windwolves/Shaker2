@@ -3,6 +3,7 @@ var fs = require('fs');
 var db = require('../models');
 
 var utils = require('../common/utils');
+var handler = require('../common/handler');
 var Rest = require('../common/rest');
 
 
@@ -12,22 +13,22 @@ var user = new Rest({
     list: false,
     get: false,
     post: {
-        beforeCallbacks: [utils.needLogout],
-        requireKeys: ['username', 'password'],
+        beforeCallbacks: [handler.needLogout],
+        requireKeys: ['username', 'password', 'deviceToken'],
         uniqueKeys: ['username'],
-        createKeys: ['username', 'password', 'profile', 'deviceToken'],
+        createKeys: ['username', 'password', 'deviceToken'],
         beforeCreate: function(model, req, res) {
             model.password = utils.md5(model.password);
         },
         afterCreate: function(model, req, res) {
-            req.session.user = user;
+            req.session.user = model;
         }
     },
     put: {
-        beforeCallbacks: [utils.needLogin],
+        beforeCallbacks: [handler.needLogin],
         requireKeys: [],
         uniqueKeys: [],
-        updateKeys: ['nickname', 'profile', 'telphone', 'weibo', 'wechat', 'qq', 'deviceToken'],
+        updateKeys: ['nickname', 'phone', 'weibo', 'wechat', 'qq', 'deviceToken'],
         beforeUpdate: function(model, req, res) {
         },
         afterUpdate: function(model, req, res) {
@@ -38,109 +39,138 @@ var user = new Rest({
 
 var router = user.getRouter();
 
-router.post('/login', utils.needLogout, utils.requireKeys(['username', 'password']), function(req, res) {
-    var _where = {
-        username: req.body.username,
-        password: utils.md5(req.body.password)
-    };
+// router.post('/register',
+//     handler.needLogout,
+//     handler.requireKeys(['username', 'password', 'deviceToken']),
+//     function(req, res) {
+//         var _where = { username: req.body.username };
 
-    db.User.find({ where: _where }).then(function(user) {
-        if(user) {
-            user.updateAttributes({ lastLoginTime: new Date() }).then(function(user) {
-                req.session.user = user;
+//         db.User.count({ where: _where }).then(function(count) {
+//             if(count > 0) {
+//                 res.warning('USER_ALREADY_EXISTS');
+//             }
+//             else {
+//                 var _model = {
+//                     username: req.body.username,
+//                     password: req.body.password，
+//                     deviceToken: req.body.deviceToken
+//                 };
 
-                res.success(user);
-            }, res.error);
-        }
-        else {
-            res.warning('USERNAME_OR_PASSWORD_WRONG');
-        }
-    }, res.error);
-});
+//                 db.User.create(_model).then(function(user) {
+//                     req.session.user = user;
+//                     res.success(user);
+//                 }, res.error);
+//             }
+//         }, res.error);
+//     }
+// );
 
-router.get('/logout', utils.needLogin, function(req, res) {
-    req.session.user = null;
-    res.success('LOGOUT_SUCCESS');
-});
+router.post('/login',
+    handler.needLogout,
+    handler.requireKeys(['username', 'password']),
+    function(req, res) {
+        var _where = {
+            username: req.body.username,
+            password: utils.md5(req.body.password)
+        };
 
-router.get('/checkName/:username', utils.needLogout, utils.requireKeys(['username'], 'params'), function(req, res) {
-    var _where = {
-        username: req.params.username
-    };
+        db.User.find({ where: _where }).then(function(user) {
+            if(user) {
+                user.updateAttributes({ lastLoginTime: new Date() }).then(function(user) {
+                    req.session.user = user;
 
-    db.User.count({ where: _where }).then(res.success, res.error);
-});
-
-router.get('/sync', utils.needLogin, function(req, res) {
-    var _where = { id: req.session.user.id };
-
-    db.User.find({ where: _where }).then(function(user) {
-        if(user) {
-            _where = { hostId: user.id };
-            var _include = [{ model: db.Guest, where: { receiveTime: { gt: user.syncTime } } }];
-
-            db.Activity.findAll({ where: _where, include: _include }).then(res.success, res.error);
-        }
-        else {
-            res.warning('USER_NOT_EXIST');
-        }
-    }, res.error);
-});
-
-router.post('/changePassword', utils.needLogin, utils.requireKeys(['oldpassword', 'newpassword']), function(req, res) {
-    var _where = {
-        id: req.session.user.id
-    };
-
-    var oldpassword = utils.md5(req.body.oldpassword);
-    var newpassword = utils.md5(req.body.newpassword);
-
-    db.User.find({ where: _where }).then(function(user) {
-        if(user) {
-            if(user.password !== oldpassword) {
-                res.warning('OLD_PASSWORD_WRONG');
+                    res.success(user);
+                }, res.error);
             }
             else {
-                user.updateAttributes({ password: newpassword }).then(res.success, res.error);
+                res.warning('USERNAME_OR_PASSWORD_WRONG');
             }
-        }
-        else {
-            res.warning('USER_NOT_EXIST');
-        }
-    }, res.error);
-});
+        }, res.error);
+    }
+);
 
-router.post('/upload', utils.needLogin, utils.requireKeys(['profile'], 'files'), function(req, res) {
-    var _where = {
-        id: req.session.user.id
-    };
+router.get('/logout',
+    handler.needLogin,
+        function(req, res) {
+        req.session.user = null;
+        res.success('LOGOUT_SUCCESS');
+    }
+);
 
-    var profileFile = req.files.profile;
+router.get('/check/username/:username',
+    handler.needLogout,
+    handler.requireKeys(['username'], 'params'),
+    function(req, res) {
+        var _where = {
+            username: req.params.username
+        };
 
-    db.User.find({ where: _where }).then(function(user) {
-        if(user) {
-            if(user.profile) {
-                try {
-                    fs.unlinkSync('./app/' + user.profile);
+        db.User.count({ where: _where }).then(res.success, res.error);
+    }
+);
+
+router.post('/change/password',
+    handler.needLogin,
+    handler.requireKeys(['oldpassword', 'newpassword']),
+    function(req, res) {
+        var _where = {
+            id: req.session.user.id
+        };
+
+        var oldpassword = utils.md5(req.body.oldpassword);
+        var newpassword = utils.md5(req.body.newpassword);
+
+        db.User.find({ where: _where }).then(function(user) {
+            if(user) {
+                if(user.password !== oldpassword) {
+                    res.warning('OLD_PASSWORD_WRONG');
                 }
-                catch(ex) {
-                    console.log('The old profile of User "' + user.username + '" not found');
+                else {
+                    user.updateAttributes({ password: newpassword }).then(res.success, res.error);
                 }
             }
-            var profile = './img/profiles/' + user.username + '-' + profileFile.name;
-            fs.renameSync(profileFile.path, './app/' + profile);
+            else {
+                res.warning('USER_NOT_EXIST');
+            }
+        }, res.error);
+    }
+);
 
-            user.updateAttributes({ profile: profile }).then(res.success, res.error);
-        }
-        else {
-            fs.unlinkSync(profileFile.path);
-            res.warning('USER_NOT_EXIST');
-        }
-    }, function(err) {
-        fs.unlinkSync(profileFile.path);
-        res.error(err);
-    });
-});
+router.post('/upload/profile',
+    handler.needLogin,
+    handler.requireKeys(['profile'], 'files'),
+    function(req, res) {
+        var _where = {
+            id: req.session.user.id
+        };
+
+        var file = req.files.profile;
+
+        db.User.find({ where: _where }).then(function(user) {
+            if(user) {
+                if(user.profile) {
+                    try {
+                        fs.unlinkSync('./profile/' + user.profile);
+                    }
+                    catch(ex) {
+                        console.log('The old profile of User "' + user.username + '" not found');
+                    }
+                }
+                var profile = user.username + '-' + file.name;
+                fs.renameSync(file.path, __dirname + '/../src/upload/profile/' + profile);
+
+                user.updateAttributes({ profile: profile }).then(res.success, res.error);
+            }
+            else {
+                fs.unlinkSync(file.path);
+                res.warning('USER_NOT_EXIST');
+            }
+        }, function(err) {
+            fs.unlinkSync(file.path);
+            res.error(err);
+        });
+    }
+);
 
 user.init();
 

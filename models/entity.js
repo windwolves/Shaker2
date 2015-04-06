@@ -11,12 +11,24 @@ module.exports = function(sequelize, DataTypes) {
         },
         content: {
             type: DataTypes.TEXT,
-            allowNull: true
+            defaultValue: ''
         },
         type: {
             type: DataTypes.STRING(50),
-            allowNull: false
+            defaultValue: ''
         },
+        postLimit: {
+            type: DataTypes.INTEGER(11),
+            defaultValue: 0
+        },
+        recommend: {
+            type: DataTypes.INTEGER(11),
+            defaultValue: 0
+        },
+        likeCount: {
+            type: DataTypes.INTEGER(11),
+            defaultValue: 0
+        }
     }, {
         freezeTableName: true,
         classMethods: {

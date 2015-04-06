@@ -15,7 +15,8 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         },
         type: {
-            type: DataTypes.STRING(10)
+            type: DataTypes.STRING(10),
+            defaultValue: '1'
         },
         deviceToken: {
             type: DataTypes.STRING(50)
@@ -26,8 +27,17 @@ module.exports = function(sequelize, DataTypes) {
         profile: {
             type: DataTypes.TEXT,
         },
-        telphone: {
+        phone: {
             type: DataTypes.INTEGER(11)
+        },
+        weibo: {
+            type: DataTypes.INTEGER(50)
+        },
+        wechat: {
+            type: DataTypes.INTEGER(50)
+        },
+        qq: {
+            type: DataTypes.INTEGER(50)
         },
         lastLoginTime: {
             type: DataTypes.DATE

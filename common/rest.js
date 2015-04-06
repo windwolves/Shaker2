@@ -1,6 +1,7 @@
 var express = require('express');
 
 var utils = require('../common/utils');
+var handler = require('../common/handler');
 
 var toObject = utils.toObject;
 var toFunction = utils.toFunction;
@@ -21,7 +22,7 @@ function createMsgCode(code, prefix, joinChar) {
         msgPrefix: 'USER',
         autoInit: false,
         list: {
-            beforeCallbacks: [utils.needLogin],
+            beforeCallbacks: [handler.needLogin],
             include: [{ model: db.Other, as: 'Others' }],
             order: 'updatedAt desc'
         },
@@ -31,7 +32,7 @@ function createMsgCode(code, prefix, joinChar) {
             order: 'updatedAt desc'
         },
         post: {
-            beforeCallbacks: [utils.needLogout, checkPassword],
+            beforeCallbacks: [handler.needLogout, checkPassword],
             requireKeys: ['username', 'password', 'password2'],
             uniqueKeys: ['username'],
             createKeys: ['username', 'password', 'nickname', 'age', 'sex', 'telphone', 'email'],
@@ -43,7 +44,7 @@ function createMsgCode(code, prefix, joinChar) {
             }
         },
         put: {
-            beforeCallbacks: [utils.needLogin],
+            beforeCallbacks: [handler.needLogin],
             requireKeys: ['id'],
             uniqueKeys: ['telphone', 'email'],
             updateKeys: ['nickname', 'age', 'sex', 'telphone', 'email']
@@ -53,7 +54,7 @@ function createMsgCode(code, prefix, joinChar) {
             }
         },
         delete: {
-            beforeCallbacks: [utils.needLogin]
+            beforeCallbacks: [handler.needLogin]
         }
     }
 */
@@ -168,7 +169,7 @@ REST.prototype = {
                     }, res.error);
                 });
 
-                router.post.apply(router, ['/', utils.requireKeys(requireKeys)].concat(callbacks));
+                router.post.apply(router, ['/'].concat(callbacks).concat([handler.requireKeys(requireKeys)]));
 
             })(toObject(options.post));
         }
@@ -214,7 +215,7 @@ REST.prototype = {
                     }, res.error);
                 });
 
-                router.put.apply(router, ['/:id', utils.requireKeys(requireKeys)].concat(callbacks));
+                router.put.apply(router, ['/:id'].concat(callbacks).concat([handler.requireKeys(requireKeys)]));
 
             })(toObject(options.put));
         }

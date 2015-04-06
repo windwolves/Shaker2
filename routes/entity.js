@@ -3,7 +3,7 @@ var path = require('path');
 
 var db = require('../models');
 
-var utils = require('../common/utils');
+var handler = require('../common/handler');
 var Rest = require('../common/rest');
 
 var entity = new Rest({
@@ -18,10 +18,10 @@ var entity = new Rest({
         }
     },
     post: {
-        beforeCallbacks: [utils.needLogin],
-        requireKeys: ['title', 'content', 'type', 'themeId'],
+        beforeCallbacks: [handler.needLogin, handler.setId('theme', 'code'), handler.setId('category', 'name')],
+        requireKeys: ['title', 'themeId', 'categoryId'],
         uniqueKeys: [],
-        createKeys: ['title', 'content', 'type', 'themeId'],
+        createKeys: ['title', 'themeId', 'categoryId', 'type'],
         beforeCreate: function(model, req, res) {
             model.ownerId = req.session.user.id;
         },
@@ -29,85 +29,29 @@ var entity = new Rest({
         }
     },
     put: {
-        beforeCallbacks: [utils.needLogin],
-        requireKeys: ['type'],
+        beforeCallbacks: [handler.needLogin, handler.checkSessionUser('entity', 'ownerId')],
+        requireKeys: [],
         uniqueKeys: [],
-        updateKeys: ['content'],
+        updateKeys: ['title', 'content'],
         beforeUpdate: function(model, req, res) {
         },
         afterUpdate: function(model, req, res) {
         }
     },
     delete: {
-        beforeCallbacks: [utils.needLogin, checkOwner, deleteEntityPhotoDir]
+        beforeCallbacks: [handler.needLogin, handler.checkSessionUser('entity', 'ownerId')]
     }
 });
 
 var router = entity.getRouter();
 
-router.get('/demo', function(req, res) {
-    db.User.find({ where: { username: 'admin' }}).then(function(user) {
-        if(user) {
-            var _where = { ownerId: user.id };
-            var _order = 'createdAt desc';
-
-            db.Entity.findAll({ where: _where, order: _order }).then(res.success, res.error);
-        }
-        else {
-            res.warning('ADMIN_USER_NOT_FOUND');
-        }
+router.get('/recommend', function(req, res) {
+    db.Entity.findAll({ order: 'recommend' }).then(function(entitys) {
+        res.success(entitys);
     }, res.error);
 });
+
 
 entity.init();
 
 module.exports = router;
-
-
-function deleteEntityPhotoDir(req, res, next) {
-    var photoDir = '/img/photos/' + req.params.id;
-    var dir = path.join(__dirname, '../app' + photoDir);
-
-    deleteDir(dir);
-
-    next();
-}
-
-function deleteDir(path) {
-    var files = [];
-
-    if(fs.existsSync(path)) {
-        files = fs.readdirSync(path);
-
-        files.forEach(function(file){
-            var childPath = path + '/' + file;
-
-            if(fs.statSync(childPath).isDirectory()) {
-                deleteDir(childPath);
-            }
-            else {
-                fs.unlinkSync(childPath);
-            }
-        });
-        fs.rmdirSync(path);
-    }
-}
-
-
-function checkOwner(req, res, next) {
-    var id = req.params.id;
-
-    db.Entity.find({ where: { id: id }}).then(function(entity) {
-        if(entity) {
-            if(entity.ownerId == req.session.user.id) {
-                next();
-            }
-            else {
-                res.warning('CANNT_DELETE_ENTITY');
-            }
-        }
-        else {
-            res.warning('ENTITY_NOT_FOUND');
-        }
-    }, res.error);
-}

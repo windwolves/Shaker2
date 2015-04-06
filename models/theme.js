@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         description: {
             type: DataTypes.TEXT,
-            allowNull: true
+            defaultValue: ''
         },
         code: {
             type: DataTypes.STRING(50),
@@ -23,7 +23,8 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function(models) {
                 Theme.hasMany(models.Entity, { foreignKey: 'themeId' });
-                Theme.hasMany(models.Skin, { foreignKey: 'skinId' });
+                Theme.hasMany(models.Layout, { foreignKey: 'themeId' });
+                Theme.hasMany(models.Skin, { foreignKey: 'themeId' });
             }
         }
     });
