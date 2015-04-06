@@ -3,7 +3,7 @@ var async = require('async');
 var db = require('../models');
 var config = require('../config');
 
-if (!config.isProduction) {
+if (!config.isRelease) {
     async.waterfall([
         syncDB,
         function(callback) {
