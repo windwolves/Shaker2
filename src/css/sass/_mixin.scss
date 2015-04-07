@@ -1,5 +1,42 @@
-@import "./box";
-@import "./mediaqueries";
+@import "mediaqueries";
+
+$min-font-size: 20px;
+
+html {
+    font-size: $min-font-size;
+
+    @include iphone5 {
+        font-size: $min-font-size * 640 / 750;
+    }
+
+    @include iphone6plus {
+        font-size: $min-font-size * 828 / 750;
+    }
+
+    @include max-screen(320px) {
+        font-size: $min-font-size * 640 / 750;
+    }
+
+    @include min-screen(414px) {
+        font-size: $min-font-size * 828 / 750;
+    }
+}
+
+@function size($value, $parent: false) {
+    @if $parent {
+        @return $value / $parent * 100%;
+    }
+    @return #{$value / 2 / $min-font-size}rem;
+}
+
+@function size-h($value) {
+    @return size($value, 750px);
+}
+
+@function size-v($value) {
+    @return size($value, 1158px);
+}
+
 
 $pi: 3.14159265359;
 @function pow($base, $exp) {
@@ -55,12 +92,16 @@ $pi: 3.14159265359;
     @return $cos;
 }
 
-
-%text-ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    word-wrap: break-word;
+@mixin clearfix {
+    &:before,
+    &:after {
+        content: '';
+        display: table;
+    }
+    &:after {
+        clear: both;
+        overflow: hidden;
+    }
 }
 
 @mixin css3($property, $value, $moz, $webkit, $o, $ms, $khtml, $official: true) {
@@ -187,10 +228,33 @@ $pi: 3.14159265359;
           transition: transform $transition;
 }
 
+@mixin wh($width, $height, $parentWidth: false) {
+    @if $parentWidth {
+        padding-top: size($height, $parentWidth);
+        width: size($width, $parentWidth);
+    }
+    @else {
+        padding-top: size-h($height);
+        width: size-h($width);
+    }
+}
+
 
 @mixin keyframe($name) {
     @keyframes #{$name} { @content; }
     @-ms-keyframes #{$name} { @content; }
     @-moz-keyframes #{$name} { @content; }
     @-webkit-keyframes #{$name} { @content; }
+}
+
+
+%clearfix {
+    @include clearfix;
+}
+
+%text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: break-word;
 }

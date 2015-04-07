@@ -6,28 +6,98 @@
         background-color: #fff;
     }
 
-    .skin_01 {
-        .text {
-            color: #000;
+    &-cover {
+        .wrapper:not(.cover) {
+            display: none;
         }
     }
 
-    .skin_02 {
-        .text {
-            color: #fff;
+    &-layout_01 {
+        .wrapper:not(.layout_01) {
+            display: none;
         }
     }
 
-    .text {
-        font-size: size(32px);
-        left: 50%;
-        line-height: size(40px);
-        max-height: 100% - size-v(142px * 2);
-        overflow: hidden;
-        position: absolute;
-        top: 50%;
-        @include transform(translate3d(-50%, -50%, 0));
-        width: 100% - size-h(118px * 2);
+    &-layout_02 {
+        .wrapper:not(.layout_02) {
+            display: none;
+        }
+    }
+
+    .cover {
+        .content_pic {
+            border-radius: 50%;
+            margin: size(156px) auto size(130px);
+            @include wh(288px * 2, 288px * 2);
+        }
+
+        .title {
+            @extend %text-ellipsis;
+            color: #2a2a2a;
+            font-size: size(48px);
+            height: size(90px);
+            line-height: size(90px);
+            margin: 0 auto;
+            text-align: center;
+            width: size(550px);
+        }
+
+        .content_text {
+            color: #2a2a2a;
+            font-size: size(32px);
+            line-height: size(40px);
+            margin: size(14px) auto 0;
+            text-align: center;
+            width: size(550px);
+        }
+    }
+
+
+    .layout_01 {
+        .content_pic {
+            border-radius: 50%;
+            margin: size(156px) auto size(130px);
+            @include wh(288px * 2, 288px * 2);
+        }
+
+        .content_text {
+            color: #2a2a2a;
+            font-size: size(32px);
+            line-height: size(40px);
+            margin: size(14px) auto 0;
+            text-align: center;
+            width: size(550px);
+        }
+    }
+
+
+    .layout_02 {
+        .content_pic,
+        .mask {
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 8;
+        }
+
+        .mask {
+            background-color: rgba(255, 255, 255, .5);
+        }
+
+        .content_text {
+            font-size: size(32px);
+            left: 50%;
+            line-height: size(40px);
+            max-height: 100% - size-v(142px * 2);
+            overflow: hidden;
+            position: absolute;
+            top: 50%;
+            @include transform(translate3d(-50%, -50%, 0));
+            width: 100% - size-h(118px * 2);
+            z-index: 10;
+        }
     }
 
 }

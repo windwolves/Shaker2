@@ -9,8 +9,8 @@
     if(deviceType == 'desktop') {
         var panel = document.querySelector('.panel');
         panel.style.width = '414px';
-        panel.style.height = '640px';
-        panel.style.margin = (window.innerHeight - 640) / 2 + 'px' + ' auto';
+        panel.style.height = '672px';
+        panel.style.margin = (window.innerHeight - 672) / 2 + 'px' + ' auto';
         panel.style.position = 'relative';
 
         if(isMacOS(userAgent)) {
