@@ -12,7 +12,7 @@ var entity = new Rest({
     list: false,
     get: {
         beforeCallbacks: [],
-        include: [{ model: db.User, as: 'Owner' }, { model: db.Post, include: [db.Layout, { model: db.User, as: 'Owner' }] }, db.Theme],
+        include: [{ model: db.User, as: 'Owner' }, { model: db.Post, include: [db.Layout, db.Skin, { model: db.User, as: 'Owner' }] }, db.Theme],
         order: 'Posts.createdAt asc',
         beforeSend: function(model) {
             model.content_text = JSON.parse(model.content_text);

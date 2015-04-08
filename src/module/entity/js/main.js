@@ -26,7 +26,15 @@ require([
 ], function($, wx) {
     'use strict';
 
-    var id = getQueryID();
+    var id = function() {
+        var result = location.href.match(/entity\/([0-9a-zA-Z\-]+)/);
+
+        if(!result || result.length < 1){
+            return '';
+        }
+
+        return result[1];
+    }();
 
     if(id == 'demo') {
         initEntity({
@@ -34,7 +42,9 @@ require([
             'content_text': ['反现实赐我一把匕首，剖开我所有不想剖开的现实'],
             'content_pic': ['http://placekitten.com/288/288'],
             'likeCount': 10,
+            'postLimit': 25,
             'Theme': { 'code': 'theme_01' },
+            'Owner': { 'nickname': '昵称', 'profile': 'http://placekitten.com/288/288' },
             'Posts': [{
                 'Skin': { 'code': 'theme_01-skin_01' },
                 'Layout': { 'code': 'theme_01-layout_01' },
@@ -63,15 +73,9 @@ require([
         });
     }
 
-    function getQueryID() {
-        var result = location.href.match(/entity\/([0-9a-zA-Z\-]+)/);
-
-        if(!result || result.length < 1){
-            return '';
-        }
-
-        return result[1];
-    }
+    var $panel = $('.panel');
+    var $swiperContainer = $panel.find('.swiper-container');
+    var $swiperWrapper = $panel.find('.swiper-wrapper');
 
     function initEntity(entity) {
         if(!entity) return;
@@ -81,7 +85,7 @@ require([
             initWechatShare({
                 imgUrl: location.origin,
                 title: entity.title,
-                description: entity.content
+                description: entity.content_text && entity.content_text[0]
             });
         });
 
@@ -93,12 +97,12 @@ require([
             evt.preventDefault();
         });
 
+
         var deps = [];
 
         deps.push('text!/page/' + entity.Theme.code + '/index.html');
         deps.push('css!/page/' + entity.Theme.code + '/css/style.css');
         deps.push('/page/' + entity.Theme.code + '/js/index.js');
-
 
         require(deps, function(html, css, js) {
             var args = [].slice.call(arguments, 0);
@@ -109,6 +113,8 @@ require([
             };
 
             initSwiper(entity, theme);
+            initAds();
+            initFooterBar(entity);
         });
     }
 
@@ -205,56 +211,25 @@ require([
     function initSwiper(entity, themeConfig) {
         var theme = entity.Theme.code;
 
-        var $panel = $('.panel').addClass(theme);
-        var $swiperContainer = $panel.find('.swiper-container');
-        var $swiperWrapper = $panel.find('.swiper-wrapper');
-
-
-        // 广告
-        var $ads = $panel.find('.ads');
-
-        // 点击"关闭"按钮关闭广告
-        $ads.find('.js-ads-close').on('click', function(event) {
-            event.stopPropagation();
-
-            $ads.addClass('out');
-        });
-
-
-        // 底部功能栏
-        var $footerBar = $panel.find('.footer-bar');
-
-        // 点击任意空白处"隐藏/展示"底部功能栏
-        $panel.on('click', function() {
-            if(!$swiperContainer.hasClass('moving')) {
-                $footerBar.toggleClass('out');
-            }
-        });
-
-        // 点击"查看"
-        $footerBar.find('.js-footer-bar-menu').on('click', function(event) {
-            event.stopPropagation();
-
-            // @todo 加载菜单
-            swiper.swipeTo(1);
-        });
-
+        $panel.addClass(theme);
 
         // 首页
         var $topic = $panel.find('.topic').addClass(theme + '-cover').appendTo($swiperWrapper);
 
         // 点赞数
-        var likeImgs = ['/module/entity/img/like.png', '/module/entity/img/like-active.png'];
+        var likeImgs = ['/module/entity/img/icon-like.png', '/module/entity/img/icon-like-active.png'];
         var $likeCount = $topic.find('.js-like_count');
         var $likeCountImg = $likeCount.find('img');
+        var $likeCountSpan = $likeCount.find('span').text(entity.likeCount);
 
         // @todo 判断是否已经点赞
         if(entity.likeCount > 0) {
             $likeCount.addClass('active');
             $likeCountImg.attr('src', likeImgs[1]);
         }
-        var $likeCountSpan = $likeCount.find('span').text(entity.likeCount);
         $likeCount.on('click', function() {
+            event.stopPropagation();
+
             // @todo 点赞或取消点赞
             if($likeCount.hasClass('active')) {
                 entity.likeCount--;
@@ -295,21 +270,18 @@ require([
         var $list = $catalog.find('.post-list');
         var $itemTemplate = $catalog.find('.post-item').removeClass('hide').remove();
 
-        // 参与也
+        // 参与页
         entity.Posts.forEach(function(post, index) {
             var skin = post.Skin && post.Skin.code;
             var layout = post.Layout.code;
 
             // 在目录中添加一行回复信息
             var $item = $itemTemplate.clone();
-            var $postLikeCount = $item.find('.post-like_count');
-            var $postOwner = $item.find('.post-owner');
 
             $item.find('.post-content_pic').attr('src', post.content_pic[0]);
             $item.find('.post-content_text').text(post.content_text[0]);
-            $postLikeCount.find('span').text(post.likeCount);
-            $postOwner.find('img').attr('src', post.Owner.profile);
-            $postOwner.find('span').text(post.Owner.nickname);
+            $item.find('.post-like_count span').text(post.likeCount);
+            setOwner($item.find('.post-owner'), post.Owner);
 
             $item.on('click', function(event) {
                 if(!$swiperContainer.hasClass('moving')) {
@@ -356,21 +328,108 @@ require([
             slideActiveClass: 'active',
             onSlideChangeStart: function(swiper) {
                 $swiperContainer.addClass('moving');
-                $ads.addClass('out');
-                $footerBar.addClass('out');
 
-                loadImages(swiper.slides[swiper.activeIndex + nextLength]);
+                loadImages(swiper.slides.slice(swiper.activeIndex - nextLength, swiper.activeIndex + nextLength));
             },
             onSlideChangeEnd: function(swiper) {
                 $swiperContainer.removeClass('moving');
-
-                if(!swiper.activeIndex) {
-                    $footerBar.removeClass('out');
-                }
             }
         });
 
         loadImages(swiper.slides.slice(0, nextLength + 1));
+    }
+
+    function initAds() {
+        // 广告
+        var $ads = $panel.find('.ads');
+
+        // 点击"关闭"按钮关闭广告
+        $ads.find('.js-ads-close').on('click', function(event) {
+            $ads.addClass('out');
+        });
+
+        var swiper = $swiperContainer.data('swiper');
+        if(swiper) {
+            swiper.addCallback('SlideChangeStart', function(swiper) {
+                $ads.addClass('out');
+            });
+        }
+
+    }
+
+    function initFooterBar(entity) {
+        // 底部功能栏
+        var $footerBar = $panel.find('.footer-bar');
+        var $footerMenu = $panel.find('.footer-menu');
+
+        var $footerBarMenu = $footerBar.find('.js-footer-bar-menu');
+        var $footerBarClose = $footerBar.find('.js-footer-bar-close');
+
+        var $mask = $('<div class="mask"/>');
+
+        setOwner($footerMenu.find('.entity-owner'), entity.Owner);
+        $footerMenu.find('.entity-joined span').text(entity.Posts.length + '/' + (entity.postLimit || '-'));
+
+        // 点击"查看"
+        $footerBarMenu.on('click', function(event) {
+            $footerBarClose.show();
+            $footerBarMenu.hide();
+
+            $swiperContainer.addClass('blur');
+            $footerMenu.addClass('in');
+
+            $mask.appendTo($panel).on('click', footerMenuOut);
+        });
+
+        // 点击"关闭"
+        $footerBarClose.on('click', footerMenuOut);
+
+        // 点击"创建者"
+        $footerMenu.find('.js-entity-owner').on('click', footerMenuOut);
+
+        // 点击"加入人数"
+        $footerMenu.find('.js-entity-joined').on('click', footerMenuOut);
+
+        // 关闭底部菜单
+        function footerMenuOut(event) {
+            $footerBarClose.hide();
+            $footerBarMenu.show();
+
+            $swiperContainer.removeClass('blur');
+            $footerMenu.removeClass('in');
+
+            $mask.remove().off('click', footerMenuOut);
+        }
+
+
+        // 点击任意空白处"隐藏/展示"底部功能栏
+        $swiperContainer.on('click', function() {
+            if(!$swiperContainer.hasClass('moving')) {
+                $footerBar.toggleClass('out');
+            }
+        });
+
+        var swiper = $swiperContainer.data('swiper');
+        if(swiper) {
+            $footerMenu.find('.js-entity-owner').on('click', function(event) {
+                swiper.swipeTo(0);
+            });
+
+            $footerMenu.find('.js-entity-joined').on('click', function(event) {
+                swiper.swipeTo(1);
+            });
+
+            swiper.addCallback('SlideChangeStart', function(swiper) {
+                $footerBar.addClass('out');
+            });
+
+            swiper.addCallback('SlideChangeEnd', function(swiper) {
+                if(!swiper.activeIndex) {
+                    $footerBar.removeClass('out');
+                }
+            });
+        }
+
     }
 
     function loadImages(element) {
@@ -389,6 +448,11 @@ require([
 
     function getBackground(imageSrc) {
         return 'transparent url(' + imageSrc + ') 0 0 / 100% 100% no-repeat';
+    }
+
+    function setOwner($element, owner) {
+        $element.find('img').attr('src', owner.profile);
+        $element.find('span').text(owner.nickname);
     }
 
 });

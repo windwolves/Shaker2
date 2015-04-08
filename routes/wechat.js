@@ -4,6 +4,8 @@ var express = require('express');
 var config = require('../config');
 var utils = require('../common/utils');
 
+var app;
+
 var router = express.Router();
 
 
@@ -25,7 +27,9 @@ router.post('/signature', function(req, res) {
         return;
     }
 
-    var app = require('../index');
+    if(!app) {
+        app = require('../index');
+    }
 
     if(!app.locals.access_token) {
         loadWechatAccessToken(config.wechat, function(access_token) {
@@ -69,7 +73,6 @@ router.post('/signature', function(req, res) {
 
 router.get('/cleartoken', function(req, res) {
     if(req.hostname == config.wechat.host) {
-        var app = require('../index');
 
         app.locals.access_token = null;
         app.locals.ticket = null;
@@ -84,7 +87,6 @@ router.get('/cleartoken', function(req, res) {
 module.exports = router;
 
 function reloadWechatAccessToken() {
-    var app = require('../index');
 
     loadWechatAccessToken(config.wechat, function(access_token) {
         app.locals.access_token = access_token;
@@ -94,7 +96,6 @@ function reloadWechatAccessToken() {
 }
 
 function reloadWechatTicket() {
-    var app = require('../index');
 
     if(!app.locals.access_token) {
         loadWechatAccessToken(config.wechat, function(access_token) {

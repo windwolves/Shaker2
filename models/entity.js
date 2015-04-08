@@ -17,10 +17,6 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.TEXT,
             allowNull: true
         },
-        type: {
-            type: DataTypes.STRING(50),
-            defaultValue: ''
-        },
         postLimit: {
             type: DataTypes.INTEGER(11),
             defaultValue: 0
@@ -32,6 +28,10 @@ module.exports = function(sequelize, DataTypes) {
         likeCount: {
             type: DataTypes.INTEGER(11),
             defaultValue: 0
+        },
+        type: {
+            type: DataTypes.STRING(50),
+            allowNull: true
         }
     }, {
         freezeTableName: true,
@@ -41,6 +41,8 @@ module.exports = function(sequelize, DataTypes) {
                 Entity.belongsTo(models.User, { as: 'Owner', foreignKey: 'ownerId' });
 
                 Entity.hasMany(models.Post, { foreignKey: 'entityId' });
+
+                Entity.belongsToMany(models.Tag, { through: 'entity_tag' });
             }
         }
     });

@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         title: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         content_text: {
             type: DataTypes.TEXT,
@@ -17,10 +17,14 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.TEXT,
             allowNull: true
         },
+        likeCount: {
+            type: DataTypes.INTEGER(11),
+            defaultValue: 0
+        },
         type: {
             type: DataTypes.STRING(50),
-            defaultValue: ''
-        },
+            allowNull: true
+        }
     }, {
         freezeTableName: true,
         classMethods: {

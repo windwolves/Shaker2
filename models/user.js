@@ -14,10 +14,6 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING(50),
             allowNull: false
         },
-        type: {
-            type: DataTypes.STRING(10),
-            defaultValue: '1'
-        },
         deviceToken: {
             type: DataTypes.STRING(50)
         },
@@ -45,6 +41,10 @@ module.exports = function(sequelize, DataTypes) {
         syncTime: {
             type: DataTypes.DATE
         },
+        type: {
+            type: DataTypes.STRING(50),
+            allowNull: true
+        }
     }, {
         freezeTableName: true,
         classMethods: {

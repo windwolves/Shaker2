@@ -47,7 +47,7 @@
     <script src="/lib/zepto.js"></script>
     <script>
         $.getJSON('/services/entity/recommend', function(result) {
-            if(result.status) {
+            if(result.status == 'success') {
                 init(result.data);
             }
             else {

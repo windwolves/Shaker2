@@ -12,13 +12,19 @@ if (!config.isRelease) {
                     var user = {
                         username: 'admin',
                         password: '21232f297a57a5a743894a0e4a801fc3',
-                        nickname: 'Shaker'
+                        nickname: 'Shaker',
+                        profile: 'http://placekitten.com/288/288'
                     };
 
                     createUser(user, callback);
                 },
                 function(callback) {
-                    var categorys = [ { name: '反现实' }, { name: '超现实' } ];
+                    var tags = [ { name: '反现实' }, { name: '超现实' } ];
+
+                    async.map(tags, createTag, callback);
+                },
+                function(callback) {
+                    var categorys = [ { name: '话题' } ];
 
                     async.map(categorys, createCategory, callback);
                 },
@@ -38,14 +44,23 @@ if (!config.isRelease) {
         },
         function(datas, callback) {
             var user = datas[0];
-            var categorys = datas[1];
-            var themes = datas[2];
+            var tags = datas[1];
+            var categorys = datas[2];
+            var themes = datas[3];
 
             var entitys = [];
             var layouts = [];
+            var skins = [];
 
             categorys.forEach(function(category) {
-                entitys.push({ title: '反 Or 超', postLimit: 2, ownerId: user.id, categoryId: category.id });
+                entitys.push({
+                    ownerId: user.id,
+                    categoryId: category.id,
+                    title: '反现实 Or 超现实',
+                    content_text: '["反现实赐我一把匕首，剖开我所有不想剖开的现实"]',
+                    content_pic: '["http://placekitten.com/288/288"]',
+                    postLimit: 25
+                });
             });
 
             themes.forEach(function(theme, index) {
@@ -53,15 +68,69 @@ if (!config.isRelease) {
 
                 layouts.push({ name: '板式1', code: theme.code + '-layout_01', themeId: theme.id });
                 layouts.push({ name: '板式2', code: theme.code + '-layout_02', themeId: theme.id });
+
+                skins.push({ name: '皮肤1', code: theme.code + '-skin_01', themeId: theme.id });
+                skins.push({ name: '皮肤2', code: theme.code + '-skin_02', themeId: theme.id });
+                skins.push({ name: '皮肤3', code: theme.code + '-skin_03', themeId: theme.id });
             });
 
             async.parallel([
                 function(callback) {
-                    async.each(entitys, createEntity, callback);
+                    callback(null, user);
                 },
                 function(callback) {
-                    async.each(layouts, createLayout, callback);
+                    callback(null, tags);
+                },
+                function(callback) {
+                    async.map(entitys, createEntity, callback);
+                },
+                function(callback) {
+                    async.map(layouts, createLayout, callback);
+                },
+                function(callback) {
+                    async.map(skins, createSkin, callback);
                 }
+            ], callback);
+        },
+        function(datas, callback) {
+            var user = datas[0];
+            var tags = datas[1];
+            var entitys = datas[2];
+            var layouts = datas[3];
+            var skins = datas[4];
+
+            var posts = [];
+
+            entitys.forEach( function(entity) {
+                layouts.filter(function(layout) {
+                    return layout.themeId == entity.themeId;
+                }).forEach(function(layout) {
+                    skins.filter(function(layout) {
+                        return layout.themeId == entity.themeId;
+                    }).forEach(function(skin) {
+                        posts.push({
+                            entityId: entity.id,
+                            layoutId: layout.id,
+                            skinId: skin.id,
+                            ownerId: user.id,
+                            content_text: '["反现实赐我一把匕首，剖开我所有不想剖开的现实"]',
+                            content_pic: '["http://placekitten.com/375/603"]'
+                        });
+                    });
+                });
+            });
+
+            async.parallel([
+                function(callback) {
+                    async.map(entitys, function(entity, callback) {
+                        entity.setTags(tags).then(function() {
+                            callback(null);
+                        }, callback);
+                    }, callback);
+                },
+                function(callback) {
+                    async.map(posts, createPost, callback);
+                },
             ], callback);
         }
     ], function(err) {
@@ -84,6 +153,14 @@ function createUser(user, callback) {
     }, callback);
 }
 
+function createTag(tag, callback) {
+    db.Tag.findOrCreate({ where: tag, defaults: tag }).spread(function(tag) {
+        console.log('\nCreate Tag "' + tag.name + '" successful!\n');
+
+        callback(null, tag);
+    }, callback);
+}
+
 function createTheme(theme, callback) {
     db.Theme.findOrCreate({ where: theme, defaults: theme }).spread(function(theme) {
         console.log('\nCreate Theme "' + theme.name + '" successful!\n');
@@ -100,6 +177,14 @@ function createLayout(layout, callback) {
     }, callback);
 }
 
+function createSkin(skin, callback) {
+    db.Skin.findOrCreate({ where: skin, defaults: skin }).spread(function(skin) {
+        console.log('\nCreate Skin "' + skin.name + '" successful!\n');
+
+        callback(null, skin);
+    }, callback);
+}
+
 function createCategory(category, callback) {
     db.Category.findOrCreate({ where: category, defaults: category }).spread(function(category) {
         console.log('\nCreate Category "' + category.name + '" successful!\n');
@@ -113,5 +198,13 @@ function createEntity(entity, callback) {
         console.log('\nCreate Entity "' + entity.title + '" successful!\n');
 
         callback(null, entity);
+    }, callback);
+}
+
+function createPost(post, callback) {
+    db.Post.findOrCreate({ where: post, defaults: post }).spread(function(post) {
+        console.log('\nCreate Post "' + post.id + '" successful!\n');
+
+        callback(null, post);
     }, callback);
 }
