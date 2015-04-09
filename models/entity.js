@@ -9,11 +9,11 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.TEXT,
             allowNull: false
         },
-        content_text: {
+        content: {
             type: DataTypes.TEXT,
             allowNull: true
         },
-        content_pic: {
+        picture: {
             type: DataTypes.TEXT,
             allowNull: true
         },

@@ -81,13 +81,13 @@ require([
         if(!entity) return;
         document.title = entity.title;
 
-        initWechatConfig({}, function() {
-            initWechatShare({
-                imgUrl: location.origin,
+        if($('html').hasClass('wechat')) {
+            initWechat({
+                imgUrl: location.origin + entity.picuture,
                 title: entity.title,
-                description: entity.content_text && entity.content_text[0]
+                description: entity.content
             });
-        });
+        }
 
         $(window).on('scroll', function(evt) {
             evt.preventDefault();
@@ -118,93 +118,80 @@ require([
         });
     }
 
-    function initWechatConfig(options, callback) {
-        if(!$('html').hasClass('wechat')) return;
 
+
+    function initWechat(options) {
         options || (options = {});
 
-        var appId = options.appId || 'wxd6810c7d3b63d5c6';
-        var timestamp = (Date.now() + '').slice(0, -3);
-        var nonceStr = Date.now() + '' + Math.round(Math.random() * 1000);
-        var jsApiList = options.jsApiList ||  ['onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'];
-
-        var params = {
-            noncestr: nonceStr,
-            timestamp: timestamp,
-            url: location.href.split('#')[0]
-        };
-
         require(['wechat'], function(wx) {
-            $.post('/services/wechat/signature', params, function(result) {
+            var link = options.link || location.href.split('#')[0];
+
+            $.post('/services/wechat/signature', { url: link }, function(result) {
                 if(result.status == 'success') {
                     wx.config({
                         debug: !!location.search.slice(1).match(/debug=true/),
-                        appId: appId,
-                        nonceStr: nonceStr,
-                        timestamp: timestamp,
-                        signature: result.data,
-                        jsApiList: jsApiList
+                        appId: result.data.appId,
+                        nonceStr: result.data.nonceStr,
+                        timestamp: result.data.timestamp,
+                        signature: result.data.signature,
+                        jsApiList: ['onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo']
                     });
 
-                    wx.error(function() {
-                        $.get('/services/wechat/cleartoken');
+                    wx.ready(function() {
+                        wx.onMenuShareTimeline({
+                            title: options.title,
+                            link: link,
+                            imgUrl: options.imgUrl,
+                            fail: function(err) {
+                                console.log(err);
+                            }
+                        });
+
+                        wx.onMenuShareAppMessage({
+                            title: options.title,
+                            desc: options.description,
+                            link: link,
+                            imgUrl: options.imgUrl,
+                            success: function(err) {
+                                console.log(err);
+                            },
+                            fail: function(err) {
+                                console.log(err);
+                            }
+                        });
+
+                        wx.onMenuShareQQ({
+                            title: options.title,
+                            desc: options.description,
+                            link: link,
+                            imgUrl: options.imgUrl,
+                            fail: function(err) {
+                                console.log(err);
+                            }
+                        });
+
+                        wx.onMenuShareWeibo({
+                            title: options.title,
+                            link: link,
+                            imgUrl: options.imgUrl,
+                            fail: function(err) {
+                                console.log(err);
+                            }
+                        });
+
                     });
 
-                    callback();
+                    wx.error(function(reason) {
+                        if(reason == 'invalid signature') {
+                            $.get('/services/wechat/cleartoken');
+                        }
+                    });
+
                 }
                 else {
                     console.error(result.data);
                 }
             });
-        });
-    }
-
-    function initWechatShare(options) {
-        if(typeof wx === 'undefined') return;
-
-        options || (options = {});
-
-        var link = options.link || location.href.split('#')[0];
-
-        wx.onMenuShareTimeline({
-            title: options.title,
-            link: link,
-            imgUrl: options.imgUrl,
-            fail: function(err) {
-                console.log(err);
-            }
-        });
-
-        wx.onMenuShareAppMessage({
-            title: options.title,
-            desc: options.description,
-            link: link,
-            imgUrl: options.imgUrl,
-            success: function(err) {
-                console.log(err);
-            },
-            fail: function(err) {
-                console.log(err);
-            }
-        });
-
-        wx.onMenuShareQQ({
-            title: options.title,
-            desc: options.description,
-            link: link,
-            imgUrl: options.imgUrl,
-            fail: function(err) {
-                console.log(err);
-            }
-        });
-
-        wx.onMenuShareWeibo({
-            title: options.title,
-            link: link,
-            imgUrl: options.imgUrl,
-            fail: function(err) {
-                console.log(err);
-            }
         });
     }
 

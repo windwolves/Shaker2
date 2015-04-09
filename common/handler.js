@@ -48,55 +48,125 @@ exports.needLogout = function(req, res, next) {
     }
 };
 
-exports.setId = function(key, whereKey) {
-    return function(req, res, next) {
-        var lowerKey = key.toLowerCase();
-        var upperKey = key.toUpperCase();
-        var firstUpperKey = upperKey.slice(0, 1) + lowerKey.slice(1);
+exports.convertBodyField = function() {
+    var args = [].slice.call(arguments, 0);
 
-        if(!req.body[lowerKey]) {
-            res.warning(upperKey + '_MISSING');
+    var isRequired;
+    var fromBodyKey;
+    var list;
+    var toBodyKey = args[args.length - 1];
+
+    if(typeof args[0] === 'boolean') {
+        isRequired = args[0];
+        fromBodyKey = args[1];
+        list = args.slice(2, -1);
+    }
+    else {
+        isRequired = true;
+        fromBodyKey = args[0];
+        list = args.slice(1, -1);
+    }
+
+    return function(req, res, next) {
+        if(!req.body[fromBodyKey]) {
+            if(isRequired) {
+                res.warning(fromBodyKey.toUpperCase() + '_MISSING');
+            }
+            else {
+                next();
+            }
             return;
         }
 
-        var _where = {};
-        _where[whereKey] = req.body[lowerKey];
+        var i = 0;
+        var whereValue = req.body[fromBodyKey];
 
-        db[firstUpperKey].find({ where: _where }).then(function(model) {
-            if(model) {
-                req.body[lowerKey + 'Id'] = model.id;
-                next();
+        loop(list[i]);
+
+        function errorCallback(err) {
+            res.warning(err || ('SET_' + toBodyKey.toUpperCase() + '_TO_BODY_FAILED'));
+        }
+
+        function successCallback(value) {
+            req.body[toBodyKey] = value;
+
+            next();
+        }
+
+        function loop(item) {
+            if(!Array.isArray(item)) {
+                successCallback(whereValue);
+                return;
             }
-            else {
-                res.warning(upperKey + '_NOT_FOUND');
-            }
-        }, res.error);
+
+            var dbModel = item[0];
+            var modelSearchKey = item[1];
+            var modelFieldKey = item[2];
+
+            var where = {};
+            where[modelSearchKey] = whereValue;
+
+            dbModel.find({ where: where }).then(function(model) {
+                if(model) {
+                    whereValue = model[modelFieldKey];
+
+                    loop(list[++i]);
+                }
+                else {
+                    errorCallback('MODEL_NOT_GOUND');
+                }
+            }, errorCallback);
+        }
+
     }
 };
 
-exports.checkSessionUser = function(key, whereKey) {
+
+exports.checkOwner = function() {
+    var list = [].slice.call(arguments, 0);
+
     return function(req, res, next) {
-        var lowerKey = key.toLowerCase();
-        var upperKey = key.toUpperCase();
-        var firstUpperKey = upperKey.slice(0, 1) + lowerKey.slice(1);
+        var i = 0;
+        var whereValue = req.params.id;
 
-        var id = req.params.id;
+        loop(list[i]);
 
-        db[firstUpperKey].find({ where: { id: id }}).then(function(model) {
-            if(model) {
-                if(model[whereKey] == req.session.user.id) {
-                    next();
-                }
-                else {
-                    res.warning('ERROR_OWNER');
-                }
+        function errorCallback(err) {
+            res.warning(err || 'CHECK_OWNER_FAILED');
+        }
+
+        function successCallback(value) {
+            if(value == req.session.user.id) {
+                next();
             }
             else {
-                res.warning(upperKey + '_NOT_FOUND');
+                res.warning('ERROR_OWNER');
             }
-        }, res.error);
+        }
+
+        function loop(item) {
+            if(!Array.isArray(item)) {
+                successCallback(whereValue);
+                return;
+            }
+
+            var dbModel = item[0];
+            var modelFieldKey = item[1];
+
+            dbModel.find({ where: { id: whereValue } }).then(function(model) {
+                if(model) {
+                    whereValue = model[modelFieldKey];
+
+                    loop(list[++i]);
+                }
+                else {
+                    errorCallback('MODEL_NOT_GOUND');
+                }
+            }, errorCallback);
+        }
+
     }
-}
+};
 
 exports.requireKeys = function(keys, reqBodyKey) {
     !reqBodyKey && (reqBodyKey = 'body');

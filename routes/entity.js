@@ -12,59 +12,55 @@ var entity = new Rest({
     list: false,
     get: {
         beforeCallbacks: [],
-        include: [{ model: db.User, as: 'Owner' }, { model: db.Post, include: [db.Layout, db.Skin, { model: db.User, as: 'Owner' }] }, db.Theme],
+        include: [
+            { model: db.User, as: 'Owner' },
+            { model: db.Post, include: [
+                { model: db.User, as: 'Owner' },
+                { model: db.Card, include: [db.Layout, db.Skin]}
+            ] },
+            db.Theme
+        ],
         order: 'Posts.createdAt asc',
         beforeSend: function(model) {
-            model.content_text = JSON.parse(model.content_text);
-            model.content_pic = JSON.parse(model.content_pic);
-
-            model.Posts.forEach(function(post) {
-                post.content_text = JSON.parse(post.content_text);
-                post.content_pic = JSON.parse(post.content_pic);
-            });
         }
     },
     post: {
-        beforeCallbacks: [handler.needLogin, handler.setId('theme', 'code'), handler.setId('category', 'name')],
-        requireKeys: ['title', 'themeId', 'categoryId'],
+        beforeCallbacks: [
+            handler.needLogin,
+            handler.convertBodyField('theme', [db.Theme, 'code', 'id'], 'themeId'),
+            handler.convertBodyField('category', [db.Category, 'name', 'id'], 'categoryId')
+        ],
+        requireKeys: ['title'],
         uniqueKeys: [],
-        createKeys: ['title', 'themeId', 'categoryId', 'content_text', 'type'],
+        createKeys: ['title', 'content', 'themeId', 'categoryId'],
         beforeCreate: function(model, req, res) {
-            model.content_text = JSON.stringify(req.body.content_text);
             model.ownerId = req.session.user.id;
         },
         afterCreate: function(model, req, res) {
-            req.body.entityId = model.id;
-
-            setContentPic(req);
-
-            if(req.body.content_pic) {
-                model.updateAttributes({ content_pic: JSON.stringify(req.body.content_pic) });
+            if(req.files && req.files.photo) {
+                model.updateAttributes({ picture: movePicture(model.id, req.files.photo) });
             }
         }
     },
     put: {
-        beforeCallbacks: [handler.needLogin, handler.checkSessionUser('entity', 'ownerId')],
+        beforeCallbacks: [
+            handler.needLogin,
+            handler.checkOwner([db.Entity, 'ownerId'])
+        ],
         requireKeys: [],
         uniqueKeys: [],
         updateKeys: ['title', 'content'],
         beforeUpdate: function(oldModel, newModel, req, res) {
-            req.body.entityId = oldModel.id;
-
-            removeContentPic(oldModel, req);
-            setContentPic(req);
-
-            if(req.body.content_pic) {
-                newModel.content_pic = JSON.stringify(req.body.content_pic);
+            if(req.files && req.files.photo) {
+                oldModel.picture && removePicture(oldModel.picture);
+                newModel.picture = movePicture(oldModel.id, req.files.photo);
             }
-
-            newModel.content_text = JSON.stringify(req.body.content_text);
         },
         afterUpdate: function(model, req, res) {
         }
     },
     delete: {
-        beforeCallbacks: [handler.needLogin, handler.checkSessionUser('entity', 'ownerId')]
+        beforeCallbacks: [handler.needLogin, handler.checkOwner([db.Entity, 'ownerId'])]
     }
 });
 
@@ -81,55 +77,25 @@ entity.init();
 
 module.exports = router;
 
-function removeContentPic(model, req) {
-    var content_pic = req.body.content_pic;
+function removePicture(picture) {
+    var absoluteFilePath = path.join(__dirname, '/../src' + picture);
 
-    if(Array.isArray(content_pic) && content_pic.length > 0) {
-        var content_pic_old = JSON.parse(model.content_pic);
-
-        if(Array.isArray(content_pic_old)) {
-            content_pic_old.forEach(function(picPath) {
-                var filePath = path.join(__dirname, '/../src' + picPath);
-
-                if(fs.existsSync(filePath)) {
-                    fs.unlinkSync(filePath);
-                }
-            });
-        }
+    if(fs.existsSync(absoluteFilePath)) {
+        fs.unlinkSync(absoluteFilePath);
     }
 }
 
-function setContentPic(req) {
-    var entityId = req.body.entityId;
-    var photoIndexs = req.body.content_pic;
-    var photos = req.files && req.files.photos;
+function movePicture(entityDirName, photo) {
+    var relativeDir = '/upload/entity/' + entityDirName;
+    var absoluteDir = path.join(__dirname, '/../src' + relativeDir);
 
-    var photoDir = '/upload/entity/' + entityId;
-    var dir = path.join(__dirname, '/../src' + photoDir);
-
-    if(!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
+    if(!fs.existsSync(absoluteDir)) {
+        fs.mkdirSync(absoluteDir);
     }
 
-    if(Array.isArray(photoIndexs) && photoIndexs.length > 0 && Array.isArray(photos) && photos.length == photoIndexs.length) {
-        var content_pic = [];
+    var pictureFileName = Date.now() + '-' + Math.round(Math.random() * 10000) + '-' + photo.name;
 
-        photoIndexs.forEach(function(photoIndex, index) {
-            var photo = photos[photoIndex];
-            var name = getRandom(photo.name);
+    fs.renameSync(photo.path, path.join(absoluteDir, pictureFileName));
 
-            fs.renameSync(photo.path, path.join(dir, name));
-
-            content_pic.push(photoDir + '/' + name);
-        });
-
-        req.body.content_pic = content_pic;
-    }
-    else {
-        req.body.content_pic = '';
-    }
-}
-
-function getRandom(key) {
-    return Date.now() + '-' + Math.round(Math.random() * 10000) + '-' + key;
+    return relativeDir + '/' + pictureFileName;
 }

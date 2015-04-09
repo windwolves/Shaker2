@@ -24,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
             associate: function(models) {
                 Skin.belongsTo(models.Theme, { foreignKey: 'themeId' });
 
-                Skin.hasMany(models.Post, { foreignKey: 'skinId' });
+                Skin.hasMany(models.Card, { foreignKey: 'skinId' });
             }
         }
     });

@@ -24,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
             associate: function(models) {
                 Layout.belongsTo(models.Theme, { foreignKey: 'themeId' });
 
-                Layout.hasMany(models.Post, { foreignKey: 'layoutId' });
+                Layout.hasMany(models.Card, { foreignKey: 'layoutId' });
             }
         }
     });

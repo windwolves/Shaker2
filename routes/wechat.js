@@ -1,47 +1,37 @@
 var https = require('https');
 var express = require('express');
 
-var config = require('../config');
+var config = require('../config').wechat;
 var utils = require('../common/utils');
 
-var app;
+var temp = {};
+var expires = 7000 * 1000;
 
 var router = express.Router();
 
-
 router.post('/signature', function(req, res) {
     var params = req.body;
-
-    if(!params.noncestr) {
-        res.warning('NONCESTR_MISSING');
-        return;
-    }
-
-    if(!params.timestamp) {
-        res.warning('TIMESTAMP_MISSING');
-        return;
-    }
 
     if(!params.url) {
         res.warning('URL_MISSING');
         return;
     }
-
-    if(!app) {
-        app = require('../index');
+    else if(!isSafeUrl(params.url)) {
+        res.warning('UNKNOW_HOST');
+        return;
     }
 
-    if(!app.locals.access_token) {
-        loadWechatAccessToken(config.wechat, function(access_token) {
-            app.locals.access_token = access_token;
+    if(!temp.access_token) {
+        loadAccessToken(config.appid, config.secret, function(access_token) {
+            temp.access_token = access_token;
 
-            setTimeout(reloadWechatAccessToken, 3600);
+            setTimeout(reloadAccessToken, expires);
 
-            loadWechatTicket(app.locals.access_token, _successCallback, _errorCallback);
+            loadTicket(temp.access_token, _successCallback, _errorCallback);
         }, _errorCallback);
     }
-    else if(!app.locals.ticket) {
-        loadWechatTicket(app.locals.access_token, _successCallback, _errorCallback);
+    else if(!temp.ticket) {
+        loadTicket(temp.access_token, _successCallback, _errorCallback);
     }
     else {
         _successCallback();
@@ -49,21 +39,28 @@ router.post('/signature', function(req, res) {
 
     function _successCallback(ticket) {
         if(!ticket) {
-            ticket = app.locals.ticket;
+            ticket = temp.ticket;
         }
         else {
-            app.locals.ticket = ticket;
-            setTimeout(reloadWechatTicket, 3600);
+            temp.ticket = ticket;
+            setTimeout(reloadTicket, expires);
         }
 
-        var content = [
+        var noncestr = (Date.now() + '' + Math.round(Math.random() * 10000)).slice(-16);
+        var timestamp = (Date.now() + '').slice(0, -3);
+        var signature = utils.sha1([
             'jsapi_ticket=' + ticket,
-            'noncestr=' + params.noncestr,
-            'timestamp=' + params.timestamp,
+            'noncestr=' + noncestr,
+            'timestamp=' + timestamp,
             'url=' + params.url
-        ].join('&');
+        ].join('&'));
 
-        res.success(utils.sha1(content));
+        res.success({
+            appId: config.appid,
+            nonceStr: noncestr,
+            timestamp: timestamp,
+            signature: signature,
+        });
     }
 
     function _errorCallback(err) {
@@ -72,10 +69,12 @@ router.post('/signature', function(req, res) {
 });
 
 router.get('/cleartoken', function(req, res) {
-    if(req.hostname == config.wechat.host) {
+    if(req.hostname == config.host) {
 
-        app.locals.access_token = null;
-        app.locals.ticket = null;
+        log('Clear token');
+
+        temp.access_token = null;
+        temp.ticket = null;
 
         res.success(true);
     }
@@ -86,44 +85,51 @@ router.get('/cleartoken', function(req, res) {
 
 module.exports = router;
 
-function reloadWechatAccessToken() {
+function isSafeUrl(url) {
+    if(!url || typeof url.search != 'function') {
+        return false;
+    }
 
-    loadWechatAccessToken(config.wechat, function(access_token) {
-        app.locals.access_token = access_token;
+    var index = url.search(config.host);
+    return index > -1 && index < 10;
+}
 
-        setTimeout(reloadWechatAccessToken, 3600);
+function reloadAccessToken() {
+    loadAccessToken(config.appid, config.secret, function(access_token) {
+        temp.access_token = access_token;
+
+        setTimeout(reloadAccessToken, expires);
     });
 }
 
-function reloadWechatTicket() {
+function reloadTicket() {
+    if(!temp.access_token) {
+        loadWechatAccessToken(config.appid, config.secret, function(access_token) {
+            temp.access_token = access_token;
 
-    if(!app.locals.access_token) {
-        loadWechatAccessToken(config.wechat, function(access_token) {
-            app.locals.access_token = access_token;
+            loadWechatTicket(temp.access_token, function(ticket) {
+                temp.ticket = ticket;
 
-            loadWechatTicket(app.locals.access_token, function(ticket) {
-                app.locals.ticket = ticket;
-
-                setTimeout(reloadWechatTicket, 3600);
+                setTimeout(reloadTicket, expires);
             });
         });
     }
     else {
-        loadWechatTicket(app.locals.access_token, function(ticket) {
-            app.locals.ticket = ticket;
+        loadWechatTicket(temp.access_token, function(ticket) {
+            temp.ticket = ticket;
 
-            setTimeout(reloadWechatTicket, 3600);
+            setTimeout(reloadTicket, expires);
         });
     }
 }
 
-function loadWechatAccessToken(wechatConfig, successCallback, errorCallback) {
+function loadAccessToken(appid, secret, successCallback, errorCallback) {
     var url = 'https://api.weixin.qq.com/cgi-bin/token';
-    var params = 'grant_type=client_credential&appid=' + wechatConfig.appid + '&secret=' + wechatConfig.secret;
+    var params = 'grant_type=client_credential&appid=' + appid + '&secret=' + secret;
 
-    if(typeof errorCallback !== 'function') {
-        errorCallback = function(err) { console.log(err); };
-    }
+    typeof errorCallback !== 'function' && (errorCallback = log);
+
+    log('Load access token');
 
     https.get(url + '?' + params, function(res) {
         res.setEncoding('utf8');
@@ -133,28 +139,30 @@ function loadWechatAccessToken(wechatConfig, successCallback, errorCallback) {
                 data = JSON.parse(data);
 
                 if(data.access_token) {
+                    log('Get access token successful!');
+
                     successCallback(data.access_token);
                 }
                 else {
-                    errorCallback(data || 'GET_ACCESS_TOKEN_FAILED');
+                    errorCallback('Get access token failed, msg: ' + (data && data.errmsg));
                 }
             }
             catch(ex) {
-                errorCallback('PARSE_ACCESS_TOKEN_FAILED');
+                errorCallback('Parse access token http response to json failed, msg: ' + ex);
             }
         });
     }).on('error', function(err) {
-        console.log(err);
+        errorCallback('Load access token http error, msg: ' + err);
     });
 }
 
-function loadWechatTicket(access_token, successCallback, errorCallback) {
+function loadTicket(access_token, successCallback, errorCallback) {
     var url = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket';
     var params = 'type=jsapi&access_token=' + access_token;
 
-    if(typeof errorCallback !== 'function') {
-        errorCallback = function(err) { console.log(err); };
-    }
+    typeof errorCallback !== 'function' && (errorCallback = log);
+
+    log('Load ticket');
 
     https.get(url + '?' + params, function (res) {
         res.setEncoding('utf8');
@@ -164,17 +172,23 @@ function loadWechatTicket(access_token, successCallback, errorCallback) {
                 data = JSON.parse(data);
 
                 if(data.ticket) {
+                    log('Get tiket successful!');
+
                     successCallback(data.ticket);
                 }
                 else {
-                    errorCallback(data || 'GET_TICKET_FAILED');
+                    errorCallback('Get tiket failed, msg: ' + (data && data.errmsg));
                 }
             }
             catch(ex) {
-                errorCallback('PARSE_TICKET_FAILED');
+                errorCallback('Parse ticket http response to json failed, msg: ' + ex);
             }
         });
     }).on('error', function(err) {
-        console.log(err);
+        errorCallback('Load ticket http request error, msg: ' + err);
     });
+}
+
+function log(msg) {
+    console.log('Log(' + utils.formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss') + '): ' + msg);
 }

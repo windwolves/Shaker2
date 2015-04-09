@@ -5,7 +5,11 @@ var config = require('../config');
 
 if (!config.isRelease) {
     async.waterfall([
-        syncDB,
+        function syncDB(callback) {
+            db.sequelize.sync({ force: true, logging: console.log }).done(function(err) {
+                callback(err);
+            });
+        },
         function(callback) {
             async.parallel([
                 function(callback) {
@@ -52,26 +56,25 @@ if (!config.isRelease) {
             var layouts = [];
             var skins = [];
 
-            categorys.forEach(function(category) {
+            categorys.forEach(function(category, index) {
                 entitys.push({
                     ownerId: user.id,
                     categoryId: category.id,
+                    themeId: themes[index] ? themes[index].id : themes[0].id,
                     title: '反现实 Or 超现实',
-                    content_text: '["反现实赐我一把匕首，剖开我所有不想剖开的现实"]',
-                    content_pic: '["http://placekitten.com/288/288"]',
+                    content: '反现实赐我一把匕首，剖开我所有不想剖开的现实',
+                    picture: 'http://placekitten.com/288/288',
+                    likeCount: 100,
                     postLimit: 25
                 });
             });
 
             themes.forEach(function(theme, index) {
-                entitys[index] && (entitys[index].themeId = theme.id);
-
                 layouts.push({ name: '板式1', code: theme.code + '-layout_01', themeId: theme.id });
                 layouts.push({ name: '板式2', code: theme.code + '-layout_02', themeId: theme.id });
 
                 skins.push({ name: '皮肤1', code: theme.code + '-skin_01', themeId: theme.id });
                 skins.push({ name: '皮肤2', code: theme.code + '-skin_02', themeId: theme.id });
-                skins.push({ name: '皮肤3', code: theme.code + '-skin_03', themeId: theme.id });
             });
 
             async.parallel([
@@ -79,10 +82,18 @@ if (!config.isRelease) {
                     callback(null, user);
                 },
                 function(callback) {
-                    callback(null, tags);
-                },
-                function(callback) {
-                    async.map(entitys, createEntity, callback);
+                    async.waterfall([
+                        function(callback) {
+                            async.map(entitys, createEntity, callback);
+                        },
+                        function(entitys, callback) {
+                            async.map(entitys, function(entity, callback) {
+                                entity.setTags(tags).then(function() {
+                                    callback(null, entity);
+                                }, callback);
+                            }, callback);
+                        },
+                    ], callback);
                 },
                 function(callback) {
                     async.map(layouts, createLayout, callback);
@@ -94,44 +105,63 @@ if (!config.isRelease) {
         },
         function(datas, callback) {
             var user = datas[0];
-            var tags = datas[1];
-            var entitys = datas[2];
-            var layouts = datas[3];
-            var skins = datas[4];
+            var entitys = datas[1];
+            var layouts = datas[2];
+            var skins = datas[3];
 
             var posts = [];
 
-            entitys.forEach( function(entity) {
-                layouts.filter(function(layout) {
-                    return layout.themeId == entity.themeId;
-                }).forEach(function(layout) {
-                    skins.filter(function(layout) {
+            entitys.forEach(function(entity) {
+                posts.push({ entityId: entity.id, ownerId: user.id, likeCount: 20 });
+                posts.push({ entityId: entity.id, ownerId: user.id, likeCount: 10 });
+            });
+
+            async.parallel([
+                function(callback) {
+                    callback(null, entitys);
+                },
+                function(callback) {
+                    async.map(posts, createPost, callback);
+                },
+                function(callback) {
+                    callback(null, layouts);
+                },
+                function(callback) {
+                    callback(null, skins);
+                },
+            ], callback);
+        },
+        function(datas, callback) {
+            var entitys = datas[0];
+            var posts = datas[1];
+            var layouts = datas[2];
+            var skins = datas[3];
+
+            var cards = [];
+
+            entitys.forEach(function(entity) {
+                posts.filter(function(post) {
+                    return post.entityId == entity.id;
+                }).forEach(function(post) {
+                    layouts.filter(function(layout) {
                         return layout.themeId == entity.themeId;
-                    }).forEach(function(skin) {
-                        posts.push({
-                            entityId: entity.id,
-                            layoutId: layout.id,
-                            skinId: skin.id,
-                            ownerId: user.id,
-                            content_text: '["反现实赐我一把匕首，剖开我所有不想剖开的现实"]',
-                            content_pic: '["http://placekitten.com/375/603"]'
+                    }).forEach(function(layout) {
+                        skins.filter(function(layout) {
+                            return layout.themeId == entity.themeId;
+                        }).forEach(function(skin) {
+                            cards.push({
+                                postId: post.id,
+                                layoutId: layout.id,
+                                skinId: skin.id,
+                                contents: '["反现实赐我一把匕首，剖开我所有不想剖开的现实"]',
+                                pictures: '["http://placekitten.com/375/603"]'
+                            });
                         });
                     });
                 });
             });
 
-            async.parallel([
-                function(callback) {
-                    async.map(entitys, function(entity, callback) {
-                        entity.setTags(tags).then(function() {
-                            callback(null);
-                        }, callback);
-                    }, callback);
-                },
-                function(callback) {
-                    async.map(posts, createPost, callback);
-                },
-            ], callback);
+            async.map(cards, createCard, callback);
         }
     ], function(err) {
         console.log(err || '\nInitialize database successful!\n');
@@ -139,11 +169,6 @@ if (!config.isRelease) {
     });
 }
 
-function syncDB(callback) {
-    db.sequelize.sync({ force: true, logging: console.log }).done(function(err) {
-        callback(err);
-    });
-}
 
 function createUser(user, callback) {
     db.User.findOrCreate({ where: user, defaults: user }).spread(function(user) {
@@ -206,5 +231,13 @@ function createPost(post, callback) {
         console.log('\nCreate Post "' + post.id + '" successful!\n');
 
         callback(null, post);
+    }, callback);
+}
+
+function createCard(card, callback) {
+    db.Card.findOrCreate({ where: card, defaults: card }).spread(function(card) {
+        console.log('\nCreate Card "' + card.id + '" successful!\n');
+
+        callback(null, card);
     }, callback);
 }

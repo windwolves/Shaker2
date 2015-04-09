@@ -9,11 +9,7 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.TEXT,
             allowNull: true
         },
-        content_text: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        },
-        content_pic: {
+        content: {
             type: DataTypes.TEXT,
             allowNull: true
         },
@@ -30,10 +26,9 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function(models) {
                 Post.belongsTo(models.Entity, { foreignKey: 'entityId' });
-                Post.belongsTo(models.Layout, { foreignKey: 'layoutId' });
-                Post.belongsTo(models.Skin, { foreignKey: 'skinId' });
                 Post.belongsTo(models.User, { as: 'Owner', foreignKey: 'ownerId' });
 
+                Post.hasMany(models.Card, { foreignKey: 'postId' });
                 Post.hasMany(models.Post_Like, { foreignKey: 'postId' });
             }
         }
