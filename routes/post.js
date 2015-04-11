@@ -12,7 +12,7 @@ var post = new Rest({
     list: false,
     get: {
         beforeCallbacks: [],
-        include: [{ model: db.User, as: 'Owner' }, { model: db.Entity }, { model: db.Card }],
+        include: [{ model: db.User, as: 'Owner' }, db.Entity, db.Card],
         beforeSend: function(model) {
         }
     },

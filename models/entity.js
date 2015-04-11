@@ -32,6 +32,10 @@ module.exports = function(sequelize, DataTypes) {
         type: {
             type: DataTypes.STRING(50),
             allowNull: true
+        },
+        status: {
+            type: DataTypes.STRING(50),
+            allowNull: true
         }
     }, {
         freezeTableName: true,

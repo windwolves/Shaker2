@@ -22,6 +22,7 @@ var suggestion = new Rest({
         uniqueKeys: [],
         createKeys: ['content'],
         beforeCreate: function(model, req, res) {
+            model.senderId = req.session.user.id;
         },
         afterCreate: function(model, req, res) {
         }

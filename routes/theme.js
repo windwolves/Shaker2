@@ -7,10 +7,14 @@ var theme = new Rest({
     msgPrefix: 'THEME',
     list: {
         beforeCallbacks: [],
-        include: [{ model: db.Entity }, { model: db.Skin }],
+        include: [db.Entity, db.Skin],
         order: 'Entities.createdAt asc',
     },
-    get: false,
+    get: {
+        beforeCallbacks: [],
+        include: [db.Entity, db.Skin],
+        order: 'Entities.createdAt asc',
+    },
     post: false,
     put: false,
     delete: false

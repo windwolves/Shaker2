@@ -177,6 +177,7 @@ REST.prototype = {
         if(options.put !== false) {
             (function(put) {
                 var callbacks = toArray(put.beforeCallbacks, 'function');
+                var include = put.include;
 
                 var requireKeys = toArray(put.requireKeys);
                 var uniqueKeys = toArray(put.uniqueKeys);
@@ -198,7 +199,11 @@ REST.prototype = {
                             res.warning(uniqueWarningCode);
                         }
                         else {
-                            dbModel.find({ where: { id: _id } }).then(function(item) {
+                            var _findOptions = {};
+                            _findOptions.where = { id: _id };
+                            include && (_findOptions.include = include);
+
+                            dbModel.find(_findOptions).then(function(item) {
                                 if(item) {
                                     beforeUpdate(item, _model, req, res);
 

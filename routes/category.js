@@ -7,7 +7,7 @@ var category = new Rest({
     msgPrefix: 'CATEGORY',
     list: {
         beforeCallbacks: [],
-        include: [{ model: db.Entity }],
+        include: [db.Entity],
         order: 'Entities.createdAt asc',
     },
     get: false,

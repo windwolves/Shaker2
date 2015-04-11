@@ -12,7 +12,7 @@ var card = new Rest({
     list: false,
     get: {
         beforeCallbacks: [],
-        include: [{ model: db.Post }, { model: db.Layout }, { model: db.Skin }],
+        include: [db.Post, db.Layout, db.Skin],
         beforeSend: function(model) {
         }
     },
@@ -37,16 +37,16 @@ var card = new Rest({
         beforeCallbacks: [
             handler.needLogin,
             handler.checkOwner([db.Card, 'postId'], [db.Post, 'ownerId']),
-            handler.convertBodyField('layout', [db.Layout, 'code', 'id'], 'layoutId'),
-            handler.convertBodyField('postId', [db.Post, 'id', 'entityId'], 'entityId')
+            handler.convertBodyField('layout', [db.Layout, 'code', 'id'], 'layoutId')
         ],
+        include: [db.Post],
         requireKeys: [],
         uniqueKeys: [],
         updateKeys: ['contents'],
         beforeUpdate: function(oldModel, newModel, req, res) {
             if(req.files && Array.isArray(req.files.photos)) {
                 oldModel.pictures && removePictures(oldModel.pictures);
-                newModel.pictures = movePictures(req.body.entityId, req.body.pictures, req.files.photos);
+                newModel.pictures = movePictures(oldModel.Post.entityId, req.body.pictures, req.files.photos);
             }
         },
         afterUpdate: function(model, req, res) {
