@@ -158,13 +158,14 @@
         var openid = localStorage.getItem('openid');
 
         $.get(serviceUrls.user.replace(':openid', openid), function(result) {
+            localStorage.setItem('openid', result.username);
             window.user = result;
         });
     }
     else {
         location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?' + toQueryString({
             appid: 'wxd6810c7d3b63d5c6',
-            redirect_uri: encodeURIComponent(location.href),
+            redirect_uri: location.href,
             response_type: 'code',
             scope: 'snsapi_userinfo',
             state: 'wechat#wechat_redirect'
