@@ -77,6 +77,8 @@ require([
     var $swiperContainer = $panel.find('.swiper-container');
     var $swiperWrapper = $panel.find('.swiper-wrapper');
 
+    var user;
+
     function initEntity(entity) {
         if(!entity) return;
         document.title = entity.title;
@@ -87,6 +89,18 @@ require([
                     imgUrl: location.origin + entity.picuture,
                     title: entity.title,
                     description: entity.content
+                });
+
+                $('.js-entity-joined').on('click', function() {
+                    if(user) {
+                        alert(user.nickname + '亲，加入功能即将上线，敬请期待！');
+                    }
+                    else {
+                        wechat.auth(function(authedUser) {
+                            user = authedUser;
+                            alert(user.nickname + '亲，加入功能即将上线，敬请期待！');
+                        });
+                    }
                 });
             });
         }

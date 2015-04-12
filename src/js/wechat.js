@@ -95,12 +95,66 @@
             });
         };
 
+        var auth = function(callback) {
+            var url = parseURL();
+
+            typeof callback !== 'function' && (callback = function() {});
+
+            if(url.params.code) {
+                $.get(serviceUrls.auth.replace(':code', url.params.code), function(result) {
+                    if(result.status == 'success') {
+                        var user = result.data;
+
+                        localStorage.setItem('refresh_token', user.refresh_token);
+                        callback(user);
+                    }
+                });
+            }
+            else {
+                var refresh_token = localStorage.getItem('refresh_token');
+
+                if(refresh_token) {
+                    $.get(serviceUrls.authRefresh.replace(':refresh_token', refresh_token), function(result) {
+                        if(result.status == 'success') {
+                            callback(user);
+                        }
+                        else {
+                            localStorage.removeItem('refresh_token');
+                            redirectToAuthPage();
+                        }
+                        // else if(result.status == 'warning' && result.data == 'INVALID_REFRESH_TOKEN') {
+                        //     alert('用户信息已失效，需重新授权！');
+                        //     localStorage.removeItem('refresh_token');
+
+                        //     redirectToAuthPage();
+                        // }
+                    });
+                }
+                else {
+                    redirectToAuthPage();
+                }
+
+            }
+
+        };
+
         return {
-            init: init
+            init: init,
+            auth: auth
         };
     };
 
-    var parseURL = function(url) {
+    function redirectToAuthPage() {
+        location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?' + toQueryString({
+            appid: 'wxd6810c7d3b63d5c6',
+            redirect_uri: encodeURIComponent(location.href),
+            response_type: 'code',
+            scope: 'snsapi_userinfo',
+            state: 'STATE#wechat_redirect'
+        });
+    }
+
+    function parseURL(url) {
         var a = document.createElement('a');
         a.href = url || location.href;
 
@@ -131,9 +185,9 @@
             relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [undefined, ''])[1],
             segments: a.pathname.replace(/^\//, '').split('/')
         };
-    };
+    }
 
-    var toQueryString = function(params) {
+    function toQueryString(params) {
         if(typeof params !== 'object') {
             return params;
         }
@@ -145,59 +199,15 @@
         }
 
         return str.slice(1);
-    };
-
-    var url = parseURL();
-
-    if(url.params.code) {
-        $.get(serviceUrls.auth.replace(':code', url.params.code), function(result) {
-            if(result.status == 'success') {
-                var user = result.data;
-
-                localStorage.setItem('refresh_token', user.refresh_token);
-
-                window.user = user;
-            }
-        });
-    }
-    else {
-        var refresh_token = localStorage.getItem('refresh_token');
-
-        if(refresh_token) {
-            $.get(serviceUrls.authRefresh.replace(':refresh_token', refresh_token), function(result) {
-                if(result.status == 'success') {
-                    window.user = result.data;
-                }
-                else if(result.status == 'warning' && result.data == 'INVALID_REFRESH_TOKEN') {
-                    alert('用户信息已失效，需重新授权！');
-                    localStorage.removeItem('refresh_token');
-
-                    redirectToAuthPage();
-                }
-            });
-        }
-        else {
-            redirectToAuthPage();
-        }
-
     }
 
-    function redirectToAuthPage() {
-        location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?' + toQueryString({
-            appid: 'wxd6810c7d3b63d5c6',
-            redirect_uri: encodeURIComponent(location.href),
-            response_type: 'code',
-            scope: 'snsapi_userinfo',
-            state: 'STATE#wechat_redirect'
-        });
-    }
 
     if(typeof define === 'function') {
         define('wechat', ['http://res.wx.qq.com/open/js/jweixin-1.0.0.js'], Wechat);
     }
     else {
         $.getScript('http://res.wx.qq.com/open/js/jweixin-1.0.0', function() {
-            window.wechat = new Wechat(window.wx);
+            window.wechat = Wechat(window.wx);
         });
     }
 
