@@ -91,7 +91,7 @@ require([
                     description: entity.content
                 });
 
-                $('.js-entity-joined').on('click', function() {
+                $('.js-footer-bar-join').on('click', function() {
                     if(user) {
                         alert(user.nickname + '亲，加入功能即将上线，敬请期待！');
                     }
