@@ -21,7 +21,7 @@
             $.get(serviceUrls.signature.replace(':url', encodeURIComponent(url)), function(result) {
                 if(result.status == 'success') {
                     wx.config({
-                        debug: !!location.search.slice(1).match(/debug=true/),
+                        debug: parseURL().params.debug,
                         appId: result.data.appId,
                         nonceStr: result.data.nonceStr,
                         timestamp: result.data.timestamp,
@@ -46,6 +46,7 @@
 
         var initShare = function(options) {
             options || (options = {});
+            var link = options.link || location.href.split('#')[0];
 
             wx.onMenuShareTimeline({
                 title: options.title,
