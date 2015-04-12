@@ -32,9 +32,9 @@ router.get('/auth/:code', function(req, res) {
 router.get('/user/:openid', function(req, res) {
     var openid = req.params.openid;
 
-    db.User.find({ where: { username: openid }}).then(function(user) {
+    db.User.find({ where: { openid: openid }}).then(function(user) {
         if(user) {
-            loadUserAccessTokenByRefreshToken(user.refresh_token, function(result) {
+            loadUserAccessTokenByRefreshToken(user.refreshToken, function(result) {
                 loadUserInfo(result.access_token, result.openid, function(user) {
                     log('Create wechat user "' + user.nickname + '" successful!');
                     log('Update wechat user "' + user.nickname + '" successful!');
@@ -192,14 +192,15 @@ function loadUserInfo(access_token, openid, successCallback, errorCallback) {
             errorCallback(result);
         }
         else {
-            log(result);
+            log(JSON.stringify(result));
 
             var newUserInfo = {
                 username: result.openid,
                 password: utils.md5('il0veshaker2'),
                 nickname: result.nickname,
                 profile: result.headimgurl,
-                refresh_token: result.refresh_token
+                openid: result.openid,
+                refreshToken: result.refresh_token
             };
 
             db.User.find({ where: { username: newUserInfo.username } }).then(function(user) {
