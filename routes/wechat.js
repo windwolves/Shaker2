@@ -6,6 +6,8 @@ var express = require('express');
 var config = require('../config').wechat;
 var utils = require('../common/utils');
 
+var db = require('../models');
+
 var temp = {};
 var expires = 7000 * 1000;
 
