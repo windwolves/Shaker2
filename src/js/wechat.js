@@ -165,7 +165,7 @@
     else {
         location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?' + toQueryString({
             appid: 'wxd6810c7d3b63d5c6',
-            redirect_uri: encodeURI(location.href),
+            redirect_uri: encodeURIComponent(location.href),
             response_type: 'code',
             scope: 'snsapi_userinfo',
             state: 'wechat#wechat_redirect'
