@@ -14,7 +14,7 @@ var router = express.Router();
 router.get('/auth/:code', function(req, res) {
     var code = req.params.code;
 
-    loadUserAccessTokenByCode(params.code, function(result) {
+    loadUserAccessTokenByCode(code, function(result) {
         loadUserInfo(result.access_token, result.openid, function(user) {
             res.success(user);
         }, errorCallback);

@@ -1,6 +1,6 @@
 
 
-exports.port = 8088;
+exports.port = 8083;
 
 exports.cookieSecret = 'shaker';
 
@@ -10,7 +10,7 @@ exports.isRelease = false;
 exports.wechat = {
     appid: 'wxd6810c7d3b63d5c6',
     secret: 'dc653b3324aa1fdff691483ec7619530',
-    host: 'shaker.mobi'
+    host: 'xike.mobi'
 };
 
 var dbInfo = {
