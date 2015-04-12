@@ -186,20 +186,30 @@ function loadUserInfo(access_token, openid, successCallback, errorCallback) {
             errorCallback(result);
         }
         else {
-            db.User.find({ where: { username: result.openid } }).then(function(user) {
-                var newUserInfo = {
-                    username: result.openid,
-                    password: utils.md5('il0veshaker2'),
-                    nickname: result.nickname,
-                    profile: result.headimgurl,
-                    refresh_token: result.refresh_token
-                };
+            var newUserInfo = {
+                username: result.openid,
+                password: utils.md5('il0veshaker2'),
+                nickname: result.nickname,
+                profile: result.headimgurl,
+                refresh_token: result.refresh_token
+            };
 
+            db.User.find({ where: { username: newUserInfo.username } }).then(function(user) {
                 if(user) {
-                    user.updateAttributes(newUserInfo).then(successCallback, errorCallback);
+                    user.updateAttributes(newUserInfo).then(function(user) {
+                        log('Update wechat user "' + user.nickname + '" successful!');
+
+                        req.session.user = user;
+                        successCallback(user);
+                    }, errorCallback);
                 }
                 else {
-                    db.User.create(newUserInfo).then(successCallback, errorCallback);
+                    db.User.create(newUserInfo).then(function(user) {
+                        log('Create wechat user "' + user.nickname + '" successful!');
+
+                        req.session.user = user;
+                        successCallback(user);
+                    }, errorCallback);
                 }
             }, errorCallback);
         }

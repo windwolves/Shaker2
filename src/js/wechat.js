@@ -151,7 +151,8 @@
 
     if(url.params.code) {
         $.get(serviceUrls.auth.replace(':code', url.params.code), function(result) {
-            window.user = result;
+            window.user = result.data;
+            alert(JSON.stringify(result));
         });
     }
     else if(localStorage.getItem('openid')) {
@@ -159,7 +160,7 @@
 
         $.get(serviceUrls.user.replace(':openid', openid), function(result) {
             localStorage.setItem('openid', result.username);
-            window.user = result;
+            window.user = result.data;
         });
     }
     else {
@@ -168,7 +169,7 @@
             redirect_uri: encodeURIComponent(location.href),
             response_type: 'code',
             scope: 'snsapi_userinfo',
-            state: 'wechat#wechat_redirect'
+            state: 'STATE#wechat_redirect'
         });
     }
 
