@@ -117,7 +117,7 @@
                 if(refresh_token) {
                     $.get(serviceUrls.authRefresh.replace(':refresh_token', refresh_token), function(result) {
                         if(result.status == 'success') {
-                            callback(user);
+                            callback(result.data);
                         }
                         else {
                             localStorage.removeItem('refresh_token');
