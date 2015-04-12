@@ -39,7 +39,7 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING(50)
         },
         refresh_token: {
-            type: DataTypes.STRING(50)
+            type: DataTypes.STRING(255)
         },
         lastLoginTime: {
             type: DataTypes.DATE
