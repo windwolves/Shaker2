@@ -18,6 +18,7 @@ router.get('/auth/:code', function(req, res) {
 
     loadUserAccessTokenByCode(code, function(result) {
         loadUserInfo(result.access_token, result.openid, function(user) {
+            req.session.user = user;
             res.success(user);
         }, errorCallback);
     }, errorCallback);
@@ -35,6 +36,9 @@ router.get('/user/:openid', function(req, res) {
         if(user) {
             loadUserAccessTokenByRefreshToken(user.refresh_token, function(result) {
                 loadUserInfo(result.access_token, result.openid, function(user) {
+                    log('Create wechat user "' + user.nickname + '" successful!');
+                    log('Update wechat user "' + user.nickname + '" successful!');
+                    req.session.user = user;
                     res.success(user);
                 }, errorCallback);
             }, errorCallback);
@@ -188,6 +192,8 @@ function loadUserInfo(access_token, openid, successCallback, errorCallback) {
             errorCallback(result);
         }
         else {
+            log(result);
+
             var newUserInfo = {
                 username: result.openid,
                 password: utils.md5('il0veshaker2'),
@@ -198,20 +204,10 @@ function loadUserInfo(access_token, openid, successCallback, errorCallback) {
 
             db.User.find({ where: { username: newUserInfo.username } }).then(function(user) {
                 if(user) {
-                    user.updateAttributes(newUserInfo).then(function(user) {
-                        log('Update wechat user "' + user.nickname + '" successful!');
-
-                        req.session.user = user;
-                        successCallback(user);
-                    }, errorCallback);
+                    user.updateAttributes(newUserInfo).then(successCallback, errorCallback);
                 }
                 else {
-                    db.User.create(newUserInfo).then(function(user) {
-                        log('Create wechat user "' + user.nickname + '" successful!');
-
-                        req.session.user = user;
-                        successCallback(user);
-                    }, errorCallback);
+                    db.User.create(newUserInfo).then(successCallback, errorCallback);
                 }
             }, errorCallback);
         }

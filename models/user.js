@@ -27,19 +27,19 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.INTEGER(11)
         },
         weibo: {
-            type: DataTypes.INTEGER(50)
+            type: DataTypes.STRING(50)
         },
         wechat: {
-            type: DataTypes.INTEGER(50)
+            type: DataTypes.STRING(50)
         },
         qq: {
-            type: DataTypes.INTEGER(50)
+            type: DataTypes.STRING(50)
         },
         openid: {
-            type: DataTypes.INTEGER(255)
+            type: DataTypes.STRING(50)
         },
         refresh_token: {
-            type: DataTypes.INTEGER(255)
+            type: DataTypes.STRING(50)
         },
         lastLoginTime: {
             type: DataTypes.DATE
