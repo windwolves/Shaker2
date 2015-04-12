@@ -59,8 +59,10 @@ router.get('/auth/refresh/:refresh_token', function(req, res) {
         if(result.openid) {
             db.User.find({ where: { openid: result.openid }}).then(function(user) {
                 if(user) {
-                    req.session.user = user;
-                    res.success(user);
+                    user.updateAttributes({ lastLoginTime: new Date() }).then(function(user) {
+                        req.session.user = user;
+                        res.success(user);
+                    }, res.warning);
                 }
                 else {
                     res.warning('INVALID_REFRESH_TOKEN');
