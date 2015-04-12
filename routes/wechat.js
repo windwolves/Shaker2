@@ -17,40 +17,55 @@ router.get('/auth/:code', function(req, res) {
     var code = req.params.code;
 
     loadUserAccessTokenByCode(code, function(result) {
-        loadUserInfo(result.access_token, result.openid, function(user) {
-            req.session.user = user;
-            res.success(user);
-        }, errorCallback);
-    }, errorCallback);
+        var refresh_token = result.refresh_token;
+        var openid = result.openid;
 
-    function errorCallback(err) {
-        res.warning(err);
-    }
+        loadUserInfo(result.access_token, refresh_token, openid, function(result) {
+            var userInfo = {
+                username: openid,
+                password: utils.md5('il0veshaker2'),
+                nickname: result.nickname,
+                profile: result.headimgurl,
+                wechat: result.nickname,
+                openid: openid,
+                refresh_token: refresh_token
+            };
+
+            db.User.find({ where: { username: userInfo.username } }).then(function(user) {
+                if(user) {
+                    user.updateAttributes(userInfo).then(function(user) {
+                        req.session.user = user;
+                        res.success(user);
+                    }, res.warning);
+                }
+                else {
+                    db.User.create(userInfo).then(function(user) {
+                        req.session.user = user;
+                        res.success(user);
+                    }, res.warning);
+                }
+            }, res.warning);
+
+        });
+    });
 
 });
 
-router.get('/user/:openid', function(req, res) {
+router.get('/user/:openid/:refresh_token', function(req, res) {
     var openid = req.params.openid;
+    var refresh_token = req.params.refresh_token;
 
-    db.User.find({ where: { openid: openid }}).then(function(user) {
-        if(user) {
-            loadUserAccessTokenByRefreshToken(user.refreshToken, function(result) {
-                loadUserInfo(result.access_token, result.openid, function(user) {
-                    log('Create wechat user "' + user.nickname + '" successful!');
-                    log('Update wechat user "' + user.nickname + '" successful!');
-                    req.session.user = user;
-                    res.success(user);
-                }, errorCallback);
-            }, errorCallback);
+    loadUserAccessTokenByRefreshToken(refresh_token, function(result) {
+        if(result.access_token) {
+            db.User.find({ where: { openid: openid }}).then(function(user) {
+                req.session.user = user;
+                res.success(user);
+            }, res.warning);
         }
         else {
-            errorCallback('UNKNOW_OPENID');
+            res.warning('INVALID_REFRESH_TOKEN');
         }
-    }, errorCallback);
-
-    function errorCallback(err) {
-        res.warning(err);
-    }
+    });
 
 });
 
@@ -68,11 +83,11 @@ router.get('/signature/:url', function(req, res) {
 
             setTimeout(reloadAccessToken, expires);
 
-            loadTicket(temp.access_token, successCallback, errorCallback);
-        }, errorCallback);
+            loadTicket(temp.access_token, successCallback);
+        });
     }
     else if(!temp.ticket) {
-        loadTicket(temp.access_token, successCallback, errorCallback);
+        loadTicket(temp.access_token, successCallback);
     }
     else {
         successCallback();
@@ -104,9 +119,6 @@ router.get('/signature/:url', function(req, res) {
         });
     }
 
-    function errorCallback(err) {
-        res.warning(err);
-    }
 });
 
 router.get('/cleartoken', function(req, res) {
@@ -127,9 +139,8 @@ router.get('/cleartoken', function(req, res) {
 module.exports = router;
 
 
-function loadUserAccessTokenByCode(code, successCallback, errorCallback) {
-    typeof successCallback !== 'function' && (successCallback = log);
-    typeof errorCallback !== 'function' && (errorCallback = log);
+function loadUserAccessTokenByCode(code, callback) {
+    typeof callback !== 'function' && (callback = log);
 
     var url = 'https://api.weixin.qq.com/sns/oauth2/access_token';
     var params = {
@@ -139,21 +150,19 @@ function loadUserAccessTokenByCode(code, successCallback, errorCallback) {
         grant_type: 'authorization_code'
     };
 
-    log('Load user access token');
+    log('Load user access token params: ' + JSON.stringify(params));
 
     getJSON(url + '?' + toQueryString(params), function(result) {
-        if(result.errcode) {
-            errorCallback(result);
+        log('Load user access token result:' + JSON.stringify(result));
+
+        if(result.access_token) {
+            callback(result);
         }
-        else {
-            successCallback(result);
-        }
-    }, errorCallback);
+    });
 }
 
-function loadUserAccessTokenByRefreshToken(refresh_token, successCallback, errorCallback) {
-    typeof successCallback !== 'function' && (successCallback = log);
-    typeof errorCallback !== 'function' && (errorCallback = log);
+function loadUserAccessTokenByRefreshToken(refresh_token, callback) {
+    typeof callback !== 'function' && (callback = log);
 
     var url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token';
     var params = {
@@ -162,21 +171,17 @@ function loadUserAccessTokenByRefreshToken(refresh_token, successCallback, error
         refresh_token: refresh_token
     };
 
-    log('Refresh user access token');
+    log('Refresh user access token params: ' + JSON.stringify(params));
 
     getJSON(url + '?' + toQueryString(params), function(result) {
-        if(result.errcode) {
-            errorCallback(result);
-        }
-        else {
-            successCallback(result);
-        }
-    }, errorCallback);
+        log('Refresh user access token result:' + JSON.stringify(result));
+
+        callback(result);
+    });
 }
 
-function loadUserInfo(access_token, openid, successCallback, errorCallback) {
-    typeof successCallback !== 'function' && (successCallback = log);
-    typeof errorCallback !== 'function' && (errorCallback = log);
+function loadUserInfo(access_token, refresh_token, openid, callback) {
+    typeof callback !== 'function' && (callback = log);
 
     var url = 'https://api.weixin.qq.com/sns/userinfo';
     var params = {
@@ -185,34 +190,15 @@ function loadUserInfo(access_token, openid, successCallback, errorCallback) {
         grant_type: 'zh_CN'
     };
 
-    log('Load user information');
+    log('Load user information params: ' + JSON.stringify(params));
 
     getJSON(url + '?' + toQueryString(params), function(result) {
-        if(result.errcode) {
-            errorCallback(result);
-        }
-        else {
-            log(JSON.stringify(result));
+        log('Load user information result: ' + JSON.stringify(result));
 
-            var newUserInfo = {
-                username: result.openid,
-                password: utils.md5('il0veshaker2'),
-                nickname: result.nickname,
-                profile: result.headimgurl,
-                openid: result.openid,
-                refreshToken: result.refresh_token
-            };
-
-            db.User.find({ where: { username: newUserInfo.username } }).then(function(user) {
-                if(user) {
-                    user.updateAttributes(newUserInfo).then(successCallback, errorCallback);
-                }
-                else {
-                    db.User.create(newUserInfo).then(successCallback, errorCallback);
-                }
-            }, errorCallback);
+        if(result.openid) {
+            callback(result);
         }
-    }, errorCallback);
+    });
 }
 
 function reloadAccessToken() {
@@ -244,9 +230,8 @@ function reloadTicket() {
     }
 }
 
-function loadAccessToken(appid, secret, successCallback, errorCallback) {
-    typeof successCallback !== 'function' && (successCallback = log);
-    typeof errorCallback !== 'function' && (errorCallback = log);
+function loadAccessToken(appid, secret, callback) {
+    typeof callback !== 'function' && (callback = log);
 
     var url = 'https://api.weixin.qq.com/cgi-bin/token';
     var params = {
@@ -258,20 +243,16 @@ function loadAccessToken(appid, secret, successCallback, errorCallback) {
     log('Load access token');
 
     getJSON(url + '?' + toQueryString(params), function(result) {
-        if(result.access_token) {
-            log('Get access token successful!');
+        log('Load access token result: ' + JSON.stringify(result));
 
-            successCallback(result.access_token);
-        }
-        else {
-            errorCallback('Get tiket failed, msg: ' + (result && result.errmsg));
+        if(result.access_token) {
+            callback(result.access_token);
         }
     });
 }
 
-function loadTicket(access_token, successCallback, errorCallback) {
-    typeof successCallback !== 'function' && (successCallback = log);
-    typeof errorCallback !== 'function' && (errorCallback = log);
+function loadTicket(access_token, callback) {
+    typeof callback !== 'function' && (callback = log);
 
     var url = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket';
     var params = {
@@ -282,14 +263,34 @@ function loadTicket(access_token, successCallback, errorCallback) {
     log('Load ticket');
 
     getJSON(url + '?' + toQueryString(params), function(result) {
-        if(result.ticket) {
-            log('Get tiket successful!');
+        log('Load tiket result: ' + JSON.stringify(result));
 
-            successCallback(result.ticket);
+        if(result.ticket) {
+            callback(result.ticket);
         }
-        else {
-            errorCallback('Get tiket failed, msg: ' + (result && result.errmsg));
-        }
+    });
+}
+
+function getJSON(url, callback) {
+    typeof callback !== 'function' && (callback = log);
+
+    log('Http request url: ' + url);
+
+    https.get(url, function (res) {
+        res.setEncoding('utf8');
+
+        res.on('data', function(data) {
+            try {
+                data = JSON.parse(data);
+
+                callback(data);
+            }
+            catch(ex) {
+                log('Parse http response to json failed, msg: ' + ex);
+            }
+        });
+    }).on('error', function(err) {
+        log('Http request error, msg: ' + err);
     });
 }
 
@@ -305,28 +306,6 @@ function toQueryString(params) {
     }
 
     return str.slice(1);
-}
-
-function getJSON(url, successCallback, errorCallback) {
-    typeof successCallback !== 'function' && (successCallback = log);
-    typeof errorCallback !== 'function' && (errorCallback = log);
-
-    https.get(url, function (res) {
-        res.setEncoding('utf8');
-
-        res.on('data', function(data) {
-            try {
-                data = JSON.parse(data);
-
-                successCallback(data);
-            }
-            catch(ex) {
-                errorCallback('Parse http response to json failed, msg: ' + ex);
-            }
-        });
-    }).on('error', function(err) {
-        errorCallback('Http request error, msg: ' + err);
-    });
 }
 
 function log(msg) {

@@ -11,7 +11,7 @@
 
     var serviceUrls = {
         auth: '/services/wechat/auth/:code',
-        user: '/services/wechat/user/:openid',
+        user: '/services/wechat/auth/:openid/:refresh_token',
         signature: '/services/wechat/signature/:url',
         cleartoken: '/services/wechat/cleartoken'
     };
@@ -151,19 +151,41 @@
 
     if(url.params.code) {
         $.get(serviceUrls.auth.replace(':code', url.params.code), function(result) {
-            window.user = result.data;
-            alert(JSON.stringify(result));
-        });
-    }
-    else if(localStorage.getItem('openid')) {
-        var openid = localStorage.getItem('openid');
+            if(result.status == 'success') {
+                var user = result.data;
 
-        $.get(serviceUrls.user.replace(':openid', openid), function(result) {
-            localStorage.setItem('openid', result.username);
-            window.user = result.data;
+                localStorage.setItem('openid', user.openid);
+                localStorage.setItem('refresh_token', user.refresh_token);
+
+                window.user = user;
+            }
         });
     }
     else {
+        var openid = localStorage.getItem('openid');
+        var refresh_token = localStorage.getItem('refresh_token');
+
+        if(openid && refresh_token) {
+            $.get(serviceUrls.auth.replace(':openid', openid).replace(':refresh_token', refresh_token), function(result) {
+                if(result.status == 'success') {
+                    window.user = result.data;
+                }
+                else if(result.status == 'warning' && result.data == 'INVALID_REFRESH_TOKEN') {
+                    alert('用户信息已失效，需重新授权！');
+                    localStorage.removeItem('openid');
+                    localStorage.removeItem('refresh_token');
+
+                    redirectToAuthPage();
+                }
+            });
+        }
+        else {
+            redirectToAuthPage();
+        }
+
+    }
+
+    function redirectToAuthPage() {
         location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?' + toQueryString({
             appid: 'wxd6810c7d3b63d5c6',
             redirect_uri: encodeURIComponent(location.href),
