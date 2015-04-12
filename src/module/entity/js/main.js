@@ -86,7 +86,7 @@ require([
         if($('html').hasClass('wechat')) {
             require(['wechat'], function(wechat) {
                 wechat.init(location.href.split('#')[0], {
-                    imgUrl: location.origin + entity.picuture,
+                    imgUrl: (location.origin + entity.picture).replace(/.*http/g, 'http'),
                     title: entity.title,
                     description: entity.content
                 });
