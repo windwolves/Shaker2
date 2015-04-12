@@ -11,7 +11,7 @@
 
     var serviceUrls = {
         auth: '/services/wechat/auth/:code',
-        user: '/services/wechat/auth/:openid/:refresh_token',
+        authRefresh: '/services/wechat/auth/refresh/:refresh_token',
         signature: '/services/wechat/signature/:url',
         cleartoken: '/services/wechat/cleartoken'
     };
@@ -154,7 +154,6 @@
             if(result.status == 'success') {
                 var user = result.data;
 
-                localStorage.setItem('openid', user.openid);
                 localStorage.setItem('refresh_token', user.refresh_token);
 
                 window.user = user;
@@ -162,17 +161,15 @@
         });
     }
     else {
-        var openid = localStorage.getItem('openid');
         var refresh_token = localStorage.getItem('refresh_token');
 
-        if(openid && refresh_token) {
-            $.get(serviceUrls.auth.replace(':openid', openid).replace(':refresh_token', refresh_token), function(result) {
+        if(refresh_token) {
+            $.get(serviceUrls.authRefresh.replace(':refresh_token', refresh_token), function(result) {
                 if(result.status == 'success') {
                     window.user = result.data;
                 }
                 else if(result.status == 'warning' && result.data == 'INVALID_REFRESH_TOKEN') {
                     alert('用户信息已失效，需重新授权！');
-                    localStorage.removeItem('openid');
                     localStorage.removeItem('refresh_token');
 
                     redirectToAuthPage();

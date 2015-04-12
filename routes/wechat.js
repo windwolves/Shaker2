@@ -28,7 +28,8 @@ router.get('/auth/:code', function(req, res) {
                 profile: result.headimgurl,
                 wechat: result.nickname,
                 openid: openid,
-                refresh_token: refresh_token
+                refresh_token: refresh_token,
+                lastLoginTime: new Date()
             };
 
             db.User.find({ where: { username: userInfo.username } }).then(function(user) {
@@ -51,15 +52,19 @@ router.get('/auth/:code', function(req, res) {
 
 });
 
-router.get('/user/:openid/:refresh_token', function(req, res) {
-    var openid = req.params.openid;
+router.get('/auth/refresh/:refresh_token', function(req, res) {
     var refresh_token = req.params.refresh_token;
 
     loadUserAccessTokenByRefreshToken(refresh_token, function(result) {
-        if(result.access_token) {
-            db.User.find({ where: { openid: openid }}).then(function(user) {
-                req.session.user = user;
-                res.success(user);
+        if(result.openid) {
+            db.User.find({ where: { openid: result.openid }}).then(function(user) {
+                if(user) {
+                    req.session.user = user;
+                    res.success(user);
+                }
+                else {
+                    res.warning('INVALID_REFRESH_TOKEN');
+                }
             }, res.warning);
         }
         else {

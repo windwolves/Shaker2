@@ -18,6 +18,7 @@ var user = new Rest({
         uniqueKeys: ['username'],
         createKeys: ['username', 'password', 'deviceToken'],
         beforeCreate: function(model, req, res) {
+            model.lastLoginTime = new Date();
             model.password = utils.md5(model.password);
         },
         afterCreate: function(model, req, res) {
