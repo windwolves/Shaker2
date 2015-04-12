@@ -2,7 +2,7 @@
 
 exports.port = 8083;
 
-exports.cookieSecret = 'shaker';
+exports.cookieSecret = 'shaker2';
 
 exports.isProduction = false;
 exports.isRelease = false;
