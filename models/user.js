@@ -35,6 +35,12 @@ module.exports = function(sequelize, DataTypes) {
         qq: {
             type: DataTypes.INTEGER(50)
         },
+        openid: {
+            type: DataTypes.INTEGER(255)
+        },
+        refresh_token: {
+            type: DataTypes.INTEGER(255)
+        },
         lastLoginTime: {
             type: DataTypes.DATE
         },

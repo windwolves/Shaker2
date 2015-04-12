@@ -1,4 +1,6 @@
 var https = require('https');
+var url = require('url');
+
 var express = require('express');
 
 var config = require('../config').wechat;
@@ -9,14 +11,47 @@ var expires = 7000 * 1000;
 
 var router = express.Router();
 
-router.post('/signature', function(req, res) {
-    var params = req.body;
+router.get('/auth/:code', function(req, res) {
+    var code = req.params.code;
 
-    if(!params.url) {
-        res.warning('URL_MISSING');
-        return;
+    loadUserAccessTokenByCode(params.code, function(result) {
+        loadUserInfo(result.access_token, result.openid, function(user) {
+            res.success(user);
+        }, errorCallback);
+    }, errorCallback);
+
+    function errorCallback(err) {
+        res.warning(err);
     }
-    else if(!isSafeUrl(params.url)) {
+
+});
+
+router.get('/user/:openid', function(req, res) {
+    var openid = req.params.openid;
+
+    db.User.find({ where: { username: openid }}).then(function(user) {
+        if(user) {
+            loadUserAccessTokenByRefreshToken(user.refresh_token, function(result) {
+                loadUserInfo(result.access_token, result.openid, function(user) {
+                    res.success(user);
+                }, errorCallback);
+            }, errorCallback);
+        }
+        else {
+            errorCallback('UNKNOW_OPENID');
+        }
+    }, errorCallback);
+
+    function errorCallback(err) {
+        res.warning(err);
+    }
+
+});
+
+router.get('/signature/:url', function(req, res) {
+    var signatureUrl = req.params.url;
+
+    if(url.parse(signatureUrl).host != config.host) {
         res.warning('UNKNOW_HOST');
         return;
     }
@@ -27,17 +62,17 @@ router.post('/signature', function(req, res) {
 
             setTimeout(reloadAccessToken, expires);
 
-            loadTicket(temp.access_token, _successCallback, _errorCallback);
-        }, _errorCallback);
+            loadTicket(temp.access_token, successCallback, errorCallback);
+        }, errorCallback);
     }
     else if(!temp.ticket) {
-        loadTicket(temp.access_token, _successCallback, _errorCallback);
+        loadTicket(temp.access_token, successCallback, errorCallback);
     }
     else {
-        _successCallback();
+        successCallback();
     }
 
-    function _successCallback(ticket) {
+    function successCallback(ticket) {
         if(!ticket) {
             ticket = temp.ticket;
         }
@@ -52,7 +87,7 @@ router.post('/signature', function(req, res) {
             'jsapi_ticket=' + ticket,
             'noncestr=' + noncestr,
             'timestamp=' + timestamp,
-            'url=' + params.url
+            'url=' + signatureUrl
         ].join('&'));
 
         res.success({
@@ -63,7 +98,7 @@ router.post('/signature', function(req, res) {
         });
     }
 
-    function _errorCallback(err) {
+    function errorCallback(err) {
         res.warning(err);
     }
 });
@@ -85,13 +120,90 @@ router.get('/cleartoken', function(req, res) {
 
 module.exports = router;
 
-function isSafeUrl(url) {
-    if(!url || typeof url.search != 'function') {
-        return false;
-    }
 
-    var index = url.search(config.host);
-    return index > -1 && index < 10;
+function loadUserAccessTokenByCode(code, successCallback, errorCallback) {
+    typeof successCallback !== 'function' && (successCallback = log);
+    typeof errorCallback !== 'function' && (errorCallback = log);
+
+    var url = 'https://api.weixin.qq.com/sns/oauth2/access_token';
+    var params = {
+        appid: config.appid,
+        secret: config.secret,
+        code: code,
+        grant_type: 'authorization_code'
+    };
+
+    log('Load user access token');
+
+    getJSON(url + '?' + toQueryString(params), function(result) {
+        if(result.errcode) {
+            errorCallback(result);
+        }
+        else {
+            successCallback(result);
+        }
+    }, errorCallback);
+}
+
+function loadUserAccessTokenByRefreshToken(refresh_token, successCallback, errorCallback) {
+    typeof successCallback !== 'function' && (successCallback = log);
+    typeof errorCallback !== 'function' && (errorCallback = log);
+
+    var url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token';
+    var params = {
+        appid: config.appid,
+        grant_type: 'refresh_token',
+        refresh_token: refresh_token
+    };
+
+    log('Refresh user access token');
+
+    getJSON(url + '?' + toQueryString(params), function(result) {
+        if(result.errcode) {
+            errorCallback(result);
+        }
+        else {
+            successCallback(result);
+        }
+    }, errorCallback);
+}
+
+function loadUserInfo(access_token, openid, successCallback, errorCallback) {
+    typeof successCallback !== 'function' && (successCallback = log);
+    typeof errorCallback !== 'function' && (errorCallback = log);
+
+    var url = 'https://api.weixin.qq.com/sns/userinfo';
+    var params = {
+        access_token: access_token,
+        openid: openid,
+        grant_type: 'zh_CN'
+    };
+
+    log('Load user information');
+
+    getJSON(url + '?' + toQueryString(params), function(result) {
+        if(result.errcode) {
+            errorCallback(result);
+        }
+        else {
+            db.User.find({ where: { username: result.openid } }).then(function(user) {
+                var newUserInfo = {
+                    username: result.openid,
+                    password: utils.md5('il0veshaker2'),
+                    nickname: result.nickname,
+                    profile: result.headimgurl,
+                    refresh_token: result.refresh_token
+                };
+
+                if(user) {
+                    user.updateAttributes(newUserInfo).then(successCallback, errorCallback);
+                }
+                else {
+                    db.User.create(newUserInfo).then(successCallback, errorCallback);
+                }
+            }, errorCallback);
+        }
+    }, errorCallback);
 }
 
 function reloadAccessToken() {
@@ -124,68 +236,87 @@ function reloadTicket() {
 }
 
 function loadAccessToken(appid, secret, successCallback, errorCallback) {
-    var url = 'https://api.weixin.qq.com/cgi-bin/token';
-    var params = 'grant_type=client_credential&appid=' + appid + '&secret=' + secret;
-
+    typeof successCallback !== 'function' && (successCallback = log);
     typeof errorCallback !== 'function' && (errorCallback = log);
+
+    var url = 'https://api.weixin.qq.com/cgi-bin/token';
+    var params = {
+        grant_type: 'client_credential',
+        appId: appid,
+        secret: secret
+    };
 
     log('Load access token');
 
-    https.get(url + '?' + params, function(res) {
-        res.setEncoding('utf8');
+    getJSON(url + '?' + toQueryString(params), function(result) {
+        if(result.access_token) {
+            log('Get access token successful!');
 
-        res.on('data', function(data) {
-            try {
-                data = JSON.parse(data);
-
-                if(data.access_token) {
-                    log('Get access token successful!');
-
-                    successCallback(data.access_token);
-                }
-                else {
-                    errorCallback('Get access token failed, msg: ' + (data && data.errmsg));
-                }
-            }
-            catch(ex) {
-                errorCallback('Parse access token http response to json failed, msg: ' + ex);
-            }
-        });
-    }).on('error', function(err) {
-        errorCallback('Load access token http error, msg: ' + err);
+            successCallback(result.access_token);
+        }
+        else {
+            errorCallback('Get tiket failed, msg: ' + (result && result.errmsg));
+        }
     });
 }
 
 function loadTicket(access_token, successCallback, errorCallback) {
-    var url = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket';
-    var params = 'type=jsapi&access_token=' + access_token;
-
+    typeof successCallback !== 'function' && (successCallback = log);
     typeof errorCallback !== 'function' && (errorCallback = log);
+
+    var url = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket';
+    var params = {
+        type: 'jsapi',
+        access_token: access_token
+    };
 
     log('Load ticket');
 
-    https.get(url + '?' + params, function (res) {
+    getJSON(url + '?' + toQueryString(params), function(result) {
+        if(result.ticket) {
+            log('Get tiket successful!');
+
+            successCallback(result.ticket);
+        }
+        else {
+            errorCallback('Get tiket failed, msg: ' + (result && result.errmsg));
+        }
+    });
+}
+
+function toQueryString(params) {
+    if(typeof params !== 'object') {
+        return params;
+    }
+
+    var str = '';
+
+    for(var key in params) {
+        str += '&' + key + '=' + params[key];
+    }
+
+    return str.slice(1);
+}
+
+function getJSON(url, successCallback, errorCallback) {
+    typeof successCallback !== 'function' && (successCallback = log);
+    typeof errorCallback !== 'function' && (errorCallback = log);
+
+    https.get(url, function (res) {
         res.setEncoding('utf8');
 
         res.on('data', function(data) {
             try {
                 data = JSON.parse(data);
 
-                if(data.ticket) {
-                    log('Get tiket successful!');
-
-                    successCallback(data.ticket);
-                }
-                else {
-                    errorCallback('Get tiket failed, msg: ' + (data && data.errmsg));
-                }
+                successCallback(data);
             }
             catch(ex) {
-                errorCallback('Parse ticket http response to json failed, msg: ' + ex);
+                errorCallback('Parse http response to json failed, msg: ' + ex);
             }
         });
     }).on('error', function(err) {
-        errorCallback('Load ticket http request error, msg: ' + err);
+        errorCallback('Http request error, msg: ' + err);
     });
 }
 

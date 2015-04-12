@@ -20,6 +20,21 @@ img {
     display: none;
 }
 
+.mask {
+    background-color: rgba(0, 0, 0, .9);
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 98;
+}
+
+.blur {
+    @include filter(blur(3px));
+    @include transition(.5s);
+}
+
 .swiper-container {
     @include backface-visibility(hidden);
     height: 100%;
@@ -173,28 +188,6 @@ img {
     overflow: hidden;
     position: relative;
     width: 100%;
-
-    & > img {
-        height: 100%;
-        width: 100%;
-    }
-}
-
-
-.photo-frame {
-    position: absolute;
-
-    img {
-        position: relative;
-    }
-
-    .photo {
-        height: 100%;
-        left: 0;
-        position: absolute;
-        top: 0;
-        width: 100%;
-    }
 }
 
 .guide-page {
@@ -224,7 +217,6 @@ img {
         @include wh(290px, 78px);
     }
 }
-
 
 .ads {
     background: transparent url('../img/ads-bg.png') 0 0 no-repeat;
@@ -400,21 +392,6 @@ img {
     }
 }
 
-.mask {
-    background-color: rgba(0, 0, 0, .9);
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 98;
-}
-
-.blur {
-    @include filter(blur(3px));
-    @include transition(.5s);
-}
-
 .topic {
     position: relative;
 
@@ -493,7 +470,7 @@ img {
         padding: size(20px);
     }
 
-    .post-content_pic {
+    .post-picture {
         border-radius: size(10px);
         float: left;
         height: size(176px);
@@ -507,7 +484,7 @@ img {
         position: relative;
     }
 
-    .post-content_text {
+    .post-content {
         font-size: size(28px);
         @extend %text-ellipsis;
         width: 100%;

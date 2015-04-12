@@ -25,7 +25,7 @@
     }
 
     .cover {
-        .content_pic {
+        .picture {
             border-radius: 50%;
             margin: size(156px) auto size(130px);
             @include wh(288px * 2, 288px * 2);
@@ -42,7 +42,7 @@
             width: size(550px);
         }
 
-        .content_text {
+        .content {
             color: #2a2a2a;
             font-size: size(32px);
             line-height: size(40px);
@@ -54,13 +54,13 @@
 
 
     .layout_01 {
-        .content_pic {
+        .picture {
             border-radius: 50%;
             margin: size(156px) auto size(130px);
             @include wh(288px * 2, 288px * 2);
         }
 
-        .content_text {
+        .content {
             color: #2a2a2a;
             font-size: size(32px);
             line-height: size(40px);
@@ -72,7 +72,7 @@
 
 
     .layout_02 {
-        .content_pic,
+        .picture,
         .mask {
             height: 100%;
             left: 0;
@@ -86,7 +86,7 @@
             background-color: rgba(255, 255, 255, .5);
         }
 
-        .content_text {
+        .content {
             font-size: size(32px);
             left: 50%;
             line-height: size(40px);
