@@ -10,7 +10,7 @@ exports.isRelease = false;
 exports.wechat = {
     appid: 'wxd6810c7d3b63d5c6',
     secret: 'dc653b3324aa1fdff691483ec7619530',
-    host: 'xike.mobi'
+    host: 'v2.shaker.mobi'
 };
 
 var dbInfo = {
