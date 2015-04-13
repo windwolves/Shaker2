@@ -22,6 +22,18 @@ var entity = new Rest({
         ],
         order: 'Posts.createdAt asc',
         beforeSend: function(model) {
+            model.Posts.forEach(function(post) {
+                post.Cards.forEach(function(card) {
+                    try {
+                        card.contents = JSON.parse(card.contents);
+                        card.pictures = JSON.parse(card.pictures);
+                    }
+                    catch(ex) {
+                        card.contents = [];
+                        card.pictures = [];
+                    }
+                });
+            });
         }
     },
     post: {

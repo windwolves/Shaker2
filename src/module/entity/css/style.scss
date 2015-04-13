@@ -7,7 +7,7 @@
     50% { @include transform(translate3d(0, 0, 0)); }
 }
 
-html, body, .panel {
+html, body, .panel, .page {
     height: 100%;
 }
 
@@ -20,19 +20,17 @@ img {
     display: none;
 }
 
-.mask {
-    background-color: rgba(0, 0, 0, .9);
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 98;
-}
-
 .blur {
     @include filter(blur(3px));
     @include transition(.5s);
+}
+
+.wrapper {
+    height: 100%;
+    line-height: 0;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
 }
 
 .swiper-container {
@@ -64,25 +62,6 @@ img {
             float: left;
             @include transform-style(preserve-3d);
             width: 100%;
-
-            & > .back-hidden {
-                @include backface-visibility(hidden);
-                overflow: hidden;
-                @include transform-style(preserve-3d);
-            }
-
-            & > .slide-inner {
-                @include backface-visibility(hidden);
-                height: 100%;
-                overflow: hidden;
-                position: relative;
-                @include transform-style(preserve-3d);
-                width: 100%;
-
-                .flip-item {
-                    @include transform-style(preserve-3d);
-                }
-            }
         }
     }
 
@@ -167,57 +146,6 @@ img {
     }
 }
 
-// .swiper-slide:not(.last) {
-//     &:after {
-//         @include animation(next-guide 3s ease-in-out infinite);
-//         background: transparent url('../img/next-guide.png') 50% 50% / 100% 100% no-repeat;
-//         bottom: 10px;
-//         content: '';
-//         height: 10px;
-//         left: 50%;
-//         margin-left: -8px;
-//         position: absolute;
-//         width: 16px;
-//         z-index: 999;
-//     }
-// }
-
-.wrapper {
-    height: 100%;
-    line-height: 0;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-}
-
-.guide-page {
-    display: none;
-    height: 100%;
-    width: 100%;
-
-    &-inner {
-        position: relative;
-        top: size-v(200px);
-        width: 100%;
-    }
-
-    .category-thumbnail {
-        margin: 0 auto;
-        @include wh(250px, 250px);
-    }
-
-    .shaker-declare {
-        margin: size-h(26px) auto 0;
-        @include wh(191px, 243px);
-    }
-
-    .shaker-link {
-        display: block;
-        margin: size-h(26px) auto 0;
-        @include wh(290px, 78px);
-    }
-}
-
 .ads {
     background: transparent url('../img/ads-bg.png') 0 0 no-repeat;
     background-size: 100% 100%;
@@ -255,10 +183,13 @@ img {
     }
 }
 
-.footer-bar {
-    background-color: #fff;
-    border-top: 1px solid rgba(0, 0, 0, .05);
-    box-shadow: 0 0 2px rgba(0, 0, 0, .05);
+
+$scale: 0.8;
+
+%footer-bar {
+    background-color: rgba(255, 255, 255, .95);
+    border-top: 1px solid rgba(0, 0, 0, .08);
+    box-shadow: 0 0 3.5px rgba(0, 0, 0, .08);
     bottom: 0;
     left: 0;
     height: size(88px);
@@ -267,166 +198,227 @@ img {
     @include transition(.5s);
     width: 100%;
     z-index: 100;
+}
 
-    &.out {
-        opacity: 0;
-        @include transform(translateY(100%));
+%entity-summary {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+    bottom: 0;
+    left: 0;
+    padding: size(28px / $scale);
+    position: absolute;
+    width: 100%;
+    z-index: 100;
+}
+
+%entity-owner {
+    float: left;
+    line-height: 0;
+
+    .owner-profile {
+        border-radius: size(4px / $scale);
+        height: size(70px / $scale);
+        float: left;
+        width: size(70px / $scale);
+
+        & + div {
+            margin-left: size(90px / $scale);
+            overflow: hidden;
+            padding-top: size(5px);
+        }
     }
 
-    .logo {
-        background: transparent url('../img/logo.png') 0 0 no-repeat;
-        background-size: 100% 100%;
-        cursor: pointer;
-        left: 50% - size-h(110px / 2);
-        position: absolute;
-        top: 50% - size(49px / 2, 88px);
-        @include wh(110px, 49px);
+    .owner-index {
+        color: #a7a7a7;
+        font-size: size(20px / $scale);
+        line-height: size(25px / $scale);
     }
 
-    &-menu {
-        background: transparent url('../img/footer-menu.png') 0 0 no-repeat;
-        background-size: 100% 100%;
-        cursor: pointer;
-        left: size-h(42px);
-        position: absolute;
-        top: 50% - size(63px / 2, 88px);
-        @include wh(34px, 63px);
-    }
-
-    &-close {
-        background: transparent url('../img/footer-close.png') 0 0 no-repeat;
-        background-size: 100% 100%;
-        cursor: pointer;
-        display: none;
-        left: size-h(42px);
-        position: absolute;
-        top: 50% - size(29px / 2, 88px);
-        @include wh(29px, 29px);
-    }
-
-    &-join {
-        background: transparent url('../img/footer-join.png') 0 0 no-repeat;
-        background-size: 100% 100%;
-        cursor: pointer;
-        left: size-h(640px);
-        position: absolute;
-        top: 50% - size(63px / 2, 88px);
-        @include wh(69px, 63px);
+    .owner-nickname {
+        color: #00d8a5;
+        font-size: size(24px / $scale);
+        line-height: size(40px / $scale);
     }
 }
 
-.footer-menu {
-    background-color: #f5f5f5;
-    bottom: 0;
-    height: size(212px);
-    left: 0;
-    opacity: 0;
-    position: absolute;
-    @include transform(translateY(100%));
-    @include transition(.5s);
-    width: 100%;
-    z-index: 99;
+%entity-like_count {
+    cursor: pointer;
+    float: right;
+    margin-right: size(30px);
 
-    &.in {
-        bottom: size(88px);
-        opacity: 1;
-        @include transform(translateY(0));
+    img {
+        height: size(36px);
+        margin-right: size(6px);
+        vertical-align: middle;
+        width: size(38px);
     }
 
+    span {
+        color: #a7a7a7;
+        display: inline-block;
+        font-size: size(24px);
+        vertical-align: middle;
+    }
+}
+
+%entity-summary-children {
+    color: #a7a7a7;
+    float: right;
+    line-height: size(50px);
+    margin-top: size(20px);
+
+    img {
+        margin-right: size(6px);
+        vertical-align: middle;
+    }
+
+    span {
+        display: inline-block;
+        font-size: size(24px);
+        line-height: size(50px);
+        vertical-align: middle;
+    }
+}
+
+.entity-summary {
+    @extend %entity-summary;
+
     .entity-owner {
-        bottom: size(68px);
-        cursor: pointer;
-        height: size(84px);
-        left: size(42px);
-        line-height: 0;
-        position: absolute;
+        @extend %entity-owner;
+    }
 
-        img {
-            border-radius: size(8px);
-            height: size(84px);
-            margin-right: size(6px);
-            vertical-align: middle;
-            width: size(84px);
-        }
+    .entity-like_count {
+        @extend %entity-like_count;
 
-        span {
-            color: #414141;
-            display: inline-block;
-            font-size: size(24px);
-            line-height: size(84px);
-            vertical-align: middle;
-        }
+        line-height: size(50px);
+        margin-top: size(20px);
     }
 
     .entity-joined {
-        bottom: size(98px);
-        cursor: pointer;
-        height: size(41px);
-        right: size(42px);
-        line-height: 0;
-        position: absolute;
+        @extend %entity-summary-children;
 
         img {
-            height: 100%;
-            margin-right: size(6px);
-            vertical-align: middle;
-            width: auto;
-        }
-
-        span {
-            color: #a7a7a7;
-            display: inline-block;
-            font-size: size(24px);
-            font-family: 'Helvetica Light';
-            line-height: size(84px);
-            margin-right: size(4px);
-            vertical-align: middle;
-        }
-
-        .more {
-            display: inline-block;
-            height: size(17px);
-            line-height: 0;
-            vertical-align: middle;
+            height: size(27px / $scale);
+            width: size(22px / $scale);
         }
     }
 }
 
-.topic {
+.entity-post-summary {
+    @extend %entity-summary;
+
+    .entity-post-owner {
+        @extend %entity-owner;
+    }
+
+    .entity-post-like_count {
+        @extend %entity-like_count;
+
+        line-height: size(50px);
+        margin-top: size(20px);
+    }
+
+    .entity-post-cards {
+        @extend %entity-summary-children;
+
+        cursor: pointer;
+
+        img {
+            height: size(26px / $scale);
+            width: size(26px / $scale);
+        }
+    }
+}
+
+
+.page-entity {
+    background: rgba(0, 0, 0, .05);
+
+    .swiper-slide {
+        // padding: size(94px) size(74px) size(182px);
+        padding-bottom: size(48px);
+
+        .slide-inner {
+            height: 100%;
+            @include transform(scale($scale));
+            @include transform-origin(50% 50% * $scale);
+            position: relative;
+            width: 100%;
+
+            .swiper-container.moving & {
+                &:before,
+                &:after {
+                    opacity: 0;
+                    @include transition(0);
+                }
+            }
+        }
+
+        &:not(:first-child) .slide-inner:before,
+        &:not(:last-child) .slide-inner:after {
+            background-color: #fff;
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.3));
+            content: '';
+            height: 100%;
+            opacity: 1;
+            position: absolute;
+            top: 0;
+            width: size(52px / $scale);
+            @include transition(opacity .5s);
+        }
+
+        &:not(:first-child) .slide-inner:before {
+            left: (1 - 1 / $scale) * 50%;
+        }
+
+        &:not(:last-child) .slide-inner:after {
+            right: (1 - 1 / $scale) * 50%;
+        }
+    }
+
+    .footer-bar {
+        @extend %footer-bar;
+
+        &.out {
+            opacity: 0;
+            @include transform(translateY(100%));
+        }
+
+        .logo {
+            background: transparent url('../img/logo.png') 0 0 no-repeat;
+            background-size: 100% 100%;
+            cursor: pointer;
+            left: 50% - size-h(110px / 2);
+            position: absolute;
+            top: 50% - size(49px / 2, 88px);
+            @include wh(110px, 49px);
+        }
+
+        &-catalog {
+            background: transparent url('../img/footer-catalog.png') 0 0 no-repeat;
+            background-size: 100% 100%;
+            cursor: pointer;
+            left: size-h(42px);
+            position: absolute;
+            top: 50% - size(67px / 2, 88px);
+            @include wh(43px, 67px);
+        }
+
+        &-join {
+            background: transparent url('../img/footer-join.png') 0 0 no-repeat;
+            background-size: 100% 100%;
+            cursor: pointer;
+            left: size-h(640px);
+            position: absolute;
+            top: 50% - size(63px / 2, 88px);
+            @include wh(69px, 63px);
+        }
+    }
+}
+
+
+.page-catalog {
     position: relative;
 
-    .header {
-        position: absolute;
-        top: size-v(32px);
-        padding: size(24px);
-        width: 100%;
-        z-index: 1;
-
-        .like_count {
-            cursor: pointer;
-            height: size(31px);
-            line-height: 0;
-            float: right;
-
-            img {
-                height: 100%;
-                margin-right: size(6px);
-                vertical-align: middle;
-                width: auto;
-            }
-
-            span {
-                color: #a7a7a7;
-                display: inline-block;
-                font-size: size(24px);
-                line-height: size(31px);
-                vertical-align: middle;
-            }
-        }
-    }
-}
-
-.catalog {
     .header {
         background-color: #fff;
         height: size(90px);
@@ -536,3 +528,45 @@ img {
         }
     }
 }
+
+
+.page-post {
+    position: relative;
+
+    .post-footer-bar {
+        @extend %footer-bar;
+
+        &.out {
+            opacity: 0;
+            @include transform(translateY(100%));
+        }
+
+        &-back {
+            background: transparent url('../img/footer-back.png') 0 0 no-repeat;
+            background-size: 100% 100%;
+            cursor: pointer;
+            left: size-h(30px);
+            position: absolute;
+            top: 50% - size(34px / 2, 88px);
+            @include wh(19px, 34px);
+        }
+
+        .post-like_count {
+            @extend %entity-like_count;
+
+            line-height: size(88px);
+
+            span {
+                color: #2a2a2a;
+            }
+        }
+
+        .post-card-index {
+            color: #2a2a2a;
+            font-size: size(24px);
+            line-height: size(88px);
+            text-align: center;
+        }
+    }
+}
+

@@ -46,19 +46,27 @@ require([
             'Theme': { 'code': 'theme_01' },
             'Owner': { 'nickname': '昵称', 'profile': 'http://placekitten.com/288/288' },
             'Posts': [{
-                'Skin': { 'code': 'theme_01-skin_01' },
-                'Layout': { 'code': 'theme_01-layout_01' },
                 'Owner': { 'nickname': '昵称', 'profile': 'http://placekitten.com/288/288' },
                 'likeCount': 2,
-                'pictures': ['http://placekitten.com/288/288'],
-                'contents': ['在空寂荒凉的高处，太阳灿烂的金丝，迎着白云奔跑，红色明媚的阳光，飞越百川峡谷和瀑布，诞生在它熟悉的空山绝谷。'],
+                'Cards': [
+                    {
+                        'Skin': { 'code': 'theme_01-skin_01' },
+                        'Layout': { 'code': 'theme_01-layout_01' },
+                        'pictures': ['http://placekitten.com/288/288'],
+                        'contents': ['在空寂荒凉的高处，太阳灿烂的金丝，迎着白云奔跑，红色明媚的阳光，飞越百川峡谷和瀑布，诞生在它熟悉的空山绝谷。']
+                    }
+                ]
             }, {
-                'Skin': { 'code': 'theme_01-skin_01' },
-                'Layout': { 'code': 'theme_01-layout_02' },
                 'Owner': { 'nickname': '昵称', 'profile': 'http://placekitten.com/288/288' },
                 'likeCount': 5,
-                'pictures': ['http://placekitten.com/375/603'],
-                'contents': ['在空寂荒凉的高处，太阳灿烂的金丝，迎着白云奔跑，红色明媚的阳光，飞越百川峡谷和瀑布，诞生在它熟悉的空山绝谷。光芒搅动甘泉，万物微笑，神灵雕琢大自然灵魂的画面：雄鹰翱翔的彩影，畅快的逃离无语的呼吸。腾飞的百鸟，抚摸春光，唱响大好河山，呼唤田野上空飘动的一切生命。窗外飞鹰粗厉的呜叫，凄切的啼呜，撕碎沉睡的世界，把消逝的美丽收回。春燕拾起疯狂的音符塞进荒原，召唤魂魄消磨春天的时光。大雁掠过冰霜，穿过阳光，消逝在风窝里。旋风带着沙粒卷起温暖，亲吻蜻蜓身上的色彩，飞鸟叼走几丝云雾，将太阳不朽的喃喃自语，留在沙滩上，送给阳光下的寂寞。风屏被鸟嘴啄通，填实记忆长河。巨鸟叼着玫瑰飞来，让清香做了一次腾空表演。阳光下杨柳，轻柔飘逸发丝，随风神指挥，填满零点的平静。河流水溅拍岸声，纹丝没有改变风向。'],
+                'Cards': [
+                    {
+                        'Skin': { 'code': 'theme_01-skin_01' },
+                        'Layout': { 'code': 'theme_01-layout_02' },
+                        'pictures': ['http://placekitten.com/28375/603'],
+                        'contents': ['在空寂荒凉的高处，太阳灿烂的金丝，迎着白云奔跑，红色明媚的阳光，飞越百川峡谷和瀑布，诞生在它熟悉的空山绝谷。光芒搅动甘泉，万物微笑，神灵雕琢大自然灵魂的画面：雄鹰翱翔的彩影，畅快的逃离无语的呼吸。腾飞的百鸟，抚摸春光，唱响大好河山，呼唤田野上空飘动的一切生命。窗外飞鹰粗厉的呜叫，凄切的啼呜，撕碎沉睡的世界，把消逝的美丽收回。春燕拾起疯狂的音符塞进荒原，召唤魂魄消磨春天的时光。大雁掠过冰霜，穿过阳光，消逝在风窝里。旋风带着沙粒卷起温暖，亲吻蜻蜓身上的色彩，飞鸟叼走几丝云雾，将太阳不朽的喃喃自语，留在沙滩上，送给阳光下的寂寞。风屏被鸟嘴啄通，填实记忆长河。巨鸟叼着玫瑰飞来，让清香做了一次腾空表演。阳光下杨柳，轻柔飘逸发丝，随风神指挥，填满零点的平静。河流水溅拍岸声，纹丝没有改变风向。']
+                    }
+                ]
             }]
         });
     }
@@ -74,8 +82,9 @@ require([
     }
 
     var $panel = $('.panel');
-    var $swiperContainer = $panel.find('.swiper-container');
-    var $swiperWrapper = $panel.find('.swiper-wrapper');
+    var $entityPage = $('.page-entity');
+    var $catalogPage = $('.page-catalog');
+    var $postPageTemplate = $('.page-post').removeClass('hide').remove();
 
     var user;
 
@@ -131,20 +140,33 @@ require([
             initSwiper(entity, theme);
             initAds();
             initFooterBar(entity);
+            initCatalog(entity);
         });
     }
 
     function initSwiper(entity, themeConfig) {
+        var $swiperContainer = $entityPage.find('.swiper-container');
+        var $swiperWrapper = $swiperContainer.find('.swiper-wrapper');
+
         var theme = entity.Theme.code;
 
         $panel.addClass(theme);
 
         // 首页
-        var $topic = $panel.find('.topic').addClass(theme + '-cover').appendTo($swiperWrapper);
+        var $topic = $entityPage.find('.topic').addClass(theme + '-cover');
+
+        // 发起人信息
+        $topic.find('.owner-profile').attr('src', entity.Owner.profile);
+        $topic.find('.owner-nickname').text(entity.Owner.nickname);
+
+        // 参与人数
+        $topic.find('.entity-joined span').text(entity.Posts.length);
 
         // 点赞数
+        var $likeCount = $topic.find('.entity-like_count.js-like_count');
         var likeImgs = ['/module/entity/img/icon-like.png', '/module/entity/img/icon-like-active.png'];
-        var $likeCount = $topic.find('.js-like_count');
+
+        // 点赞/取消点赞
         var $likeCountImg = $likeCount.find('img');
         var $likeCountSpan = $likeCount.find('span').text(entity.likeCount);
 
@@ -154,8 +176,6 @@ require([
             $likeCountImg.attr('src', likeImgs[1]);
         }
         $likeCount.on('click', function() {
-            event.stopPropagation();
-
             // @todo 点赞或取消点赞
             if($likeCount.hasClass('active')) {
                 entity.likeCount--;
@@ -170,7 +190,7 @@ require([
         });
 
         // 首页内容
-        $topic.append($(themeConfig.html));
+        $topic.append(themeConfig.html);
         $topic.find('.wrapper:hidden').remove();
 
         $topic.find('.title').text(entity.title);
@@ -178,77 +198,188 @@ require([
         $topic.find('.picture').addClass('lazy').attr('data-src', entity.picture);
 
 
-        // 目录
-        var $catalog = $panel.find('.catalog').appendTo($swiperWrapper);
-
-        $catalog.find('.js-post-count').html(entity.Posts.length);
-
-        var $list = $catalog.find('.post-list');
-        var $itemTemplate = $catalog.find('.post-item').removeClass('hide').remove();
+        // 参与页模板
+        var $postSlideTemplate = $entityPage.find('.post-slide').removeClass('hide').remove();
 
         // 参与页
         entity.Posts.forEach(function(post, index) {
-            var skin = post.Skin && post.Skin.code;
-            var layout = post.Layout.code;
+            var $slide = $postSlideTemplate.clone().appendTo($swiperWrapper).find('.slide-inner');
 
-            // 在目录中添加一行回复信息
-            var $item = $itemTemplate.clone();
+            // 发起人信息
+            $slide.find('.owner-index').text(index + 1 + '号');
+            $slide.find('.owner-profile').attr('src', post.Owner.profile);
+            $slide.find('.owner-nickname').text(post.Owner.nickname);
 
-            if(post.contents && post.contents[0]) {
-                $item.find('.post-content').text(post.contents[0]);
+            // 页数
+            $slide.find('.entity-post-cards span').text(post.Cards.length);
+
+
+            // 点赞数
+            var $postLikeCount = $slide.find('.entity-post-like_count.js-post-like_count');
+
+            // 点赞/取消点赞
+            var $postLikeCountImg = $postLikeCount.find('img');
+            var $postLikeCountSpan = $postLikeCount.find('span').text(post.likeCount);
+
+            // @todo 判断是否已经点赞
+            if(post.likeCount > 0) {
+                $postLikeCount.addClass('active');
+                $postLikeCountImg.attr('src', likeImgs[1]);
             }
-            if(post.pictures && post.pictures[0]) {
-                $item.find('.post-picture').attr('src', post.pictures[0]);
-            }
-            $item.find('.post-like_count span').text(post.likeCount);
-            setOwner($item.find('.post-owner'), post.Owner);
-
-            $item.on('click', function(event) {
-                if(!$swiperContainer.hasClass('moving')) {
-                    swiper.swipeTo(index + 2);
+            $postLikeCount.on('click', function() {
+                // @todo 点赞或取消点赞
+                if($postLikeCount.hasClass('active')) {
+                    post.likeCount--;
+                    $postLikeCountImg.attr('src', likeImgs[0]);
                 }
+                else {
+                    post.likeCount++;
+                    $postLikeCountImg.attr('src', likeImgs[1]);
+                }
+                $postLikeCount.toggleClass('active');
+                $postLikeCountSpan.text(post.likeCount);
             });
 
-            $list.append($item);
 
-            // 参与信息
-            var $slide = $('<div class="swiper-slide"/>').addClass(layout).addClass(skin).appendTo($swiperWrapper);
+            var card = post.Cards[0];
 
-            $slide.html(themeConfig.html);
+            var skin = card.Skin && card.Skin.code;
+            var layout = card.Layout.code;
+
+            $slide.addClass(layout).addClass(skin);
+
+            // 回复内容
+            $slide.append(themeConfig.html);
             $slide.find('.wrapper:hidden').remove();
 
             $slide.find('.content').each(function(i) {
-                if(post.contents && post.contents[i]) {
-                    $(this).text(post.contents[i]);
+                if(card.contents && card.contents[i]) {
+                    $(this).text(card.contents[i]);
                 }
             });
 
             $slide.find('.picture').each(function(i) {
-                if(post.pictures && post.pictures[i]) {
-                    $(this).addClass('lazy').attr('data-src', post.pictures[i]);
+                if(card.pictures && card.pictures[i]) {
+                    $(this).addClass('lazy').attr('data-src', card.pictures[i]);
                 }
             });
 
+            var $postPage;
+
+            $slide.find('.entity-post-cards').on('click', function(evt) {
+                evt.stopPropagation();
+
+                if(!$postPage) {
+                    $postPage = $postPageTemplate.clone().appendTo($panel);
+
+                    var $container = $postPage.find('.swiper-container');
+                    var $wrapper = $postPage.find('.swiper-wrapper');
+
+                    $postPage.find('.js-post-footer-bar-back').on('click', function() {
+                        $postPage.fadeOut();
+                        $entityPage.fadeIn();
+                    });
+
+
+                    // 点赞数
+                    var $_postLikeCount = $postPage.find('.post-like_count.js-post-like_count');
+
+                    // 点赞/取消点赞
+                    var $_postLikeCountImg = $_postLikeCount.find('img');
+                    var $_postLikeCountSpan = $_postLikeCount.find('span').text(post.likeCount);
+
+                    // @todo 判断是否已经点赞
+                    if(post.likeCount > 0) {
+                        $_postLikeCount.addClass('active');
+                        $_postLikeCountImg.attr('src', likeImgs[1]);
+                    }
+                    $_postLikeCount.on('click', function() {
+                        // @todo 点赞或取消点赞
+                        if($_postLikeCount.hasClass('active')) {
+                            post.likeCount--;
+                            $_postLikeCountImg.attr('src', likeImgs[0]);
+                        }
+                        else {
+                            post.likeCount++;
+                            $_postLikeCountImg.attr('src', likeImgs[1]);
+                        }
+                        $_postLikeCount.toggleClass('active');
+                        $_postLikeCountSpan.text(post.likeCount);
+                    });
+
+                    post.Cards.forEach(function(card) {
+                        var _skin = card.Skin && card.Skin.code;
+                        var _layout = card.Layout.code;
+
+                        var $_slide = $('<div class="swiper-slide"/>').addClass(_layout).addClass(_skin).appendTo($wrapper);
+
+                        // 回复内容
+                        $_slide.append(themeConfig.html);
+                        $_slide.find('.wrapper:hidden').remove();
+
+                        $_slide.find('.content').each(function(i) {
+                            if(card.contents && card.contents[i]) {
+                                $(this).text(card.contents[i]);
+                            }
+                        });
+
+                        $_slide.find('.picture').each(function(i) {
+                            if(card.pictures && card.pictures[i]) {
+                                $(this).addClass('lazy').attr('data-src', card.pictures[i]);
+                            }
+                        });
+                    });
+
+
+                    var $postCardIndex = $postPage.find('.post-card-index').text('1/' + post.Cards.length);
+
+                    var _swiper = $container.swiper({
+                        mode: 'horizontal',
+                        slideActiveClass: 'active',
+                        onTouchStart: function(swiper) {
+                            $container.addClass('moving');
+                        },
+                        onTouchEnd: function(swiper) {
+                            if(swiper.previousIndex == swiper.activeIndex) {
+                                $container.removeClass('moving');
+                            }
+                        },
+                        onSlideChangeStart: function(swiper) {
+                            loadImages(swiper.slides.slice(swiper.activeIndex - nextLength, swiper.activeIndex + nextLength));
+                        },
+                        onSlideChangeEnd: function(swiper) {
+                            $container.removeClass('moving');
+                            $postCardIndex.text(swiper.activeIndex + 1 + '/' + swiper.slides.length);
+                        }
+                    });
+
+                    loadImages(_swiper.slides.slice(0, nextLength + 1));
+                }
+
+                $postPage.fadeIn();
+                $entityPage.fadeOut();
+            });
+
             if($.isFunction(themeConfig.js)) {
-                themeConfig.js($slide, post);
+                themeConfig.js($slide, card);
             }
         });
 
-
-        $list.wrap('<div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"></div></div></div>');
-        $list.closest('.swiper-container').addClass('scroll-v').swiper({
-            mode: 'vertical',
-            scrollContainer: true,
-        });
 
         var nextLength = 1;
 
         var swiper = $swiperContainer.swiper({
             mode: 'horizontal',
             slideActiveClass: 'active',
-            onSlideChangeStart: function(swiper) {
+            onTouchStart: function(swiper) {
                 $swiperContainer.addClass('moving');
-
+            },
+            onTouchEnd: function(swiper) {
+                if(swiper.previousIndex == swiper.activeIndex) {
+                    $swiperContainer.removeClass('moving');
+                }
+            },
+            onSlideChangeStart: function(swiper) {
                 loadImages(swiper.slides.slice(swiper.activeIndex - nextLength, swiper.activeIndex + nextLength));
             },
             onSlideChangeEnd: function(swiper) {
@@ -257,6 +388,7 @@ require([
         });
 
         loadImages(swiper.slides.slice(0, nextLength + 1));
+
     }
 
     function initAds() {
@@ -268,7 +400,7 @@ require([
             $ads.addClass('out');
         });
 
-        var swiper = $swiperContainer.data('swiper');
+        var swiper = $entityPage.find('.swiper-container').data('swiper');
         if(swiper) {
             swiper.addCallback('SlideChangeStart', function(swiper) {
                 $ads.addClass('out');
@@ -279,76 +411,75 @@ require([
 
     function initFooterBar(entity) {
         // 底部功能栏
-        var $footerBar = $panel.find('.footer-bar');
-        var $footerMenu = $panel.find('.footer-menu');
+        var $footerBar = $entityPage.find('.footer-bar');
 
-        var $footerBarMenu = $footerBar.find('.js-footer-bar-menu');
-        var $footerBarClose = $footerBar.find('.js-footer-bar-close');
+        var swiper = $entityPage.find('.swiper-container').data('swiper');
 
-        var $mask = $('<div class="mask"/>');
-
-        setOwner($footerMenu.find('.entity-owner'), entity.Owner);
-        $footerMenu.find('.entity-joined span').text(entity.Posts.length + '/' + (entity.postLimit || '-'));
-
-        // 点击"查看"
-        $footerBarMenu.on('click', function(event) {
-            $footerBarClose.show();
-            $footerBarMenu.hide();
-
-            $swiperContainer.addClass('blur');
-            $footerMenu.addClass('in');
-
-            $mask.appendTo($panel).on('click', footerMenuOut);
-        });
-
-        // 点击"关闭"
-        $footerBarClose.on('click', footerMenuOut);
-
-        // 点击"创建者"
-        $footerMenu.find('.js-entity-owner').on('click', footerMenuOut);
-
-        // 点击"加入人数"
-        $footerMenu.find('.js-entity-joined').on('click', footerMenuOut);
-
-        // 关闭底部菜单
-        function footerMenuOut(event) {
-            $footerBarClose.hide();
-            $footerBarMenu.show();
-
-            $swiperContainer.removeClass('blur');
-            $footerMenu.removeClass('in');
-
-            $mask.remove().off('click', footerMenuOut);
-        }
-
-
-        // 点击任意空白处"隐藏/展示"底部功能栏
-        $swiperContainer.on('click', function() {
-            if(!$swiperContainer.hasClass('moving')) {
-                $footerBar.toggleClass('out');
-            }
-        });
-
-        var swiper = $swiperContainer.data('swiper');
         if(swiper) {
-            $footerMenu.find('.js-entity-owner').on('click', function(event) {
-                swiper.swipeTo(0);
-            });
-
-            $footerMenu.find('.js-entity-joined').on('click', function(event) {
-                swiper.swipeTo(1);
-            });
-
-            swiper.addCallback('SlideChangeStart', function(swiper) {
-                $footerBar.addClass('out');
-            });
-
-            swiper.addCallback('SlideChangeEnd', function(swiper) {
-                if(!swiper.activeIndex) {
-                    $footerBar.removeClass('out');
-                }
+            $footerBar.find('.js-footer-bar-catalog').on('click', function() {
+                $catalogPage.fadeIn();
+                $entityPage.fadeOut();
             });
         }
+
+    }
+
+    function initCatalog(entity) {
+        // 参与人数
+        $catalogPage.find('.js-post-count').html(entity.Posts.length);
+
+        var $list = $catalogPage.find('.post-list');
+        var $itemTemplate = $catalogPage.find('.post-item').removeClass('hide').remove();
+
+        var $swiperContainer = $entityPage.find('.swiper-container');
+        var swiper = $swiperContainer.data('swiper');
+
+        entity.Posts.forEach(function(post, index) {
+            // 在目录中添加一行回复信息
+            var $item = $itemTemplate.clone();
+
+            // 目录列表中点赞数
+            $item.find('.post-like_count span').text(post.likeCount);
+
+            // 目录列表中参与人
+            $item.find('.post-owner img').attr('src', post.Owner.profile);
+            $item.find('.post-owner span').text(post.Owner.nickname);
+
+            var card = post.Cards[0];
+
+            // 目录列表中内容
+            if(card.contents && card.contents[0]) {
+                $item.find('.post-content').text(card.contents[0]);
+            }
+
+            // 目录列表中图片
+            if(card.pictures && card.pictures[0]) {
+                $item.find('.post-picture').attr('src', card.pictures[0]);
+            }
+
+            if(swiper) {
+                // 点击目录列表进行跳转
+                $item.on('click', function(event) {
+                    if(!$swiperContainer.hasClass('moving')) {
+                        $catalogPage.fadeOut();
+                        $entityPage.fadeIn();
+                        swiper.swipeTo(index + 1);
+                    }
+                });
+            }
+
+            $list.append($item);
+        });
+
+        $list.wrap('<div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"></div></div></div>');
+        $list.closest('.swiper-container').addClass('scroll-v').swiper({
+            mode: 'vertical',
+            scrollContainer: true,
+        });
+
+        setTimeout(function() {
+            $catalogPage.addClass('hide');
+        }, 1000);
 
     }
 

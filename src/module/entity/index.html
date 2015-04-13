@@ -15,75 +15,118 @@
 <body>
     <div class="panel">
 
-        <div class="swiper-container">
-            <div class="swiper-wrapper">
-
-                <div class="swiper-slide topic">
-                    <div class="header">
-                        <div class="like_count js-like_count">
-                            <img src="/module/entity/img/icon-like.png" alt="">
-                            <span></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="swiper-slide catalog">
-                    <div class="header">
-                        <div class="header-inner">
-                            <span class="left">话题参与人列表</span>
-                            <span class="right">共<span class="js-post-count">--</span>人参与</span>
-                        </div>
-                    </div>
-                    <div class="content">
-                        <ul class="post-list">
-                            <li class="post-item hide clearfix">
-                                <img class="post-picture" src="" alt="">
-
-                                <div class="post-item-content">
-                                    <p class="post-content"></p>
-                                    <div class="post-like_count">
-                                        <img src="/module/entity/img/icon-like.png" alt="">
-                                        <span></span>
-                                    </div>
-                                    <div class="post-owner">
-                                        <img src="" alt="">
-                                        <span></span>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
         <div class="ads">
             <a class="ads-close js-ads-close"></a>
             <!-- <a class="ads-download" href="https://itunes.apple.com/cn/app/xi-ke/id924809913?mt=8&uo=4"></a> -->
             <a class="ads-download" href="http://mp.weixin.qq.com/mp/redirect?url=https%3A%2F%2Fitunes.apple.com%2Fcn%2Fapp%2Fxi-ke%2Fid924809913%3Fmt%3D8%26uo%3D4"></a>
         </div>
 
-        <div class="footer-bar">
-            <a class="footer-bar-menu js-footer-bar-menu"></a>
-            <a class="footer-bar-close js-footer-bar-close"></a>
-            <div class="logo"></div>
-            <a class="footer-bar-join js-footer-bar-join"></a>
-        </div>
+        <div class="page page-entity">
 
-        <div class="footer-menu">
-            <div class="entity-owner js-entity-owner">
-                <img src="" alt="">
-                <span></span>
-            </div>
-            <div class="entity-joined js-entity-joined">
-                <img src="/module/entity/img/icon-participants.png" alt="">
-                <span></span>
-                <div class="more">
-                    <img src="/module/entity/img/icon-participants-more.png" alt="">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+
+                    <div class="swiper-slide">
+                        <div class="slide-inner topic">
+                            <div class="entity-summary">
+                                <div class="entity-owner">
+                                    <img class="owner-profile" src="" alt="">
+                                    <div>
+                                        <p class="owner-index">作者</p>
+                                        <strong class="owner-nickname"></strong>
+                                    </div>
+                                </div>
+                                <div class="entity-joined">
+                                    <img src="/module/entity/img/icon-posts.png" alt="">
+                                    <span></span>人参与
+                                </div>
+                                <div class="entity-like_count js-like_count">
+                                    <img src="/module/entity/img/icon-like.png" alt="">
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide hide post-slide">
+                        <div class="slide-inner">
+                            <div class="entity-post-summary">
+                                <div class="entity-post-owner">
+                                    <img class="owner-profile" src="" alt="">
+                                    <div>
+                                        <p class="owner-index"></p>
+                                        <strong class="owner-nickname"></strong>
+                                    </div>
+                                </div>
+                                <div class="entity-post-cards">
+                                    <img src="/module/entity/img/icon-cards.png" alt="">
+                                    <span></span>
+                                </div>
+                                <div class="entity-post-like_count js-post-like_count">
+                                    <img src="/module/entity/img/icon-like.png" alt="">
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+
+            <div class="footer-bar">
+                <a class="footer-bar-catalog js-footer-bar-catalog"></a>
+                <div class="logo"></div>
+                <a class="footer-bar-join js-footer-bar-join"></a>
+            </div>
+
         </div>
+
+        <div class="page page-catalog">
+            <div class="header">
+                <div class="header-inner">
+                    <span class="left">话题参与人列表</span>
+                    <span class="right">共<span class="js-post-count">--</span>人参与</span>
+                </div>
+            </div>
+            <div class="content">
+                <ul class="post-list">
+                    <li class="post-item hide clearfix">
+                        <img class="post-picture" src="" alt="">
+
+                        <div class="post-item-content">
+                            <p class="post-content"></p>
+                            <div class="post-like_count">
+                                <img src="/module/entity/img/icon-like.png" alt="">
+                                <span></span>
+                            </div>
+                            <div class="post-owner">
+                                <img src="" alt="">
+                                <span></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="page page-post hide">
+
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                </div>
+            </div>
+
+            <div class="post-footer-bar">
+                <a class="post-footer-bar-back js-post-footer-bar-back"></a>
+                <div class="post-like_count js-post-like_count">
+                    <img src="/module/entity/img/icon-like.png" alt="">
+                    <span></span>
+                </div>
+                <div class="post-card-index"></div>
+            </div>
+
+        </div>
+
     </div>
 </body>
 
