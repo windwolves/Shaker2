@@ -346,10 +346,10 @@ require([
                         },
                         onSlideChangeStart: function(swiper) {
                             loadImages(swiper.slides.slice(swiper.activeIndex - nextLength, swiper.activeIndex + nextLength));
+                            $postCardIndex.text(swiper.activeIndex + 1 + '/' + swiper.slides.length);
                         },
                         onSlideChangeEnd: function(swiper) {
                             $container.removeClass('moving');
-                            $postCardIndex.text(swiper.activeIndex + 1 + '/' + swiper.slides.length);
                         }
                     });
 
@@ -483,7 +483,7 @@ require([
         $list.wrap('<div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"></div></div></div>');
         $list.closest('.swiper-container').addClass('scroll-v').swiper({
             mode: 'vertical',
-            scrollContainer: true,
+            scrollContainer: true
         });
 
     }
