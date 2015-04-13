@@ -267,7 +267,7 @@ require([
             var $postPage;
 
             $slide.find('.entity-post-cards').on('click', function(evt) {
-                evt.stopPropagation();
+                $catalogPage.addClass('hide');
 
                 if(!$postPage) {
                     $postPage = $postPageTemplate.clone().appendTo($panel);
@@ -381,10 +381,21 @@ require([
             },
             onSlideChangeStart: function(swiper) {
                 loadImages(swiper.slides.slice(swiper.activeIndex - nextLength, swiper.activeIndex + nextLength));
+
+                if(swiper.activeIndex) {
+                    $entityPage.find('.js-page-entity-back:hidden').fadeIn();
+                }
+                else {
+                    $entityPage.find('.js-page-entity-back').fadeOut();
+                }
             },
             onSlideChangeEnd: function(swiper) {
                 $swiperContainer.removeClass('moving');
             }
+        });
+
+        $entityPage.find('.js-page-entity-back').on('click', function() {
+            swiper.swipeTo(0);
         });
 
         loadImages(swiper.slides.slice(0, nextLength + 1));
@@ -417,7 +428,7 @@ require([
 
         if(swiper) {
             $footerBar.find('.js-footer-bar-catalog').on('click', function() {
-                $catalogPage.fadeIn();
+                $catalogPage.addClass('hide').fadeIn();
                 $entityPage.fadeOut();
             });
         }
@@ -460,11 +471,9 @@ require([
             if(swiper) {
                 // 点击目录列表进行跳转
                 $item.on('click', function(event) {
-                    if(!$swiperContainer.hasClass('moving')) {
-                        $catalogPage.fadeOut();
-                        $entityPage.fadeIn();
-                        swiper.swipeTo(index + 1);
-                    }
+                    $catalogPage.fadeOut();
+                    $entityPage.fadeIn();
+                    swiper.swipeTo(index + 1);
                 });
             }
 
@@ -476,10 +485,6 @@ require([
             mode: 'vertical',
             scrollContainer: true,
         });
-
-        setTimeout(function() {
-            $catalogPage.addClass('hide');
-        }, 1000);
 
     }
 

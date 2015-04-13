@@ -333,6 +333,17 @@ $scale: 0.8;
 .page-entity {
     background: rgba(0, 0, 0, .05);
 
+    .page-entity-back {
+        background: transparent url('../img/icon-back.png') 0 0 no-repeat;
+        background-size: 100% 100%;
+        cursor: pointer;
+        left: size-h(630px);
+        position: absolute;
+        top: size(24px);
+        @include wh(50px, 50px);
+        z-index: 99;
+    }
+
     .swiper-slide {
         // padding: size(94px) size(74px) size(182px);
         padding-bottom: size(48px);
