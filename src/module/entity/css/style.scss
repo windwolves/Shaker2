@@ -241,7 +241,6 @@ $scale: 0.8;
 }
 
 %entity-like_count {
-    cursor: pointer;
     float: right;
     margin-right: size(30px);
 
@@ -271,11 +270,15 @@ $scale: 0.8;
         vertical-align: middle;
     }
 
-    span {
+    span, em {
         display: inline-block;
         font-size: size(24px);
         line-height: size(50px);
         vertical-align: middle;
+    }
+
+    em {
+        margin-left: 1px;
     }
 }
 
@@ -320,8 +323,6 @@ $scale: 0.8;
     .entity-post-cards {
         @extend %entity-summary-children;
 
-        cursor: pointer;
-
         img {
             height: size(26px / $scale);
             width: size(26px / $scale);
@@ -346,6 +347,7 @@ $scale: 0.8;
 
     .swiper-slide {
         // padding: size(94px) size(74px) size(182px);
+        cursor: pointer;
         padding-bottom: size(48px);
 
         .slide-inner {
@@ -565,6 +567,7 @@ $scale: 0.8;
         .post-like_count {
             @extend %entity-like_count;
 
+            cursor: pointer;
             line-height: size(88px);
 
             span {

@@ -159,35 +159,12 @@ require([
         $topic.find('.owner-profile').attr('src', entity.Owner.profile);
         $topic.find('.owner-nickname').text(entity.Owner.nickname);
 
+        // 点赞数
+        $topic.find('.entity-like_count span').text(entity.likeCount);
+
         // 参与人数
         $topic.find('.entity-joined span').text(entity.Posts.length);
 
-        // 点赞数
-        var $likeCount = $topic.find('.entity-like_count.js-like_count');
-        var likeImgs = ['/module/entity/img/icon-like.png', '/module/entity/img/icon-like-active.png'];
-
-        // 点赞/取消点赞
-        var $likeCountImg = $likeCount.find('img');
-        var $likeCountSpan = $likeCount.find('span').text(entity.likeCount);
-
-        // @todo 判断是否已经点赞
-        if(entity.likeCount > 0) {
-            $likeCount.addClass('active');
-            $likeCountImg.attr('src', likeImgs[1]);
-        }
-        $likeCount.on('click', function() {
-            // @todo 点赞或取消点赞
-            if($likeCount.hasClass('active')) {
-                entity.likeCount--;
-                $likeCountImg.attr('src', likeImgs[0]);
-            }
-            else {
-                entity.likeCount++;
-                $likeCountImg.attr('src', likeImgs[1]);
-            }
-            $likeCount.toggleClass('active');
-            $likeCountSpan.text(entity.likeCount);
-        });
 
         // 首页内容
         $topic.append(themeConfig.html);
@@ -196,6 +173,18 @@ require([
         $topic.find('.title').text(entity.title);
         $topic.find('.content').text(entity.content);
         $topic.find('.picture').addClass('lazy').attr('data-src', entity.picture);
+
+        // 浏览回复的所有页面
+        $topic.on('tap dblclick', function(evt) {
+            $catalogPage.addClass('hide'); // 目录延时隐藏
+
+            if(!entity.$page) {
+                entity.$page = initPostPage(post, themeConfig);
+            }
+
+            entity.$page.fadeIn();
+            $entityPage.fadeOut();
+        });
 
 
         // 参与页模板
@@ -210,163 +199,29 @@ require([
             $slide.find('.owner-profile').attr('src', post.Owner.profile);
             $slide.find('.owner-nickname').text(post.Owner.nickname);
 
+            // 点赞数
+            $slide.find('.entity-post-like_count span').text(post.likeCount);
+
             // 页数
             $slide.find('.entity-post-cards span').text(post.Cards.length);
 
+            // 显示回复的第一个页面
+            setCard($slide, post.Cards[0], themeConfig);
 
-            // 点赞数
-            var $postLikeCount = $slide.find('.entity-post-like_count.js-post-like_count');
+            // 浏览回复的所有页面
+            $slide.on('tap dblclick', function(evt) {
+                $catalogPage.addClass('hide'); // 目录延时隐藏
 
-            // 点赞/取消点赞
-            var $postLikeCountImg = $postLikeCount.find('img');
-            var $postLikeCountSpan = $postLikeCount.find('span').text(post.likeCount);
-
-            // @todo 判断是否已经点赞
-            if(post.likeCount > 0) {
-                $postLikeCount.addClass('active');
-                $postLikeCountImg.attr('src', likeImgs[1]);
-            }
-            $postLikeCount.on('click', function() {
-                // @todo 点赞或取消点赞
-                if($postLikeCount.hasClass('active')) {
-                    post.likeCount--;
-                    $postLikeCountImg.attr('src', likeImgs[0]);
-                }
-                else {
-                    post.likeCount++;
-                    $postLikeCountImg.attr('src', likeImgs[1]);
-                }
-                $postLikeCount.toggleClass('active');
-                $postLikeCountSpan.text(post.likeCount);
-            });
-
-
-            var card = post.Cards[0];
-
-            var skin = card.Skin && card.Skin.code;
-            var layout = card.Layout.code;
-
-            $slide.addClass(layout).addClass(skin);
-
-            // 回复内容
-            $slide.append(themeConfig.html);
-            $slide.find('.wrapper:hidden').remove();
-
-            $slide.find('.content').each(function(i) {
-                if(card.contents && card.contents[i]) {
-                    $(this).text(card.contents[i]);
-                }
-            });
-
-            $slide.find('.picture').each(function(i) {
-                if(card.pictures && card.pictures[i]) {
-                    $(this).addClass('lazy').attr('data-src', card.pictures[i]);
-                }
-            });
-
-            var $postPage;
-
-            $slide.find('.entity-post-cards').on('click', function(evt) {
-                $catalogPage.addClass('hide');
-
-                if(!$postPage) {
-                    $postPage = $postPageTemplate.clone().appendTo($panel);
-
-                    var $container = $postPage.find('.swiper-container');
-                    var $wrapper = $postPage.find('.swiper-wrapper');
-
-                    $postPage.find('.js-post-footer-bar-back').on('click', function() {
-                        $postPage.fadeOut();
-                        $entityPage.fadeIn();
-                    });
-
-
-                    // 点赞数
-                    var $_postLikeCount = $postPage.find('.post-like_count.js-post-like_count');
-
-                    // 点赞/取消点赞
-                    var $_postLikeCountImg = $_postLikeCount.find('img');
-                    var $_postLikeCountSpan = $_postLikeCount.find('span').text(post.likeCount);
-
-                    // @todo 判断是否已经点赞
-                    if(post.likeCount > 0) {
-                        $_postLikeCount.addClass('active');
-                        $_postLikeCountImg.attr('src', likeImgs[1]);
-                    }
-                    $_postLikeCount.on('click', function() {
-                        // @todo 点赞或取消点赞
-                        if($_postLikeCount.hasClass('active')) {
-                            post.likeCount--;
-                            $_postLikeCountImg.attr('src', likeImgs[0]);
-                        }
-                        else {
-                            post.likeCount++;
-                            $_postLikeCountImg.attr('src', likeImgs[1]);
-                        }
-                        $_postLikeCount.toggleClass('active');
-                        $_postLikeCountSpan.text(post.likeCount);
-                    });
-
-                    post.Cards.forEach(function(card) {
-                        var _skin = card.Skin && card.Skin.code;
-                        var _layout = card.Layout.code;
-
-                        var $_slide = $('<div class="swiper-slide"/>').addClass(_layout).addClass(_skin).appendTo($wrapper);
-
-                        // 回复内容
-                        $_slide.append(themeConfig.html);
-                        $_slide.find('.wrapper:hidden').remove();
-
-                        $_slide.find('.content').each(function(i) {
-                            if(card.contents && card.contents[i]) {
-                                $(this).text(card.contents[i]);
-                            }
-                        });
-
-                        $_slide.find('.picture').each(function(i) {
-                            if(card.pictures && card.pictures[i]) {
-                                $(this).addClass('lazy').attr('data-src', card.pictures[i]);
-                            }
-                        });
-                    });
-
-
-                    var $postCardIndex = $postPage.find('.post-card-index').text('1/' + post.Cards.length);
-
-                    var _swiper = $container.swiper({
-                        mode: 'horizontal',
-                        slideActiveClass: 'active',
-                        onTouchStart: function(swiper) {
-                            $container.addClass('moving');
-                        },
-                        onTouchEnd: function(swiper) {
-                            if(swiper.previousIndex == swiper.activeIndex) {
-                                $container.removeClass('moving');
-                            }
-                        },
-                        onSlideChangeStart: function(swiper) {
-                            loadImages(swiper.slides.slice(swiper.activeIndex - nextLength, swiper.activeIndex + nextLength));
-                            $postCardIndex.text(swiper.activeIndex + 1 + '/' + swiper.slides.length);
-                        },
-                        onSlideChangeEnd: function(swiper) {
-                            $container.removeClass('moving');
-                        }
-                    });
-
-                    loadImages(_swiper.slides.slice(0, nextLength + 1));
+                if(!post.$page) {
+                    post.$page = initPostPage(post, themeConfig);
                 }
 
-                $postPage.fadeIn();
+                post.$page.fadeIn();
                 $entityPage.fadeOut();
             });
 
-            if($.isFunction(themeConfig.js)) {
-                themeConfig.js($slide, card);
-            }
         });
 
-
-        var nextLength = 1;
 
         var swiper = $swiperContainer.swiper({
             mode: 'horizontal',
@@ -380,9 +235,9 @@ require([
                 }
             },
             onSlideChangeStart: function(swiper) {
-                loadImages(swiper.slides.slice(swiper.activeIndex - nextLength, swiper.activeIndex + nextLength));
+                loadSwiperImages(swiper);
 
-                if(swiper.activeIndex) {
+                if(swiper.activeIndex >= 5) {
                     $entityPage.find('.js-page-entity-back:hidden').fadeIn();
                 }
                 else {
@@ -398,7 +253,110 @@ require([
             swiper.swipeTo(0);
         });
 
-        loadImages(swiper.slides.slice(0, nextLength + 1));
+        loadSwiperImages(swiper);
+
+    }
+
+    function initPostPage(post, themeConfig) {
+        var $page = $postPageTemplate.clone().appendTo($panel);
+
+        var $container = $page.find('.swiper-container');
+        var $wrapper = $page.find('.swiper-wrapper');
+
+        $page.find('.js-post-footer-bar-back').on('click', function() {
+            $page.fadeOut();
+            $entityPage.fadeIn();
+        });
+
+
+        // 点赞数
+        var $likeCount = $page.find('.post-like_count.js-post-like_count');
+        var likeImgs = ['/module/entity/img/icon-like.png', '/module/entity/img/icon-like-active.png'];
+
+        // 点赞/取消点赞
+        var $likeCountImg = $likeCount.find('img');
+        var $lkeCountSpan = $likeCount.find('span').text(post.likeCount);
+
+        // @todo 判断是否已经点赞
+        if(post.likeCount > 0) {
+            $likeCount.addClass('active');
+            $likeCountImg.attr('src', likeImgs[1]);
+        }
+        $likeCount.on('click', function() {
+            // @todo 点赞或取消点赞
+            if($likeCount.hasClass('active')) {
+                post.likeCount--;
+                $likeCountImg.attr('src', likeImgs[0]);
+            }
+            else {
+                post.likeCount++;
+                $likeCountImg.attr('src', likeImgs[1]);
+            }
+            $likeCount.toggleClass('active');
+            $lkeCountSpan.text(post.likeCount);
+        });
+
+        post.Cards.forEach(function(card) {
+            var $slide = $('<div class="swiper-slide"/>').appendTo($wrapper);
+            setCard($slide, card, themeConfig);
+        });
+
+        var $cardIndex = $page.find('.post-card-index').text('1/' + post.Cards.length);
+
+        var swiper = $container.swiper({
+            mode: 'horizontal',
+            slideActiveClass: 'active',
+            onTouchStart: function(swiper) {
+                $container.addClass('moving');
+            },
+            onTouchEnd: function(swiper) {
+                if(swiper.previousIndex == swiper.activeIndex) {
+                    $container.removeClass('moving');
+                }
+            },
+            onSlideChangeStart: function(swiper) {
+                loadSwiperImages(swiper);
+                $cardIndex.text(swiper.activeIndex + 1 + '/' + swiper.slides.length);
+            },
+            onSlideChangeEnd: function(swiper) {
+                $container.removeClass('moving');
+            }
+        });
+
+        loadSwiperImages(swiper);
+
+        return $page;
+
+    }
+
+    // 设置卡片信息
+    function setCard($element, card, themeConfig) {
+        var skin = card.Skin && card.Skin.code;
+        var layout = card.Layout.code;
+
+        $element.addClass(layout).addClass(skin);
+
+        // 绑定模板
+        $element.append(themeConfig.html);
+        $element.find('.wrapper:hidden').remove();
+
+        // 设置内容
+        $element.find('.content').each(function(i) {
+            if(card.contents && card.contents[i]) {
+                $(this).text(card.contents[i]);
+            }
+        });
+
+        // 设置图片
+        $element.find('.picture').each(function(i) {
+            if(card.pictures && card.pictures[i]) {
+                $(this).addClass('lazy').attr('data-src', card.pictures[i]);
+            }
+        });
+
+        if($.isFunction(themeConfig.js)) {
+            themeConfig.js($element, card);
+        }
 
     }
 
@@ -488,8 +446,13 @@ require([
 
     }
 
-    function loadImages(element) {
-        $(element).find('.lazy').removeClass('lazy').each(function() {
+    function loadSwiperImages(swiper) {
+        var preLoadLength = 1;
+        var index = swiper.activeIndex;
+        var start = index - preLoadLength > 0 ? index - preLoadLength : 0;
+        var end = index + preLoadLength < swiper.slides.length ? index + preLoadLength : swiper.slides.length;
+
+        $(swiper.slides.slice(start, end)).find('.lazy').removeClass('lazy').each(function() {
             var $this = $(this);
             var src = $(this).attr('data-src');
 
@@ -500,6 +463,7 @@ require([
                 $this.css('background', getBackground(src));
             }
         });
+
     }
 
     function getBackground(imageSrc) {
