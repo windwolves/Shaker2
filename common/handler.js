@@ -51,10 +51,17 @@ exports.needLogout = function(req, res, next) {
 exports.convertBodyField = function() {
     var args = [].slice.call(arguments, 0);
 
+    var toBodyKey = args[args.length - 1];
+
+    if(req.body[toBodyKey]) {
+        return function(req, res, next) {
+            next();
+        };
+    }
+
     var isRequired;
     var fromBodyKey;
     var list;
-    var toBodyKey = args[args.length - 1];
 
     if(typeof args[0] === 'boolean') {
         isRequired = args[0];

@@ -391,11 +391,6 @@ $scale: 0.8;
     .footer-bar {
         @extend %footer-bar;
 
-        &.out {
-            opacity: 0;
-            @include transform(translateY(100%));
-        }
-
         .logo {
             background: transparent url('../img/logo.png') 0 0 no-repeat;
             background-size: 100% 100%;
@@ -540,6 +535,30 @@ $scale: 0.8;
             vertical-align: middle;
         }
     }
+
+    .catalog-footer-bar {
+        @extend %footer-bar;
+
+        &-back {
+            background: transparent url('../img/footer-back.png') 0 0 no-repeat;
+            background-size: 100% 100%;
+            cursor: pointer;
+            left: size-h(30px);
+            position: absolute;
+            top: 50% - size(34px / 2, 88px);
+            @include wh(19px, 34px);
+        }
+
+        .logo {
+            background: transparent url('../img/logo.png') 0 0 no-repeat;
+            background-size: 100% 100%;
+            cursor: pointer;
+            left: 50% - size-h(110px / 2);
+            position: absolute;
+            top: 50% - size(49px / 2, 88px);
+            @include wh(110px, 49px);
+        }
+    }
 }
 
 
@@ -548,11 +567,6 @@ $scale: 0.8;
 
     .post-footer-bar {
         @extend %footer-bar;
-
-        &.out {
-            opacity: 0;
-            @include transform(translateY(100%));
-        }
 
         &-back {
             background: transparent url('../img/footer-back.png') 0 0 no-repeat;
@@ -584,3 +598,185 @@ $scale: 0.8;
     }
 }
 
+%join-bar {
+    @extend %footer-bar;
+
+    height: size-v(376px);
+    opacity: 0;
+    @include transform(translate3d(0, 100%, 0));
+    z-index: 200;
+
+    &.in {
+        opacity: 1;
+        @include transform(translate3d(0, 0, 0));
+    }
+
+    .join-bar-title {
+        color: #2a2a2a;
+        font-size: size(30px);
+        left: 0;
+        line-height: 1;
+        position: absolute;
+        text-align: center;
+        top: size(32px, 376px);
+        width: 100%;
+    }
+
+    .join-bar-close {
+        background: transparent url('../img/icon-close.png') 0 0 no-repeat;
+        background-size: 100% 100%;
+        cursor: pointer;
+        left: size-h(28px);
+        position: absolute;
+        top: size(30px, 376px);
+        @include wh(34px, 32px);
+        z-index: 200;
+    }
+
+    .join-bar-save {
+        background: transparent url('../img/icon-save.png') 0 0 no-repeat;
+        background-size: 100% 100%;
+        cursor: pointer;
+        left: size-h(676px);
+        position: absolute;
+        top: size(32px, 376px);
+        @include wh(42px, 28px);
+        z-index: 200;
+    }
+
+    .preview-list {
+        padding: size(100px) size(20px) size(20px);
+    }
+
+    .preview-item {
+        cursor: pointer;
+        float: left;
+        height: 100%;
+        position: relative;
+
+        &:not(:first-child) {
+            margin-left: size(100px);
+        }
+
+        &.active {
+            box-shadow: 0 0 0 1px #3ce2ba;
+        }
+
+        img {
+            height: 100%;
+            width: auto;
+        }
+
+        &-remove {
+            background: transparent url('../img/icon-remove.png') 0 0 no-repeat;
+            background-size: 100% 100%;
+            cursor: pointer;
+            height: size(34px);
+            position: absolute;
+            right: size(-34px / 2);
+            top: size(-34px / 2);
+            width: size(34px);
+            z-index: 300;
+        }
+    }
+}
+
+.page-join {
+    background-color: rgba(0, 0, 0, .25);
+    position: relative;
+
+    &-content {
+        height: 100%;
+        @include transform-origin(50% 0%);
+        @include transition(.5s);
+
+        &.smaller {
+            padding: size(10px);
+            @include transform(scale(1 - size-v(376px) / 100%));
+        }
+    }
+
+    .join-footer-bar {
+        @extend %footer-bar;
+
+        &-list {
+            background: transparent url('../img/footer-card-list.png') 0 0 no-repeat;
+            background-size: 100% 100%;
+            cursor: pointer;
+            left: size-h(94px);
+            position: absolute;
+            top: 50% - size(59px / 2, 88px);
+            @include wh(58px, 59px);
+        }
+
+        &-add {
+            background: transparent url('../img/footer-card-add.png') 0 0 no-repeat;
+            background-size: 100% 100%;
+            cursor: pointer;
+            left: size-h(248px);
+            position: absolute;
+            top: 50% - size(60px / 2, 88px);
+            @include wh(78px, 60px);
+        }
+
+        &-layout {
+            background: transparent url('../img/footer-layout.png') 0 0 no-repeat;
+            background-size: 100% 100%;
+            cursor: pointer;
+            left: size-h(444px);
+            position: absolute;
+            top: 50% - size(62px / 2, 88px);
+            @include wh(39px, 62px);
+        }
+
+        &-publish {
+            background: transparent url('../img/footer-publish.png') 0 0 no-repeat;
+            background-size: 100% 100%;
+            cursor: pointer;
+            left: size-h(614px);
+            position: absolute;
+            top: 50% - size(61px / 2, 88px);
+            @include wh(39px, 61px);
+        }
+    }
+
+    .card-list {
+        @extend %join-bar;
+
+    }
+
+    .layout-list {
+        @extend %join-bar;
+    }
+
+    .picture {
+        position: relative;
+
+        &:before {
+            background-color: rgba(255, 255, 255, .5);
+            content: '';
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+    }
+
+    .tip-replace-pictrue {
+        bottom: 20px;
+        color: #fff;
+        font-size: size(28px);
+        left: 0;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+    }
+
+    .input-content {
+        border: 1px dashed #a7a7a7;
+        border-radius: 0;
+        font-size: size(28px);
+        width: 100%;
+    }
+}

@@ -84,3 +84,8 @@ body {
     -webkit-backface-visibility: hidden;
     -webkit-user-drag: none;
 }
+
+input, textarea {
+    -webkit-appearance: none;
+    appearance: none;
+}
