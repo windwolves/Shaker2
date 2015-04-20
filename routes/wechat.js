@@ -218,10 +218,10 @@ function reloadAccessToken() {
 
 function reloadTicket() {
     if(!temp.access_token) {
-        loadWechatAccessToken(config.appid, config.secret, function(access_token) {
+        loadAccessToken(config.appid, config.secret, function(access_token) {
             temp.access_token = access_token;
 
-            loadWechatTicket(temp.access_token, function(ticket) {
+            loadTicket(temp.access_token, function(ticket) {
                 temp.ticket = ticket;
 
                 setTimeout(reloadTicket, expires);
@@ -229,7 +229,7 @@ function reloadTicket() {
         });
     }
     else {
-        loadWechatTicket(temp.access_token, function(ticket) {
+        loadTicket(temp.access_token, function(ticket) {
             temp.ticket = ticket;
 
             setTimeout(reloadTicket, expires);
