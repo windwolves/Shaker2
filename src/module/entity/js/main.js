@@ -2,6 +2,8 @@ require.config({
     baseUrl: '/module/entity',
     paths: {
         'jquery': '/lib/zepto',
+        'jquery.ui.widget': '/lib/jquery.ui.widget',
+        'fileupload': '/lib/jquery.fileupload',
         'swiper': '/lib/idangerous.swiper',
         'text': '/lib/require-text',
         'css': '/lib/require-css',
@@ -92,6 +94,8 @@ require([
         'transition': 'transitionend'
     };
 
+    var transitionEndEventName = findEndEventName(transitionEndEventNames);
+
     function findEndEventName(endEventNames) {
         for (var name in endEventNames){
             if (transElement.style[name] !== undefined) {
@@ -171,7 +175,7 @@ require([
                 hiddenWrapperClass: '.wrapper:hidden',
                 visibleWrapperClass: '.wrapper:visible',
                 contentClass: '.content',
-                pictrueClass: '.picture'
+                pictureClass: '.picture'
             },
             join: {
                 containerClass: '.page-join',
@@ -221,6 +225,7 @@ require([
 
         this.joinCards = [];
         this.joinActiveCard = null;
+        this.deletedJoinCards = [];
 
         $.extend(true, self, options);
 
@@ -671,10 +676,17 @@ require([
                 });
             });
 
-            $content.find(options.cardPictureClass).attr('data-src', self.entity.picture).each(function() {
-                self.loadImage(this);
+            $content.find(options.cardPictureClass).each(function(i) {
+                var $this = $(this);
+                var $mask = $('<div class="picture-mask"/>').attr('data-src', self.entity.picture).appendTo($this);
 
-                $('<p class="tip-replace-pictrue"/>').text('点击更换图片').appendTo($(this));
+                $('<div class="picture-tip"/>').text('点击更换图片').appendTo($this);
+
+                self.loadImage($mask[0]);
+
+                $mask.on('click', function() {
+                    self.upload($mask, i);
+                });
             });
         }
 
@@ -705,8 +717,14 @@ require([
         var $content = self.$join.find(options.contentClass).addClass('smaller');
         var $element = self.$join.find(options.cardListClass).addClass('in');
 
+        self.deletedJoinCards = [];
+
         if(!$element.hasClass('loaded')) {
             $element.find(options.closeClass).on('click', function() {
+                for(var i = self.deletedJoinCards.length - 1; i >= 0; i--) {
+                    self.joinCards.splice(self.deletedJoinCards[i][0], 0, self.deletedJoinCards[i][1]);
+                }
+
                 $element.removeClass('in');
                 $content.removeClass('smaller');
             });
@@ -714,12 +732,19 @@ require([
             $element.find(options.saveClass).on('click', function() {
                 $element.removeClass('in');
                 $content.removeClass('smaller');
-                // @todo 保存layout
             });
 
             $content.on(tapEventName, function() {
                 $element.removeClass('in');
                 $content.removeClass('smaller');
+            });
+
+            $element.on(transitionEndEventName, function() {
+                if($element.hasClass('in')) {
+                    var children = $list.children();
+                    $list.width(children.eq(0).width() * children.length + 5);
+                    scroll.reInit();
+                }
             });
 
             $element.addClass('loaded');
@@ -744,12 +769,27 @@ require([
             });
 
             $('<div class="preview-item-remove" />').appendTo($item).on('click', function() {
-                self.joinCards.splice(self.joinCards.indexOf(card), 1);
+                var index = self.joinCards.indexOf(card);
+
+                self.deletedJoinCards.push([index, card]);
+                self.joinCards.splice(index, 1);
                 $item.remove();
+
+                if(self.joinActiveCard == card) {
+                    self.showJoinCard(self.joinCards[0]);
+                }
+
+                if(self.joinCards.length == 1) {
+                    $list.find('.preview-item-remove').hide();
+                }
             });
         });
 
-        $list.closest('.swiper-container').addClass('scroll-h').swiper({
+        if(self.joinCards.length == 1) {
+            $list.find('.preview-item-remove').hide();
+        }
+
+        var scroll = $list.closest('.swiper-container').addClass('scroll-h').swiper({
             mode: 'horizontal',
             scrollContainer: true
         });
@@ -765,6 +805,11 @@ require([
 
         if(!$element.hasClass('loaded')) {
             $element.find(options.closeClass).on('click', function() {
+                if(self.joinActiveCard._origin) {
+                    self.showJoinCard(self.joinActiveCard._origin);
+                    self.joinActiveCard = self.joinActiveCard._origin;
+                }
+
                 $element.removeClass('in');
                 $content.removeClass('smaller');
             });
@@ -772,12 +817,19 @@ require([
             $element.find(options.saveClass).on('click', function() {
                 $element.removeClass('in');
                 $content.removeClass('smaller');
-                // @todo 保存layout
             });
 
             $content.on(tapEventName, function() {
                 $element.removeClass('in');
                 $content.removeClass('smaller');
+            });
+
+            $element.on(transitionEndEventName, function() {
+                if($element.hasClass('in')) {
+                    var children = $list.children();
+                    $list.width(children.eq(0).width() * children.length + 5);
+                    scroll.reInit();
+                }
             });
 
             $element.addClass('loaded');
@@ -804,15 +856,32 @@ require([
 
                 self.showJoinCard(card);
 
+                card._origin = self.joinActiveCard;
+
                 self.joinActiveCard = card;
             });
         });
 
-        $list.closest('.swiper-container').addClass('scroll-h').swiper({
+        var scroll = $list.closest('.swiper-container').addClass('scroll-h').swiper({
             mode: 'horizontal',
             scrollContainer: true
         });
 
+    };
+
+    Entity.prototype.upload = function($container, index) {
+        require(['fileupload'], function() {
+            var $upload = $('<input type="file" name="files[]" data-url="/upload">').appendTo($container);
+
+            $upload.fileupload({
+                dataType: 'json',
+                done: function (e, data) {
+                    $.each(data.result.files, function (index, file) {
+                        console.log(file.name);
+                    });
+                }
+            });
+        });
     };
 
     // 设置卡片信息
@@ -837,7 +906,7 @@ require([
         });
 
         // 设置图片
-        $element.find(options.pictrueClass).each(function(i) {
+        $element.find(options.pictureClass).each(function(i) {
             if(card.pictures && card.pictures[i]) {
                 $(this).addClass('lazy').attr('data-src', card.pictures[i]);
             }

@@ -645,21 +645,21 @@ $scale: 0.8;
     }
 
     .preview-list {
-        padding: size(100px) size(20px) size(20px);
+        overflow: hidden;
+        padding-top: size(80px);
     }
 
     .preview-item {
         cursor: pointer;
         float: left;
         height: 100%;
+        padding: size(20px) size(50px);
         position: relative;
 
-        &:not(:first-child) {
-            margin-left: size(100px);
-        }
-
         &.active {
-            box-shadow: 0 0 0 1px #3ce2ba;
+            img {
+                box-shadow: 0 0 0 1px #3ce2ba;
+            }
         }
 
         img {
@@ -673,8 +673,8 @@ $scale: 0.8;
             cursor: pointer;
             height: size(34px);
             position: absolute;
-            right: size(-34px / 2);
-            top: size(-34px / 2);
+            right: size(50px - 34px / 2);
+            top: size(20px - 34px / 2);
             width: size(34px);
             z-index: 300;
         }
@@ -752,25 +752,39 @@ $scale: 0.8;
     .picture {
         position: relative;
 
-        &:before {
-            background-color: rgba(255, 255, 255, .5);
-            content: '';
+        &-mask {
+            border-radius: inherit;
+            cursor: pointer;
+            @include filter(blur(3.5px));
             height: 100%;
             left: 0;
             position: absolute;
             top: 0;
             width: 100%;
-        }
-    }
 
-    .tip-replace-pictrue {
-        bottom: 20px;
-        color: #fff;
-        font-size: size(28px);
-        left: 0;
-        position: absolute;
-        text-align: center;
-        width: 100%;
+            input {
+                cursor: pointer;
+                direction: ltr;
+                -ms-filter: 'alpha(opacity=0)';
+                font-size: 200px;
+                margin: 0;
+                opacity: 0;
+                position: absolute;
+                right: 0;
+                top: 0;
+            }
+        }
+
+        &-tip {
+            bottom: 20px;
+            color: #fff;
+            font-size: size(28px);
+            left: 0;
+            pointer-events: none;
+            position: absolute;
+            text-align: center;
+            width: 100%;
+        }
     }
 
     .input-content {
