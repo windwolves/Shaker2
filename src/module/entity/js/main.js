@@ -242,6 +242,8 @@ require([
             evt.preventDefault();
         });
 
+        self.initShare();
+
 
         var deps = [];
 
@@ -555,6 +557,22 @@ require([
 
     };
 
+    // 初始化分享
+    Entity.prototype.initShare = function() {
+        var self = this;
+
+        if(!$('html').hasClass('wechat')) return;
+
+        require(['wechat'], function(wechat) {
+            wechat.init(location.href.split('#')[0], {
+                imgUrl: (location.origin + self.entity.picture).replace(/.*http/g, 'http'),
+                title: self.entity.title,
+                description: self.entity.content
+            });
+        });
+
+    };
+
     // 验证用户授权
     Entity.prototype.authUser = function(callback) {
         var self = this;
@@ -563,12 +581,6 @@ require([
 
         if(!self.user) {
             require(['wechat'], function(wechat) {
-                wechat.init(location.href.split('#')[0], {
-                    imgUrl: (location.origin + self.entity.picture).replace(/.*http/g, 'http'),
-                    title: self.entity.title,
-                    description: self.entity.content
-                });
-
                 wechat.auth(function(authedUser) {
                     self.user = authedUser;
                     callback();
@@ -629,6 +641,7 @@ require([
         self.showJoinCard(card);
 
         self.joinActiveCard = card;
+
     };
 
     Entity.prototype.showJoinCard = function(card) {
@@ -860,6 +873,7 @@ require([
         else {
             $element.css('background', self.getBackground(src));
         }
+
     };
 
     Entity.prototype.getBackground = function(imageSrc) {
