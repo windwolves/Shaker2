@@ -96,7 +96,7 @@
             });
         };
 
-        var auth = function(zcallback) {
+        var auth = function(callback) {
             var url = urlObject();
 
             typeof callback !== 'function' && (callback = function() {});
