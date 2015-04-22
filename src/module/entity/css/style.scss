@@ -603,6 +603,7 @@ $scale: 0.8;
 
     height: size-v(376px);
     opacity: 0;
+    padding-top: size(80px);
     @include transform(translate3d(0, 100%, 0));
     z-index: 200;
 
@@ -646,7 +647,6 @@ $scale: 0.8;
 
     .preview-list {
         overflow: hidden;
-        padding-top: size(80px);
     }
 
     .preview-item {

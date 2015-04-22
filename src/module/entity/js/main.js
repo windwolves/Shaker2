@@ -198,6 +198,8 @@ require([
 
                 previewListClass: '.preview-list',
                 previewItemClass: '.preview-item',
+                previewActiveItemClass: '.preview-item.active',
+                previewItemRemoveClass: '.preview-item-remove',
             }
         };
 
@@ -637,16 +639,53 @@ require([
     Entity.prototype.addJoinCard = function() {
         var self = this;
 
-        var theme = self.entity.Theme;
-        var layout = theme.Layouts[0];
+        var layout = self.entity.Theme.Layouts[0];
         var card = { layoutId: layout.id, Layout: layout, contents: [], pictures: [] };
 
         self.joinCards.push(card);
-
         self.showJoinCard(card);
-
         self.joinActiveCard = card;
 
+        self.addJoinCardElement(card);
+    };
+
+    Entity.prototype.addJoinCardElement = function(card) {
+        var self = this;
+        var options = self.options.join;
+
+        var $list = self.$join.find(options.cardListClass).find(options.previewListClass);
+
+        var src = '/page/' + self.entity.Theme.code + '/img/' + card.Layout.code + '.png';
+        var $item = $('<div class="preview-item"><img src="' + src + '"/></div>').appendTo($list);
+
+        $list.find(options.previewItemClass + '.active').removeClass('active');
+        if(card == self.joinActiveCard) {
+            $item.addClass('active');
+        }
+
+        $item.on(tapEventName, function() {
+            $list.find(options.previewActiveItemClass).removeClass('active');
+            $item.addClass('active');
+
+            self.showJoinCard(card);
+            self.joinActiveCard = card;
+        });
+
+        $('<div class="preview-item-remove" />').appendTo($item).on('click', function() {
+            var index = self.joinCards.indexOf(card);
+
+            self.deletedJoinCards.push([index, card]);
+            self.joinCards.splice(index, 1);
+            $item.remove();
+
+            if(self.joinActiveCard == card) {
+                self.showJoinCard(self.joinCards[0]);
+            }
+
+            if(self.joinCards.length == 1) {
+                $list.find(options.previewItemRemoveClass).hide();
+            }
+        });
     };
 
     Entity.prototype.showJoinCard = function(card) {
@@ -739,60 +778,43 @@ require([
                 $content.removeClass('smaller');
             });
 
-            $element.on(transitionEndEventName, function() {
-                if($element.hasClass('in')) {
-                    var children = $list.children();
-                    $list.width(children.eq(0).width() * children.length + 5);
-                    scroll.reInit();
-                }
-            });
-
             $element.addClass('loaded');
         }
 
-        var $list = $element.find(options.previewListClass).html('');
+        var $list = $element.find(options.previewListClass);
+        var $children = $list.children();
+        var $swiperContainer = $list.closest('.swiper-container');
 
-        self.joinCards.forEach(function(card) {
-            var src = '/page/' + self.entity.Theme.code + '/img/' + card.Layout.code + '.png';
-            var $item = $('<div class="preview-item"><img src="' + src + '" /></div>').appendTo($list);
+        var src = '/page/' + self.entity.Theme.code + '/img/' + self.joinActiveCard.Layout.code + '.png';
+        $list.find(options.previewActiveItemClass).find('img').attr('src', src);
 
-            if(card == self.joinActiveCard) {
-                $item.addClass('active');
-            }
+        var scroll = $swiperContainer.data('swiper');
 
-            $item.on(tapEventName, function() {
-                $list.find('.preview-item.active').removeClass('active');
-                $item.addClass('active');
-
-                self.showJoinCard(card);
-                self.joinActiveCard = card;
+        if(!scroll) {
+            scroll = $swiperContainer.addClass('scroll-h').swiper({
+                mode: 'horizontal',
+                scrollContainer: true
             });
-
-            $('<div class="preview-item-remove" />').appendTo($item).on('click', function() {
-                var index = self.joinCards.indexOf(card);
-
-                self.deletedJoinCards.push([index, card]);
-                self.joinCards.splice(index, 1);
-                $item.remove();
-
-                if(self.joinActiveCard == card) {
-                    self.showJoinCard(self.joinCards[0]);
-                }
-
-                if(self.joinCards.length == 1) {
-                    $list.find('.preview-item-remove').hide();
-                }
+        }
+        else {
+            self.joinCards.slice($children.length).forEach(function(card) {
+                self.addJoinCardElement(card);
             });
-        });
-
-        if(self.joinCards.length == 1) {
-            $list.find('.preview-item-remove').hide();
         }
 
-        var scroll = $list.closest('.swiper-container').addClass('scroll-h').swiper({
-            mode: 'horizontal',
-            scrollContainer: true
-        });
+        if(self.joinCards.length == 1) {
+            $list.find(options.previewItemRemoveClass).hide();
+        }
+
+        var reInitScroll = function() {
+            $children = $list.children();
+            $list.width($children.eq(0).width() * $children.length + 5);
+            scroll.reInit();
+
+            $element.off(transitionEndEventName, reInitScroll);
+        };
+
+        $element.on(transitionEndEventName, reInitScroll);
 
     };
 
@@ -800,14 +822,20 @@ require([
         var self = this;
         var options = self.options.join;
 
+        var theme = self.entity.Theme;
+
         var $content = self.$join.find(options.contentClass).addClass('smaller');
         var $element = self.$join.find(options.layoutListClass).addClass('in');
+        var $list = $element.find(options.previewListClass);
 
         if(!$element.hasClass('loaded')) {
             $element.find(options.closeClass).on('click', function() {
-                if(self.joinActiveCard._origin) {
-                    self.showJoinCard(self.joinActiveCard._origin);
-                    self.joinActiveCard = self.joinActiveCard._origin;
+                if(self.joinActiveCard_origin) {
+                    $content.removeClass(self.joinActiveCard.Layout.code);
+                    $.extend(self.joinActiveCard, self.joinActiveCard_origin);
+                    self.joinActiveCard_origin = null;
+
+                    self.showJoinCard(self.joinActiveCard);
                 }
 
                 $element.removeClass('in');
@@ -815,56 +843,66 @@ require([
             });
 
             $element.find(options.saveClass).on('click', function() {
+                self.joinActiveCard_origin = null;
+
                 $element.removeClass('in');
                 $content.removeClass('smaller');
             });
 
             $content.on(tapEventName, function() {
+                self.joinActiveCard_origin = null;
+
                 $element.removeClass('in');
                 $content.removeClass('smaller');
             });
 
-            $element.on(transitionEndEventName, function() {
-                if($element.hasClass('in')) {
-                    var children = $list.children();
-                    $list.width(children.eq(0).width() * children.length + 5);
-                    scroll.reInit();
-                }
+            theme.Layouts.forEach(function(layout, index) {
+                var src = '/page/' + theme.code + '/img/' + layout.code + '.png';
+                var $item = $('<div class="preview-item"><img src="' + src + '" /></div>').appendTo($list);
+
+                $item.on(tapEventName, function() {
+                    var $oldItem = $list.find(options.previewActiveItemClass).removeClass('active');
+                    $content.removeClass(theme.Layouts[$oldItem.index()].code);
+
+                    $item.addClass('active');
+
+                    $content.find(self.options.visibleWrapperClass).find('.input-content').trigger('blur');
+
+                    if(!self.joinActiveCard_origin) {
+                        self.joinActiveCard_origin = $.extend({}, self.joinActiveCard);
+                    }
+
+                    self.joinActiveCard.layoutId = layout.id;
+                    self.joinActiveCard.Layout = layout;
+
+                    self.showJoinCard(self.joinActiveCard);
+                });
             });
+
+            var scroll = $list.closest('.swiper-container').addClass('scroll-h').swiper({
+                mode: 'horizontal',
+                scrollContainer: true
+            });
+
+            var reInitScroll = function() {
+                var children = $list.children();
+                $list.width(children.eq(0).width() * children.length + 5);
+                scroll.reInit();
+
+                $element.off(transitionEndEventName, reInitScroll);
+            };
+
+            $element.on(transitionEndEventName, reInitScroll);
 
             $element.addClass('loaded');
         }
 
-        var $list = $element.find(options.previewListClass).html('');
-        var theme = self.entity.Theme;
+        $list.find(options.previewActiveItemClass).removeClass('active');
 
         theme.Layouts.forEach(function(layout, index) {
-            var src = '/page/' + theme.code + '/img/' + layout.code + '.png';
-            var $item = $('<div class="preview-item"><img src="' + src + '" /></div>').appendTo($list);
-
             if(layout.code == self.joinActiveCard.Layout.code) {
-                $item.addClass('active');
+                $list.find(options.previewItemClass).eq(index).addClass('active');
             }
-
-            $item.on(tapEventName, function() {
-                $list.find('.preview-item.active').removeClass('active');
-                $item.addClass('active');
-
-                $content.find(self.options.visibleWrapperClass).find('.input-content').trigger('blur');
-
-                var card = $.extend({}, self.joinActiveCard, { layoutId: layout.id, Layout: layout });
-
-                self.showJoinCard(card);
-
-                card._origin = self.joinActiveCard;
-
-                self.joinActiveCard = card;
-            });
-        });
-
-        var scroll = $list.closest('.swiper-container').addClass('scroll-h').swiper({
-            mode: 'horizontal',
-            scrollContainer: true
         });
 
     };
