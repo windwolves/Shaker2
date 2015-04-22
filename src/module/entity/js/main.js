@@ -586,16 +586,6 @@ require([
     Entity.prototype.authUser = function(callback) {
         var self = this;
 
-        if(location.hostname == '192.168.1.108') {
-            self.user = {
-                username: 'admin',
-                password: '21232f297a57a5a743894a0e4a801fc3'
-            };
-
-            callback();
-            return;
-        }
-
         if(!$('html').hasClass('wechat')) return;
 
         if(!self.user) {

@@ -97,7 +97,7 @@
         };
 
         var auth = function(zcallback) {
-            var url = parseURL();
+            var url = urlObject();
 
             typeof callback !== 'function' && (callback = function() {});
 
