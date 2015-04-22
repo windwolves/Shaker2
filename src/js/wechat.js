@@ -16,12 +16,12 @@
         cleartoken: '/services/wechat/cleartoken'
     };
 
-    var Wechat = function(wx) {
+    var Wechat = function(wx, urlObject) {
         var ready = function(url, callback) {
             $.get(serviceUrls.signature.replace(':url', encodeURIComponent(url)), function(result) {
                 if(result.status == 'success') {
                     wx.config({
-                        debug: parseURL().params.debug,
+                        debug: urlObject().params.debug,
                         appId: result.data.appId,
                         nonceStr: result.data.nonceStr,
                         timestamp: result.data.timestamp,
@@ -155,39 +155,6 @@
         });
     }
 
-    function parseURL(url) {
-        var a = document.createElement('a');
-        a.href = url || location.href;
-
-        return {
-            source: url,
-            protocol: a.protocol.replace(':', ''),
-            host: a.hostname,
-            port: a.port,
-            query: a.search,
-            params: (function() {
-                var ret = {},
-                    seg = a.search.replace(/^\?/, '').split('&'),
-                    len = seg.length,
-                    i = 0,
-                    s;
-                for (; i < len; i++) {
-                    if (!seg[i]) {
-                        continue;
-                    }
-                    s = seg[i].split('=');
-                    ret[s[0]] = s[1];
-                }
-                return ret;
-            })(),
-            file: (a.pathname.match(/\/([^\/?#]+)$/i) || [undefined, ''])[1],
-            hash: a.hash.replace('#', ''),
-            path: a.pathname.replace(/^([^\/])/, '/$1'),
-            relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [undefined, ''])[1],
-            segments: a.pathname.replace(/^\//, '').split('/')
-        };
-    }
-
     function toQueryString(params) {
         if(typeof params !== 'object') {
             return params;
@@ -204,11 +171,11 @@
 
 
     if(typeof define === 'function') {
-        define('wechat', ['http://res.wx.qq.com/open/js/jweixin-1.0.0.js'], Wechat);
+        define('wechat', ['http://res.wx.qq.com/open/js/jweixin-1.0.0.js', 'urlobject'], Wechat);
     }
     else {
         $.getScript('http://res.wx.qq.com/open/js/jweixin-1.0.0', function() {
-            window.wechat = Wechat(window.wx);
+            window.wechat = Wechat(window.wx, window.urlObject);
         });
     }
 

@@ -2,11 +2,11 @@ require.config({
     baseUrl: '/module/entity',
     paths: {
         'jquery': '/lib/zepto',
-        'jquery.ui.widget': '/lib/jquery.ui.widget',
-        'fileupload': '/lib/jquery.fileupload',
+        'flow': '/lib/flow',
         'swiper': '/lib/idangerous.swiper',
         'text': '/lib/require-text',
         'css': '/lib/require-css',
+        'urlobject': '/js/urlobject',
         'wechat': '/js/wechat',
         'device': '/js/device',
     },
@@ -23,20 +23,15 @@ require.config({
 
 require([
     'jquery',
+    'urlobject',
     'swiper',
     'device'
-], function($) {
+], function($, urlObject) {
     'use strict';
 
-    var id = function() {
-        var result = location.href.match(/entity\/([0-9a-zA-Z\-]+)/);
+    var url = urlObject();
 
-        if(!result || result.length < 1){
-            return '';
-        }
-
-        return result[1];
-    }();
+    var id = url.segments[1];
 
     if(id == 'demo') {
         initEntity({
@@ -115,6 +110,7 @@ require([
 
         self.options = {
             panelClass: '.panel',
+            wrapperClass: '.wrapper',
             hiddenWrapperClass: '.wrapper:hidden',
             visibleWrapperClass: '.wrapper:visible',
             ads: {
@@ -172,8 +168,6 @@ require([
                 likeCountClass: '.post-like_count'
             },
             card: {
-                hiddenWrapperClass: '.wrapper:hidden',
-                visibleWrapperClass: '.wrapper:visible',
                 contentClass: '.content',
                 pictureClass: '.picture'
             },
@@ -299,10 +293,9 @@ require([
         });
 
         self.$entity.find(self.options.entity.joinClass).on('click', function() {
-            self.showJoinPage();
-            // self.authUser(function() {
-            //     alert(self.user.nickname + '亲，加入功能即将上线，敬请期待！');
-            // });
+            self.authUser(function() {
+                self.showJoinPage();
+            });
         });
 
     };
@@ -321,10 +314,15 @@ require([
         self.initEntityCover();
 
         // 参与页
+        var activeIndex;
         self.entity.Posts.forEach(function(post, index) {
             var $slide = self.$postPreTemplate.clone().appendTo($wrapper).find(options.slideInnerClass);
 
             self.initEntityPost($slide, post, index);
+
+            if(post.id == url.params.pid) {
+                activeIndex = index + 1;
+            }
         });
 
 
@@ -360,6 +358,10 @@ require([
         });
 
         self.loadSwiperImages(swiper);
+
+        if(activeIndex) {
+            swiper.swipeTo(activeIndex);
+        }
 
     };
 
@@ -409,7 +411,7 @@ require([
         $element.find(options.cardCountClass).text(post.Cards.length);
 
         // 显示回复的第一个页面
-        self.setCard($element, post.Cards[0]);
+        post.Cards[0] && self.setCard($element, post.Cards[0]);
 
         // 浏览回复的所有页面
         $element.on(tapEventName, function(evt) {
@@ -584,6 +586,16 @@ require([
     Entity.prototype.authUser = function(callback) {
         var self = this;
 
+        if(location.hostname == '192.168.1.108') {
+            self.user = {
+                username: 'admin',
+                password: '21232f297a57a5a743894a0e4a801fc3'
+            };
+
+            callback();
+            return;
+        }
+
         if(!$('html').hasClass('wechat')) return;
 
         if(!self.user) {
@@ -605,6 +617,15 @@ require([
         var options = self.options.join;
 
         if(!self.entity.Theme.Layouts) {
+
+            $.getJSON('/services/theme/' + self.entity.themeId, function(result) {
+                if(result.status != 'success') return;
+
+                self.entity.Theme = result.data;
+
+                self.addJoinCard();
+            });
+
             self.$join.find(options.listClass).on('click', function() {
                 self.showJoinCardList();
             });
@@ -619,15 +640,28 @@ require([
 
             self.$join.find(options.publishClass).on('click', function() {
                 // @todo 发布
-                console.log(self.joinCards);
-            });
+                var cards = [];
 
-            $.getJSON('/services/theme/' + self.entity.themeId, function(result) {
-                if(result.status != 'success') return;
+                self.joinCards.forEach(function(d) {
+                    cards.push({
+                        contents: d.contents,
+                        pictures: d.pictures,
+                        layoutId: d.Layout.id
+                    });
+                });
 
-                self.entity.Theme = result.data;
+                var userAccess = $.param({ _username: self.user.username, _password: self.user.password });
+                var data = { entityId: self.entity.id, cards: cards };
 
-                self.addJoinCard();
+                $.post('/services/post?' + userAccess, data, function(result) {
+                    if(result.status == 'success') {
+                        location.href = location.href.replace(location.search, '') + '?pid=' + result.data.id;
+                    }
+                    else {
+                        console.error(result);
+                    }
+
+                });
             });
         }
 
@@ -715,19 +749,14 @@ require([
                 });
             });
 
-            $content.find(options.cardPictureClass).each(function(i) {
-                var $this = $(this);
-                var $mask = $('<div class="picture-mask"/>').attr('data-src', self.entity.picture).appendTo($this);
-
-                $('<div class="picture-tip"/>').text('点击更换图片').appendTo($this);
-
-                self.loadImage($mask[0]);
-
-                $mask.on('click', function() {
-                    self.upload($mask, i);
+            $content.find(self.options.wrapperClass).each(function() {
+                $(this).find(options.cardPictureClass).each(function(i) {
+                    $(this).data('picture-index', i);
                 });
             });
         }
+
+        self.initPictureElement($content.find(options.cardPictureClass));
 
         $content.addClass(card.Layout.code);
 
@@ -743,7 +772,8 @@ require([
         // 设置图片
         $wrapper.find(options.cardPictureClass).each(function(i) {
             if(card.pictures && card.pictures[i]) {
-                $(this).attr('background', self.getBackground(card.pictures[i]));
+                $(this).attr('data-src', card.pictures[i]);
+                self.loadImage(this);
             }
         });
 
@@ -876,6 +906,8 @@ require([
                     self.joinActiveCard.Layout = layout;
 
                     self.showJoinCard(self.joinActiveCard);
+
+                    // self.initPictureElement($content.find(options.cardPictureClass));
                 });
             });
 
@@ -907,18 +939,81 @@ require([
 
     };
 
-    Entity.prototype.upload = function($container, index) {
-        require(['fileupload'], function() {
-            var $upload = $('<input type="file" name="files[]" data-url="/upload">').appendTo($container);
+    Entity.prototype.initPictureElement = function($element) {
+        var self = this;
 
-            $upload.fileupload({
-                dataType: 'json',
-                done: function (e, data) {
-                    $.each(data.result.files, function (index, file) {
-                        console.log(file.name);
-                    });
+        var callbacks = [];
+
+        var execCallbacks = function() {
+            for(var i = 0, n = callbacks.length; i < n; i++) {
+                callbacks[i]();
+            }
+
+            callbacks = [];
+        };
+
+        var initUploadMask = function($element, picture) {
+            var flow = new self.Flow({
+                target: '/upload',
+                chunkSize: 1024 * 1024,
+                testChunks: false
+            });
+
+            $element.html('').append($('<div class="picture-tip"/>').text('点击更换图片'));
+            var $mask = $('<div class="picture-mask"/>').prependTo($element);
+
+            if(picture) {
+                $mask.attr('data-src', picture);
+            }
+            else {
+                $mask.addClass('blur').attr('data-src', self.entity.picture);
+            }
+
+            self.loadImage($mask[0]);
+
+            flow.assignBrowse($mask[0], false, true, { accept: 'image/*' });
+
+            flow.on('filesSubmitted', function(file) {
+                flow.upload();
+            });
+
+            flow.on('fileSuccess', function(file, message){
+                try {
+                    var result = JSON.parse(message);
+
+                    if(result.status == 'success') {
+                        var src = result.data[0].replace(/\\/g, '/');
+                        self.joinActiveCard.pictures[$element.data('picture-index')] = src;
+                        initUploadMask($element, src);
+                    }
+                    else {
+                        console.log(result);
+                    }
+                }
+                catch(ex) {
+                    console.error(message);
                 }
             });
+        };
+
+        $element.each(function(index) {
+            var $this = $(this);
+
+            callbacks.push(function() {
+                initUploadMask($this, self.joinActiveCard.pictures[$this.data('picture-index')]);
+            });
+
+            if(self.Flow) {
+                setTimeout(execCallbacks, 0);
+            }
+            else if(!self.isLoadingFlow) {
+                self.isLoadingFlow = true;
+
+                require(['flow'], function(Flow) {
+                    self.Flow = Flow;
+                    execCallbacks();
+                });
+            }
         });
     };
 

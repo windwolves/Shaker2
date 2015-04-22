@@ -6,18 +6,18 @@ var _utils = {};
 
 _utils.getAbsolutePathFunc = function() {
     return function(d) {
-        return path.resolve(path.join(__dirname, '../app', d))
+        return path.resolve(path.join(__dirname, '../upload', d))
     };
 };
 
 _utils.getRelativePathFunc = function(uniquePath, isWithIndex) {
     return function(d, i) {
-        return '/img/' + uniquePath + (isWithIndex ? '-' + i : '') + path.extname(d);
+        return '/' + uniquePath + (isWithIndex ? '-' + i : '') + path.extname(d);
     };
 };
 
 _utils.getUploadRelativePath = function(absolutePath) {
-    return path.join('/common/upload', path.basename(absolutePath));
+    return path.join('/temp', path.basename(absolutePath));
 };
 
 _utils.upload = function(files) {
@@ -60,13 +60,10 @@ _utils.moveOne = function(from, to, aFunc, rFUnc) {
 _utils.moveAll = function(fromArr, toArr, aFunc, rFUnc) {
     if(!Array.isArray(fromArr) || !Array.isArray(toArr)) {
         throw 'Arguments 0 and 1 must by Array';
-        return;
     }
-    if(typeof aFunc !== 'function') {
-        aFunc = _utils.getAbsolutePathFunc();
-    }
-    if(typeof rFUnc !== 'function') {
-        rFUnc = _utils.getRelativePathFunc();
+
+    if(typeof aFunc !== 'function' || typeof rFUnc !== 'function') {
+        throw 'Arguments 2 and 3 must by Array';
     }
 
     var resultArr = toArr.slice(0);

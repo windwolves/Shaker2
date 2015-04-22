@@ -149,16 +149,18 @@ router.post('/upload/profile',
 
         db.User.find({ where: _where }).then(function(user) {
             if(user) {
+                var uploadDir = __dirname + '/../upload';
+
                 if(user.profile) {
                     try {
-                        fs.unlinkSync('./profile/' + user.profile);
+                        fs.unlinkSync(uploadDir + user.profile);
                     }
                     catch(ex) {
                         console.log('The old profile of User "' + user.username + '" not found');
                     }
                 }
-                var profile = user.username + '-' + file.name;
-                fs.renameSync(file.path, __dirname + '/../src/upload/profile/' + profile);
+                var profile = '/profile/' + user.username + '-' + file.name;
+                fs.renameSync(file.path, uploadDir + profile);
 
                 user.updateAttributes({ profile: profile }).then(res.success, res.error);
             }
