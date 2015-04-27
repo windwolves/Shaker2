@@ -90,7 +90,7 @@ entity.init();
 module.exports = router;
 
 function removePicture(picture) {
-    var absoluteFilePath = path.join(__dirname, '/../src' + picture);
+    var absoluteFilePath = path.join(__dirname, '/../upload' + picture);
 
     if(fs.existsSync(absoluteFilePath)) {
         fs.unlinkSync(absoluteFilePath);
@@ -98,8 +98,8 @@ function removePicture(picture) {
 }
 
 function movePicture(entityDirName, photo) {
-    var relativeDir = '/upload/entity/' + entityDirName;
-    var absoluteDir = path.join(__dirname, '/../src' + relativeDir);
+    var relativeDir = '/entity/' + entityDirName;
+    var absoluteDir = path.join(__dirname, '/../upload' + relativeDir);
 
     if(!fs.existsSync(absoluteDir)) {
         fs.mkdirSync(absoluteDir);
