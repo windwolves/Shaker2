@@ -6,6 +6,9 @@ fs.readdirSync('./src/module/').forEach(function(dir) {
     sassFiles['src/module/' + dir + '/css/style.css'] = 'src/module/' + dir + '/css/style.scss';
 });
 
+fs.readdirSync('./src/entity/').forEach(function(dir) {
+    sassFiles['src/entity/' + dir + '/css/style.css'] = 'src/entity/' + dir + '/css/style.scss';
+});
 
 fs.readdirSync('./src/page/').forEach(function(dir) {
     sassFiles['src/page/' + dir + '/css/style.css'] = 'src/page/' + dir + '/css/style.scss';

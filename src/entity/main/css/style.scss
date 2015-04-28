@@ -1,0 +1,437 @@
+@import "../../../css/sass/mixin";
+@import "../../../css/sass/normalize";
+@import "../../../css/sass/reset";
+
+@include keyframe(next-guide) {
+    0%, 100% { @include transform(translate3d(0, -10px, 0)); }
+    50% { @include transform(translate3d(0, 0, 0)); }
+}
+
+html, body, .panel, .page {
+    height: 100%;
+}
+
+img {
+    max-width: 100%;
+    width: 100%;
+}
+
+.hide {
+    display: none;
+}
+
+.wrapper {
+    height: 100%;
+    line-height: 0;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.swiper-container {
+    @include backface-visibility(hidden);
+    height: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    @include transform-style(preserve-3d);
+    width: 100%;
+    z-index: 1;
+
+    & > .swiper-wrapper {
+        @include box-sizing(content-box);
+        height: 100%;
+        @include transform(translate3d(0px, 0, 0));
+        -webkit-transition-property: -webkit-transform, left, top;
+        -moz-transition-property: -moz-transform, left, top;
+        -ms-transition-property: -ms-transform, left, top;
+        -o-transition-property: -o-transform, left, top;
+        transition-property: transform, left, top;
+        @include transition-duration(0s);
+        @include transform-style(preserve-3d);
+        @include transition-timing-function(ease);
+        width: 100%;
+
+        & > .swiper-slide {
+            height: 100%;
+            float: left;
+            @include transform-style(preserve-3d);
+            width: 100%;
+        }
+    }
+
+    & > .swiper-pagination {
+        bottom: 0;
+        height: 35px;
+        line-height: 35px;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+
+        & > .swiper-pagination-switch {
+            background-color: rgba(255, 255, 255, .2);
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-block;
+            height: 8px;
+            margin: 0 3px;
+            width: 8px;
+        }
+
+        & > .swiper-active-switch {
+            background-color: #fff;
+        }
+    }
+
+    &.scroll-v {
+        & > .swiper-wrapper {
+            & > .swiper-slide {
+                height: auto;
+            }
+        }
+    }
+
+    &.scroll-h {
+        & > .swiper-wrapper {
+            margin-left: auto;
+            margin-right: auto;
+
+            & > .swiper-slide {
+                width: auto;
+            }
+        }
+    }
+
+    .swiper-scrollbar {
+        background-color: transparent;
+        border-radius: 2px;
+        position: absolute;
+        z-index: 9999;
+
+        &.swiper-scrollbar-h {
+            bottom: 3px;
+            height: 2px;
+            left: 2px;
+            right: 2px;
+        }
+
+        &.swiper-scrollbar-v {
+            bottom: 2px;
+            right: 3px;
+            top: 2px;
+            width: 2px;
+        }
+
+        .swiper-scrollbar-drag {
+            background-color: rgba(255, 255, 255, .5);
+            border-radius: 2px;
+            cursor: move;
+            height: 100%;
+            width: 100%;
+            position: relative;
+        }
+    }
+
+    /* IE10 Windows Phone 8 Fixes */
+    &.swiper-wp8-horizontal {
+        -ms-touch-action: pan-y;
+    }
+    &.swiper-wp8-vertical {
+        -ms-touch-action: pan-x;
+    }
+}
+
+.ads {
+    background: transparent url('../img/ads-bg.png') 0 0 no-repeat;
+    background-size: 100% 100%;
+    left: 0;
+    opacity: 1;
+    position: absolute;
+    top: 0;
+    @include transition(.5s);
+    @include wh(750px, 90px);
+    z-index: 100;
+
+    &.out {
+        opacity: 0;
+        @include transform(translateY(-100%));
+    }
+
+    &-close {
+        background: transparent url('../img/ads-close.png') 0 0 no-repeat;
+        background-size: 100% 100%;
+        cursor: pointer;
+        left: size-h(30px);
+        position: absolute;
+        top: 50% - size(19px / 2, 90px);
+        @include wh(22px, 19px);
+    }
+
+    &-download {
+        background: transparent url('../img/ads-download.png') 0 0 no-repeat;
+        background-size: 100% 100%;
+        cursor: pointer;
+        position: absolute;
+        right: size-h(30px);
+        top: 50% - size(56px / 2, 90px);
+        @include wh(144px, 56px);
+    }
+}
+
+
+$scale: 0.9;
+
+%footer-bar {
+    background-color: rgba(255, 255, 255, .95);
+    border-top: 1px solid rgba(0, 0, 0, .08);
+    box-shadow: 0 0 3.5px rgba(0, 0, 0, .08);
+    bottom: 0;
+    left: 0;
+    height: size(88px);
+    opacity: 1;
+    position: absolute;
+    @include transition(.5s);
+    width: 100%;
+    z-index: 100;
+}
+
+%entity-summary {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+    bottom: 0;
+    left: 0;
+    padding: size(28px / $scale);
+    position: absolute;
+    width: 100%;
+    z-index: 100;
+}
+
+%entity-owner {
+    float: left;
+    line-height: 0;
+
+    .owner-profile {
+        border-radius: size(4px / $scale);
+        height: size(70px / $scale);
+        float: left;
+        width: size(70px / $scale);
+
+        & + div {
+            margin-left: size(90px / $scale);
+            overflow: hidden;
+            padding-top: size(5px);
+        }
+    }
+
+    .owner-index {
+        color: #a7a7a7;
+        font-size: size(20px / $scale);
+        line-height: size(25px / $scale);
+    }
+
+    .owner-nickname {
+        color: #00d8a5;
+        font-size: size(24px / $scale);
+        line-height: size(40px / $scale);
+    }
+}
+
+%entity-like_count {
+    float: right;
+    margin-right: size(30px);
+
+    img {
+        height: size(36px);
+        margin-right: size(6px);
+        vertical-align: middle;
+        width: size(38px);
+    }
+
+    span {
+        color: #a7a7a7;
+        display: inline-block;
+        font-size: size(24px);
+        vertical-align: middle;
+    }
+}
+
+%entity-summary-children {
+    color: #a7a7a7;
+    float: right;
+    line-height: size(50px);
+    margin-top: size(20px);
+
+    img {
+        margin-right: size(6px);
+        vertical-align: middle;
+    }
+
+    span, em {
+        display: inline-block;
+        font-size: size(24px);
+        line-height: size(50px);
+        vertical-align: middle;
+    }
+
+    em {
+        margin-left: 1px;
+    }
+}
+
+$icon-size: 88px;
+%icon {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: size($icon-size);
+    width: size($icon-size);
+}
+
+.entity-summary {
+    @extend %entity-summary;
+
+    .entity-owner {
+        @extend %entity-owner;
+    }
+
+    .entity-like_count {
+        @extend %entity-like_count;
+
+        line-height: size(50px);
+        margin-top: size(20px);
+    }
+
+    .entity-joined {
+        @extend %entity-summary-children;
+
+        img {
+            height: size(27px / $scale);
+            width: size(22px / $scale);
+        }
+    }
+}
+
+.entity-post-summary {
+    @extend %entity-summary;
+
+    .entity-post-owner {
+        @extend %entity-owner;
+    }
+
+    .entity-post-like_count {
+        @extend %entity-like_count;
+
+        line-height: size(50px);
+        margin-top: size(20px);
+    }
+
+    .entity-post-cards {
+        @extend %entity-summary-children;
+
+        img {
+            height: size(26px / $scale);
+            width: size(26px / $scale);
+        }
+    }
+}
+
+
+.page-entity {
+    background: rgba(0, 0, 0, .05);
+
+    .page-entity-back {
+        background: transparent url('../img/icon-back.png') 0 0 no-repeat;
+        background-size: 100% 100%;
+        cursor: pointer;
+        left: size-h(630px);
+        position: absolute;
+        top: size(24px);
+        @include wh(50px, 50px);
+        z-index: 99;
+    }
+
+    .swiper-slide {
+        // padding: size(94px) size(74px) size(182px);
+        cursor: pointer;
+        padding-bottom: size(48px);
+
+        .slide-inner {
+            height: 100%;
+            @include transform(scale($scale));
+            @include transform-origin(50% 50% * $scale);
+            position: relative;
+            width: 100%;
+
+            .swiper-container.moving & {
+                &:before,
+                &:after {
+                    opacity: 0;
+                    @include transition(0);
+                }
+            }
+        }
+
+        &:not(:first-child) .slide-inner:before,
+        &:not(:last-child) .slide-inner:after {
+            background-color: #fff;
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.3));
+            content: '';
+            height: 100%;
+            opacity: 1;
+            position: absolute;
+            top: 0;
+            width: size(20px / $scale);
+            @include transition(opacity .5s);
+        }
+
+        &:not(:first-child) .slide-inner:before {
+            left: (1 - 1 / $scale) * 50%;
+        }
+
+        &:not(:last-child) .slide-inner:after {
+            right: (1 - 1 / $scale) * 50%;
+        }
+    }
+
+    .footer-bar {
+        @extend %footer-bar;
+
+        .logo {
+            @extend %icon;
+
+            background-image: url('../img/logo.png');
+            background-size: 100% 49px / $icon-size * 100%;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            margin: auto;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: size(110px);
+        }
+
+        &-catalog {
+            @extend %icon;
+
+            background-image: url('../img/footer-catalog.png');
+            background-size: 43px / $icon-size * 100% 67px / $icon-size * 100%;
+            bottom: 0;
+            cursor: pointer;
+            left: size-h(20px);
+            position: absolute;
+            top: 0;
+        }
+
+        &-join {
+            @extend %icon;
+
+            background-image: url('../img/footer-join.png');
+            background-size: 69px / $icon-size * 100% 63px / $icon-size * 100%;
+            bottom: 0;
+            cursor: pointer;
+            left: size-h(630px);
+            position: absolute;
+            top: 0;
+        }
+    }
+}

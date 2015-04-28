@@ -1,0 +1,198 @@
+@import "../../../css/sass/mixin";
+@import "../../../css/sass/normalize";
+@import "../../../css/sass/reset";
+
+html, body, .panel {
+    height: 100%;
+}
+
+img {
+    max-width: 100%;
+    width: 100%;
+}
+
+.hide {
+    display: none;
+}
+
+.swiper-container {
+    @include backface-visibility(hidden);
+    height: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    @include transform-style(preserve-3d);
+    width: 100%;
+    z-index: 1;
+
+    & > .swiper-wrapper {
+        @include box-sizing(content-box);
+        height: 100%;
+        @include transform(translate3d(0px, 0, 0));
+        -webkit-transition-property: -webkit-transform, left, top;
+        -moz-transition-property: -moz-transform, left, top;
+        -ms-transition-property: -ms-transform, left, top;
+        -o-transition-property: -o-transform, left, top;
+        transition-property: transform, left, top;
+        @include transition-duration(0s);
+        @include transform-style(preserve-3d);
+        @include transition-timing-function(ease);
+        width: 100%;
+
+        & > .swiper-slide {
+            height: 100%;
+            float: left;
+            @include transform-style(preserve-3d);
+            width: 100%;
+        }
+    }
+
+    &.scroll-v {
+        & > .swiper-wrapper {
+            & > .swiper-slide {
+                height: auto;
+            }
+        }
+    }
+
+    .swiper-scrollbar {
+        background-color: transparent;
+        border-radius: 2px;
+        position: absolute;
+        z-index: 9999;
+
+        &.swiper-scrollbar-h {
+            bottom: 3px;
+            height: 2px;
+            left: 2px;
+            right: 2px;
+        }
+
+        &.swiper-scrollbar-v {
+            bottom: 2px;
+            right: 3px;
+            top: 2px;
+            width: 2px;
+        }
+
+        .swiper-scrollbar-drag {
+            background-color: rgba(255, 255, 255, .5);
+            border-radius: 2px;
+            cursor: move;
+            height: 100%;
+            width: 100%;
+            position: relative;
+        }
+    }
+
+    /* IE10 Windows Phone 8 Fixes */
+    &.swiper-wp8-horizontal {
+        -ms-touch-action: pan-y;
+    }
+    &.swiper-wp8-vertical {
+        -ms-touch-action: pan-x;
+    }
+}
+
+.header {
+    background-color: #fff;
+    height: size(90px);
+    left: 0;
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+
+    &-inner {
+        border-bottom: 1px solid #e7e7e7;
+        bottom: 0;
+        left: size(24px);
+        overflow: hidden;
+        position: absolute;
+        right: size(24px);
+    }
+
+    span {
+        color: #a7a7a7;
+        font-size: size(24px);
+        line-height: size(58px);
+    }
+
+    .left {
+        float: left;
+    }
+
+    .right {
+        float: right;
+    }
+}
+
+.content {
+    height: 100%;
+    padding-top: size(90px);
+}
+
+.post-item {
+    cursor: pointer;
+    padding: size(24px) size(12px) size(24px) size(24px);
+}
+
+.post-picture {
+    background: transparent 50% 50% / cover no-repeat;
+    border-radius: size(10px);
+    float: left;
+    height: size(176px);
+    width: size(176px);
+}
+
+.post-item-content {
+    height: size(176px);
+    margin-left: size(176px);
+    padding: size(10px) size(20px);
+    position: relative;
+}
+
+.post-content {
+    font-size: size(28px);
+    @extend %text-ellipsis;
+    width: 100%;
+}
+
+.post-like_count {
+    bottom: size(10px);
+    height: size(24px);
+    line-height: 0;
+    position: absolute;
+    right: size(20px);
+
+    img {
+        height: 100%;
+        margin-right: size(5px);
+        vertical-align: middle;
+        width: auto;
+    }
+
+    span {
+        color: #a7a7a7;
+        display: inline-block;
+        font-size: size(24px);
+        line-height: size(24px);
+        vertical-align: middle;
+    }
+}
+
+.post-owner {
+    bottom: size(10px);
+    height: size(24px);
+    left: size(20px);
+    line-height: 0;
+    position: absolute;
+
+    span {
+        color: #a7a7a7;
+        display: inline-block;
+        font-size: size(24px);
+        line-height: size(24px);
+        vertical-align: middle;
+    }
+}
+

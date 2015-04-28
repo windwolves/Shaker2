@@ -13,8 +13,22 @@ var post = new Rest({
     list: false,
     get: {
         beforeCallbacks: [],
-        include: [{ model: db.User, as: 'Owner' }, db.Entity, db.Card],
+        include: [
+            { model: db.User, as: 'Owner' },
+            { model: db.Entity, include: [db.Theme] },
+            { model: db.Card, include: [db.Layout, db.Skin] }
+        ],
         beforeSend: function(model) {
+            model.Cards.forEach(function(card) {
+                try {
+                    card.contents = JSON.parse(card.contents);
+                    card.pictures = JSON.parse(card.pictures);
+                }
+                catch(ex) {
+                    card.contents = [];
+                    card.pictures = [];
+                }
+            });
         }
     },
     post: {
@@ -72,6 +86,36 @@ var post = new Rest({
 });
 
 var router = post.getRouter();
+
+router.get('/:id/like', function(req, res) {
+    var _where = {
+        id: req.params.id
+    };
+
+    db.Post.find({ where: _where }).then(function(post) {
+        if(post) {
+            post.increment({ likeCount: 1 }).then(res.success, res.error);
+        }
+        else {
+            res.warning('POST_NOT_FOUND');
+        }
+    }, res.error);
+});
+
+router.get('/:id/unlike', function(req, res) {
+    var _where = {
+        id: req.params.id
+    };
+
+    db.Post.find({ where: _where }).then(function(post) {
+        if(post) {
+            post.decrement({ likeCount: 1 }).then(res.success, res.error);
+        }
+        else {
+            res.warning('POST_NOT_FOUND');
+        }
+    }, res.error);
+});
 
 post.init();
 

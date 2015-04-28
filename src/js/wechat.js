@@ -5,10 +5,6 @@
         return;
     }
 
-    if (!$) {
-        throw 'Please load jquery first';
-    }
-
     var serviceUrls = {
         auth: '/services/wechat/auth/:code',
         authRefresh: '/services/wechat/auth/refresh/:refresh_token',
@@ -173,10 +169,13 @@
     if(typeof define === 'function') {
         define('wechat', ['http://res.wx.qq.com/open/js/jweixin-1.0.0.js', 'urlobject'], Wechat);
     }
-    else {
+    else if($) {
         $.getScript('http://res.wx.qq.com/open/js/jweixin-1.0.0', function() {
             window.wechat = Wechat(window.wx, window.urlObject);
         });
+    }
+    else {
+        throw 'Please load jquery first';
     }
 
 })(window.$);
