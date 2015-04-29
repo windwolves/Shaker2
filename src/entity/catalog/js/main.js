@@ -32,7 +32,6 @@ require([
 
     $.getJSON('/services/entity/' + url.segments[1], function(result) {
         if(result.status == 'success') {
-            result.data.Posts = result.data.Posts.concat(result.data.Posts).concat(result.data.Posts).concat(result.data.Posts).concat(result.data.Posts);
             initEntity(result.data);
         }
         else {
