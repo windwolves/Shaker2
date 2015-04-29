@@ -15,33 +15,48 @@
 <body>
     <div class="panel">
 
+    </div>
+
+    <script id="catalog-template" type="text/html">
+
         <div class="header">
             <div class="header-inner">
                 <span class="left">话题参与人列表</span>
-                <span class="right">共<span class="post-count">--</span>人参与</span>
+                <span class="right">共<span class="post-count">{{Posts.length}}</span>人参与</span>
             </div>
         </div>
 
         <div class="content">
-            <ul class="post-list">
-                <li class="post-item hide clearfix">
-                    <div class="post-picture"></div>
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
 
-                    <div class="post-item-content">
-                        <p class="post-content"></p>
-                        <div class="post-like_count">
-                            <img src="/entity/catalog/img/icon-like.png" alt="">
-                            <span></span>
-                        </div>
-                        <div class="post-owner">
-                            <span></span>
-                        </div>
+                    <div class="swiper-slide">
+                        {{each Posts as post index}}
+                        <a class="post-item" href="/post/{{post.id}}?from=catalog">
+                            <img class="post-picture swiper-lazy" data-src="{{post.Cards[0].pictures[0] || '/entity/catalog/img/picture.png'}}" />
+
+                            <div class="post-item-content">
+                                <p class="post-content">{{post.Cards[0].contents[0]}}</p>
+
+                                <div class="post-owner">
+                                    <span>{{post.Owner.nickname}}</span>
+                                </div>
+
+                                <div class="post-like_count">
+                                    <img src="/entity/catalog/img/icon-like.png">
+                                    <span>{{post.likeCount}}</span>
+                                </div>
+                            </div>
+                        </a>
+                        {{/each}}
                     </div>
-                </li>
-            </ul>
+
+                </div>
+                <div class="swiper-scrollbar"></div>
+            </div>
         </div>
 
-    </div>
+    </script>
 </body>
 
 </html>

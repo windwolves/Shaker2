@@ -52,6 +52,7 @@ var post = new Rest({
 
             cards.forEach(function(card, index) {
                 card.postId = model.id;
+                card.index = index;
                 card.contents = JSON.stringify(card.contents);
 
                 if(Array.isArray(card.pictures)) {

@@ -1,8 +1,9 @@
 @import "../../../css/sass/mixin";
 @import "../../../css/sass/normalize";
 @import "../../../css/sass/reset";
+@import "../../../css/sass/swiper";
 
-html, body, .panel {
+html, body {
     height: 100%;
 }
 
@@ -11,83 +12,8 @@ img {
     width: 100%;
 }
 
-.swiper-container {
-    @include backface-visibility(hidden);
+.panel {
     height: 100%;
-    margin: 0 auto;
-    overflow: hidden;
-    position: relative;
-    @include transform-style(preserve-3d);
-    width: 100%;
-    z-index: 1;
-
-    & > .swiper-wrapper {
-        @include box-sizing(content-box);
-        height: 100%;
-        @include transform(translate3d(0px, 0, 0));
-        -webkit-transition-property: -webkit-transform, left, top;
-        -moz-transition-property: -moz-transform, left, top;
-        -ms-transition-property: -ms-transform, left, top;
-        -o-transition-property: -o-transform, left, top;
-        transition-property: transform, left, top;
-        @include transition-duration(0s);
-        @include transform-style(preserve-3d);
-        @include transition-timing-function(ease);
-        width: 100%;
-
-        & > .swiper-slide {
-            height: 100%;
-            float: left;
-            @include transform-style(preserve-3d);
-            width: 100%;
-        }
-    }
-
-    &.scroll-v {
-        & > .swiper-wrapper {
-            & > .swiper-slide {
-                height: auto;
-            }
-        }
-    }
-
-    .swiper-scrollbar {
-        background-color: transparent;
-        border-radius: 2px;
-        position: absolute;
-        z-index: 9999;
-
-        &.swiper-scrollbar-h {
-            bottom: 3px;
-            height: 2px;
-            left: 2px;
-            right: 2px;
-        }
-
-        &.swiper-scrollbar-v {
-            bottom: 2px;
-            right: 3px;
-            top: 2px;
-            width: 2px;
-        }
-
-        .swiper-scrollbar-drag {
-            background-color: rgba(255, 255, 255, .5);
-            border-radius: 2px;
-            cursor: move;
-            height: 100%;
-            width: 100%;
-            position: relative;
-        }
-    }
-
-    /* IE10 Windows Phone 8 Fixes */
-    &.swiper-wp8-horizontal {
-        -ms-touch-action: pan-y;
-    }
-    &.swiper-wp8-vertical {
-        -ms-touch-action: pan-x;
-    }
 }
 
 .wrapper {
@@ -98,37 +24,16 @@ img {
     width: 100%;
 }
 
-%footer-bar {
-    background-color: rgba(255, 255, 255, .95);
-    border-top: 1px solid rgba(0, 0, 0, .08);
-    box-shadow: 0 0 3.5px rgba(0, 0, 0, .08);
-    bottom: 0;
-    left: 0;
-    height: size(88px);
-    opacity: 1;
-    position: absolute;
-    @include transition(.5s);
-    width: 100%;
-    z-index: 100;
+.picture {
+    background-color: transparent;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    @include background-size(cover);
 }
 
-%entity-like_count {
-    float: right;
-    margin-right: size(30px);
-
-    img {
-        height: size(36px);
-        margin-right: size(6px);
-        vertical-align: middle;
-        width: size(38px);
-    }
-
-    span {
-        color: #a7a7a7;
-        display: inline-block;
-        font-size: size(24px);
-        vertical-align: middle;
-    }
+.swiper-container {
+    height: 100%;
+    width: 100%;
 }
 
 $icon-size: 88px;
@@ -141,7 +46,17 @@ $icon-size: 88px;
 }
 
 .post-footer-bar {
-    @extend %footer-bar;
+    background-color: rgba(255, 255, 255, .95);
+    border-top: 1px solid rgba(0, 0, 0, .08);
+    box-shadow: 0 0 3.5px rgba(0, 0, 0, .08);
+    bottom: 0;
+    left: 0;
+    height: size(88px);
+    opacity: 1;
+    position: absolute;
+    @include transition(.5s);
+    width: 100%;
+    z-index: 100;
 
     .footer-bar-back {
         @extend %icon;

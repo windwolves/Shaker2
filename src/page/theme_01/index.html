@@ -1,14 +1,20 @@
+{{if Theme}}
 <div class="wrapper cover">
-    <div class="picture"></div>
-    <p class="title"></p>
-    <p class="content"></p>
+    <div class="picture swiper-lazy" data-background="{{picture}}"></div>
+    <p class="title">{{title}}</p>
+    <p class="content">{{content}}</p>
 </div>
+{{/if}}
 
+{{if Layout && Layout.code.search('layout_01') > -1}}
 <div class="wrapper layout_01">
-    <div class="picture"></div>
-    <p class="content"></p>
+    <div class="picture swiper-lazy" data-background="{{pictures[0]}}"></div>
+    <p class="content">{{contents[0]}}</p>
 </div>
+{{/if}}
 
+{{if Layout && Layout.code.search('layout_02') > -1}}
 <div class="wrapper layout_02">
-    <p class="content"></p>
+    <p class="content">{{contents[0]}}</p>
 </div>
+{{/if}}

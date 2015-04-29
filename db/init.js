@@ -74,7 +74,6 @@ if (!config.isRelease) {
                 layouts.push({ name: '板式2', code: theme.code + '-layout_02', themeId: theme.id });
 
                 skins.push({ name: '皮肤1', code: theme.code + '-skin_01', themeId: theme.id });
-                skins.push({ name: '皮肤2', code: theme.code + '-skin_02', themeId: theme.id });
             });
 
             async.parallel([
@@ -145,7 +144,7 @@ if (!config.isRelease) {
                 }).forEach(function(post) {
                     layouts.filter(function(layout) {
                         return layout.themeId == entity.themeId;
-                    }).forEach(function(layout) {
+                    }).forEach(function(layout, index) {
                         skins.filter(function(layout) {
                             return layout.themeId == entity.themeId;
                         }).forEach(function(skin) {
@@ -153,6 +152,7 @@ if (!config.isRelease) {
                                 postId: post.id,
                                 layoutId: layout.id,
                                 skinId: skin.id,
+                                index: index,
                                 contents: '["反现实赐我一把匕首，剖开我所有不想剖开的现实"]',
                                 pictures: '["http://placekitten.com/375/603"]'
                             });

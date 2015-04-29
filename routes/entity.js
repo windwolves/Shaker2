@@ -16,11 +16,11 @@ var entity = new Rest({
             { model: db.User, as: 'Owner' },
             { model: db.Post, include: [
                 { model: db.User, as: 'Owner' },
-                { model: db.Card, include: [db.Layout, db.Skin]}
+                { model: db.Card, include: [db.Layout, db.Skin] }
             ] },
             db.Theme
         ],
-        order: 'Posts.createdAt asc',
+        order: 'Posts.likeCount desc, `Posts.Cards`.index asc',
         beforeSend: function(model) {
             model.Posts.forEach(function(post) {
                 post.Cards.forEach(function(card) {

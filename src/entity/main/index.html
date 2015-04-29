@@ -20,67 +20,76 @@
             <a class="ads-download" href="http://mp.weixin.qq.com/mp/redirect?url=https%3A%2F%2Fitunes.apple.com%2Fcn%2Fapp%2Fxi-ke%2Fid924809913%3Fmt%3D8%26uo%3D4"></a>
         </div>
 
-        <div class="page page-entity">
-
-            <div class="swiper-container">
-                <div class="swiper-wrapper">
-
-                    <div class="swiper-slide">
-                        <div class="slide-inner topic">
-                            <div class="entity-summary">
-                                <div class="entity-owner">
-                                    <img class="owner-profile" src="" alt="">
-                                    <div>
-                                        <p class="owner-index">作者</p>
-                                        <strong class="owner-nickname"></strong>
-                                    </div>
-                                </div>
-                                <div class="entity-joined">
-                                    <img src="/module/entity/img/icon-posts.png" alt="">
-                                    <span>--</span><em>人参与</em>
-                                </div>
-                                <div class="entity-like_count">
-                                    <img src="/module/entity/img/icon-like.png" alt="">
-                                    <span></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide hide post-slide">
-                        <div class="slide-inner">
-                            <div class="entity-post-summary">
-                                <div class="entity-post-owner">
-                                    <img class="owner-profile" src="" alt="">
-                                    <div>
-                                        <p class="owner-index"></p>
-                                        <strong class="owner-nickname"></strong>
-                                    </div>
-                                </div>
-                                <div class="entity-post-cards">
-                                    <img src="/module/entity/img/icon-cards.png" alt="">
-                                    <span></span>
-                                </div>
-                                <div class="entity-post-like_count">
-                                    <img src="/module/entity/img/icon-like.png" alt="">
-                                    <span></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="footer-bar">
-                <a class="footer-bar-catalog"></a>
-                <div class="logo"></div>
-                <a class="footer-bar-join"></a>
-            </div>
-
+        <div class="tip">
+            <div class="tip-hand"></div>
         </div>
 
     </div>
+
+    <script id="entity-template" type="text/html">
+
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+
+                <div class="swiper-slide {{Theme.code}}">
+                    <div class="slide-inner">
+                        {{include 'card-template'}}
+                        <div class="entity-summary">
+                            <div class="entity-owner">
+                                <img class="owner-profile swiper-lazy" data-src="{{Owner.profile}}">
+                                <div>
+                                    <p class="owner-index">{{postLimit === 0 ? '作者' : '发起人'}}</p>
+                                    <strong class="owner-nickname">{{Owner.nickname}}</strong>
+                                </div>
+                            </div>
+                            <div class="entity-joined">
+                                <img class="swiper-lazy" data-src="/entity/main/img/icon-posts.png">
+                                <span>{{Posts.length}}</span><em>人参与</em>
+                            </div>
+                            <div class="entity-like_count">
+                                <img class="swiper-lazy" data-src="/entity/main/img/icon-like.png">
+                                <span>{{likeCount}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{each Posts as post index}}
+                <div class="swiper-slide {{Theme.code}}">
+                    <div class="slide-inner">
+                        {{include 'card-template' post.Cards[0]}}
+                        <div class="post-summary">
+                            <div class="post-owner">
+                                <img class="owner-profile swiper-lazy" data-src="{{post.Owner.profile}}">
+                                <div>
+                                    <p class="owner-index">{{index + 1}}号</p>
+                                    <strong class="owner-nickname">{{post.Owner.nickname}}</strong>
+                                </div>
+                            </div>
+                            <div class="post-cards">
+                                <img class="swiper-lazy" data-src="/entity/main/img/icon-cards.png">
+                                <span>{{post.Cards.length}}</span>
+                            </div>
+                            <div class="post-like_count">
+                                <img class="swiper-lazy" data-src="/entity/main/img/icon-like.png">
+                                <span>{{post.likeCount}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+
+            </div>
+        </div>
+
+        <div class="footer-bar">
+            {{if postLimit !== 0}}<a class="footer-bar-catalog" href="/entity/{{id}}/catalog?from=main"></a>{{/if}}
+            <div class="logo"></div>
+            {{if postLimit > Posts.length}}<a class="footer-bar-join" href="/entity/{{id}}/join"></a>{{/if}}
+        </div>
+
+    </script>
+
 </body>
 
 </html>

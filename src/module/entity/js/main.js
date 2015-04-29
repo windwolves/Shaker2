@@ -3,7 +3,7 @@ require.config({
     paths: {
         'jquery': '/lib/zepto',
         'flow': '/lib/flow',
-        'swiper': '/lib/idangerous.swiper',
+        'swiper': '/lib/swiper.jquery',
         'text': '/lib/require-text',
         'css': '/lib/require-css',
         'urlobject': '/js/urlobject',

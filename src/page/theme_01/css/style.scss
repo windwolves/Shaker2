@@ -6,24 +6,6 @@
         background-color: #fff;
     }
 
-    &-cover {
-        .wrapper:not(.cover) {
-            display: none;
-        }
-    }
-
-    &-layout_01 {
-        .wrapper:not(.layout_01) {
-            display: none;
-        }
-    }
-
-    &-layout_02 {
-        .wrapper:not(.layout_02) {
-            display: none;
-        }
-    }
-
     .cover {
         .picture {
             border-radius: 50%;

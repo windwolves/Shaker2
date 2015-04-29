@@ -15,21 +15,30 @@
 <body>
     <div class="panel">
 
-        <div class="swiper-container">
+    </div>
+
+    <script id="post-template" type="text/html">
+
+        <div class="swiper-container {{Entity.Theme.code}}">
             <div class="swiper-wrapper">
+                {{each Cards as card index}}
+                <div class="swiper-slide">
+                    {{include 'card-template' card}}
+                </div>
+                {{/each}}
             </div>
         </div>
 
         <div class="post-footer-bar">
-            <div class="post-card-index"></div>
-            <a class="footer-bar-back" href></a>
+            <div class="post-card-index">1/{{Cards.length}}</div>
+            <a class="footer-bar-back" href="/entity/{{Entity.id}}?pid={{id}}"></a>
             <div class="post-like_count">
                 <img src="/module/entity/img/icon-like.png" alt="">
-                <span></span>
+                <span>{{likeCount}}</span>
             </div>
         </div>
 
-    </div>
+    </script>
 </body>
 
 </html>

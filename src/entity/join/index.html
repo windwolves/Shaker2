@@ -15,44 +15,63 @@
 <body>
     <div class="panel">
 
-        <div class="page page-join">
+        <div class="preview-container swiper-container"></div>
 
-            <div class="page-join-content"></div>
+        <div class="join-footer-bar">
+            <a class="join-footer-bar-list"></a>
+            <a class="join-footer-bar-add"></a>
+            <a class="join-footer-bar-layout"></a>
+            <a class="join-footer-bar-publish"></a>
+        </div>
 
-            <div class="join-footer-bar">
-                <a class="join-footer-bar-list"></a>
-                <a class="join-footer-bar-add"></a>
-                <a class="join-footer-bar-layout"></a>
-                <a class="join-footer-bar-publish"></a>
-            </div>
+        <div class="card-list">
+            <div class="join-bar-close"></div>
+            <div class="join-bar-save"></div>
+            <p class="join-bar-title">已添加</p>
+        </div>
 
-            <div class="card-list">
-                <div class="join-bar-close"></div>
-                <div class="join-bar-save"></div>
-                <p class="join-bar-title">已添加</p>
-
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide preview-list"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="layout-list">
-                <div class="join-bar-close"></div>
-                <div class="join-bar-save"></div>
-                <p class="join-bar-title">设置版式</p>
-
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide preview-list"></div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="layout-list">
+            <div class="join-bar-close"></div>
+            <div class="join-bar-save"></div>
+            <p class="join-bar-title">设置版式</p>
         </div>
 
     </div>
+
+    <script id="preview-template" type="text/html">
+        <div class="swiper-wrapper {{entity.Theme.code}}">
+            {{each cards as card index}}
+            <div class="swiper-slide">
+                {{include 'card-template' card}}
+            </div>
+            {{/each}}
+        </div>
+    </script>
+
+    <script id="card-list-template" type="text/html">
+        <div class="swiper-container">
+            <div class="swiper-wrapper {{entity.Theme.code}}">
+                {{each cards as card index}}
+                <div class="swiper-slide preview-item">
+                    {{include 'card-template' card}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </script>
+
+    <script id="layout-list-template" type="text/html">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                {{each Layouts as layout index}}
+                <div class="swiper-slide preview-item">
+                    <img src="/page/{{code}}/img/{{layout.code}}.png" />
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </script>
+
 </body>
 
 </html>

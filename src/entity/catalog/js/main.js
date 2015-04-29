@@ -2,10 +2,8 @@ require.config({
     baseUrl: '/module/entity',
     paths: {
         'jquery': '/lib/zepto',
-        'flow': '/lib/flow',
-        'swiper': '/lib/idangerous.swiper',
-        'text': '/lib/require-text',
-        'css': '/lib/require-css',
+        'template': '/lib/template',
+        'swiper': '/lib/swiper',
         'urlobject': '/js/urlobject',
         'wechat': '/js/wechat',
         'device': '/js/device',
@@ -14,8 +12,7 @@ require.config({
         'jquery': {
             exports: '$'
         },
-        'wechat': ['jquery'],
-        'swiper': ['jquery']
+        'wechat': ['jquery']
     },
     waitSeconds: 15
 });
@@ -23,17 +20,19 @@ require.config({
 
 require([
     'jquery',
+    'template',
     'urlobject',
     'wechat',
     'swiper',
     'device'
-], function($, urlObject, wechat) {
+], function($, template, urlObject, wechat, Swiper) {
     'use strict';
 
     var url = urlObject();
 
     $.getJSON('/services/entity/' + url.segments[1], function(result) {
         if(result.status == 'success') {
+            result.data.Posts = result.data.Posts.concat(result.data.Posts).concat(result.data.Posts).concat(result.data.Posts).concat(result.data.Posts);
             initEntity(result.data);
         }
         else {
@@ -41,17 +40,7 @@ require([
         }
     });
 
-    var tapEventName = $('html').hasClass('desktop') ? 'dblclick' : 'tap';
-
     function initEntity(entity) {
-        // 禁用默认滑动效果
-        $(window).on('scroll', function(evt) {
-            evt.preventDefault();
-        }).on('touchmove', function(evt) {
-            evt.preventDefault();
-        }).on('mousemove', 'img', function(evt) {
-            evt.preventDefault();
-        });
 
         // 微信分享
         if(wechat) {
@@ -62,45 +51,45 @@ require([
             });
         }
 
-        // 参与人数
-        $('.post-count').html(entity.Posts.length);
+        var $panel = $('.panel');
 
-        var $list = $('.post-list');
-        var $itemTemplate = $list.find('.post-item').removeClass('hide').remove();
+        $panel.append(template('catalog-template', entity));
 
-        entity.Posts.forEach(function(post, index) {
-            var $item = $itemTemplate.clone().appendTo($list);
-
-            // 点赞数
-            $item.find('.post-like_count span').text(post.likeCount);
-
-            // 参与人昵称
-            $item.find('.post-owner span').text(post.Owner.nickname);
-
-            var card = post.Cards[0];
-
-            // 目录列表中内容
-            if(card.contents && card.contents[0]) {
-                $item.find('.post-content').text(card.contents[0]);
+        var swiper = new Swiper('.swiper-container', {
+            scrollbar: '.swiper-scrollbar',
+            direction: 'vertical',
+            slidesPerView: 'auto',
+            mousewheelControl: true,
+            freeMode: true,
+            preloadImages: false,
+            lazyLoading: true,
+            lazyLoadingInPrevNext: true,
+            lazyLoadingOnTransitionStart: true,
+            onTransitionEnd: function(swiper) {
+                localStorage.setItem('CATALOG_WRAPPER_TRANSLATE', Date.now() + '|' + swiper.getWrapperTranslate());
             }
-
-            // 目录列表中图片
-            if(card.pictures && card.pictures[0]) {
-                $item.find('.post-picture').css('background-image', 'url(' + card.pictures[0] + ')');
-            }
-
-            // 点击目录列表进行跳转
-            $item.on(tapEventName, function(event) {
-                location.href = '/post/' + post.id;
-            });
         });
 
-        $list.wrap('<div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"></div></div></div>');
-        $list.closest('.swiper-container').addClass('scroll-v').swiper({
-            mode: 'vertical',
-            scrollContainer: true
-        });
+        var translate = localStorage.getItem('CATALOG_WRAPPER_TRANSLATE');
+
+        if(url.params.from === 'main' || !translate || (Date.now() - translate.split('|')[0] > 60000)) {
+            localStorage.removeItem('CATALOG_WRAPPER_TRANSLATE');
+        }
+        else {
+            swiper.setWrapperTransition(500);
+            swiper.setWrapperTranslate(translate.split('|')[1]);
+        }
 
     }
+
+
+    // 禁用默认滑动效果
+    $(window).on('scroll', function(evt) {
+        evt.preventDefault();
+    }).on('touchmove', function(evt) {
+        evt.preventDefault();
+    }).on('mousemove', 'img', function(evt) {
+        evt.preventDefault();
+    });
 
 });

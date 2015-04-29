@@ -1,8 +1,9 @@
 @import "../../../css/sass/mixin";
 @import "../../../css/sass/normalize";
 @import "../../../css/sass/reset";
+@import "../../../css/sass/swiper";
 
-html, body, .panel {
+html, body {
     height: 100%;
 }
 
@@ -11,87 +12,8 @@ img {
     width: 100%;
 }
 
-.hide {
-    display: none;
-}
-
-.swiper-container {
-    @include backface-visibility(hidden);
+.panel {
     height: 100%;
-    margin: 0 auto;
-    overflow: hidden;
-    position: relative;
-    @include transform-style(preserve-3d);
-    width: 100%;
-    z-index: 1;
-
-    & > .swiper-wrapper {
-        @include box-sizing(content-box);
-        height: 100%;
-        @include transform(translate3d(0px, 0, 0));
-        -webkit-transition-property: -webkit-transform, left, top;
-        -moz-transition-property: -moz-transform, left, top;
-        -ms-transition-property: -ms-transform, left, top;
-        -o-transition-property: -o-transform, left, top;
-        transition-property: transform, left, top;
-        @include transition-duration(0s);
-        @include transform-style(preserve-3d);
-        @include transition-timing-function(ease);
-        width: 100%;
-
-        & > .swiper-slide {
-            height: 100%;
-            float: left;
-            @include transform-style(preserve-3d);
-            width: 100%;
-        }
-    }
-
-    &.scroll-v {
-        & > .swiper-wrapper {
-            & > .swiper-slide {
-                height: auto;
-            }
-        }
-    }
-
-    .swiper-scrollbar {
-        background-color: transparent;
-        border-radius: 2px;
-        position: absolute;
-        z-index: 9999;
-
-        &.swiper-scrollbar-h {
-            bottom: 3px;
-            height: 2px;
-            left: 2px;
-            right: 2px;
-        }
-
-        &.swiper-scrollbar-v {
-            bottom: 2px;
-            right: 3px;
-            top: 2px;
-            width: 2px;
-        }
-
-        .swiper-scrollbar-drag {
-            background-color: rgba(255, 255, 255, .5);
-            border-radius: 2px;
-            cursor: move;
-            height: 100%;
-            width: 100%;
-            position: relative;
-        }
-    }
-
-    /* IE10 Windows Phone 8 Fixes */
-    &.swiper-wp8-horizontal {
-        -ms-touch-action: pan-y;
-    }
-    &.swiper-wp8-vertical {
-        -ms-touch-action: pan-x;
-    }
 }
 
 .header {
@@ -131,14 +53,27 @@ img {
     padding-top: size(90px);
 }
 
+.swiper-container {
+    height: 100%;
+    width: 100%;
+}
+
+.swiper-slide {
+    height: auto;
+}
+
 .post-item {
-    cursor: pointer;
+    display: block;
+    overflow: hidden;
     padding: size(24px) size(12px) size(24px) size(24px);
+    text-decoration: none;
 }
 
 .post-picture {
     background: transparent 50% 50% / cover no-repeat;
+    border: 1px solid #e7e7e7;
     border-radius: size(10px);
+    display: block;
     float: left;
     height: size(176px);
     width: size(176px);
@@ -154,6 +89,7 @@ img {
 .post-content {
     font-size: size(28px);
     @extend %text-ellipsis;
+
     width: 100%;
 }
 
