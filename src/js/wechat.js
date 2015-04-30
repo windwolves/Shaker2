@@ -167,7 +167,10 @@
         return str.slice(1);
     }
 
-    if(window.wx) return;
+    if(window.wx) {
+        window.wechat = Wechat(window.wx);
+        return;
+    }
 
     if(typeof define === 'function') {
         define('wechat', ['http://res.wx.qq.com/open/js/jweixin-1.0.0.js'], Wechat);
