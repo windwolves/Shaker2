@@ -18,14 +18,20 @@ var post = new Rest({
             { model: db.Entity, include: [db.Theme] },
             { model: db.Card, include: [db.Layout, db.Skin] }
         ],
+        order: 'Cards.index asc',
         beforeSend: function(model) {
             model.Cards.forEach(function(card) {
                 try {
                     card.contents = JSON.parse(card.contents);
                     card.pictures = JSON.parse(card.pictures);
                 }
-                catch(ex) {
+                catch(ex) {}
+
+                if(!Array.isArray(card.contents)) {
                     card.contents = [];
+                }
+
+                if(!Array.isArray(card.pictures)) {
                     card.pictures = [];
                 }
             });
@@ -56,10 +62,10 @@ var post = new Rest({
                 card.contents = JSON.stringify(card.contents);
 
                 if(Array.isArray(card.pictures)) {
-                    var cardPictruePrefix = 'entity/' + model.entityId + '/' + model.id + '-';
+                    var cardPictruePrefix = 'entity/' + model.entityId + '/' + model.id + '-p' + index + '-';
 
-                    card.pictures.forEach(function(picture, index) {
-                        card.pictures[index] = fileUtils.create(picture, cardPictruePrefix);
+                    card.pictures.forEach(function(picture, pi) {
+                        card.pictures[pi] = fileUtils.create(picture, cardPictruePrefix);
                     });
                 }
 

@@ -20,7 +20,7 @@ var entity = new Rest({
             ] },
             db.Theme
         ],
-        order: 'Posts.likeCount desc, `Posts.Cards`.index asc',
+        order: 'Posts.likeCount desc, Posts.createdAt asc, `Posts.Cards`.index asc',
         beforeSend: function(model) {
             model.Posts.forEach(function(post) {
                 post.Cards.forEach(function(card) {
@@ -28,8 +28,13 @@ var entity = new Rest({
                         card.contents = JSON.parse(card.contents);
                         card.pictures = JSON.parse(card.pictures);
                     }
-                    catch(ex) {
+                    catch(ex) {}
+
+                    if(!Array.isArray(card.contents)) {
                         card.contents = [];
+                    }
+
+                    if(!Array.isArray(card.pictures)) {
                         card.pictures = [];
                     }
                 });

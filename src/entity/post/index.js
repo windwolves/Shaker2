@@ -1,38 +1,9 @@
-require.config({
-    baseUrl: '/module/entity',
-    paths: {
-        'text': '/lib/require-text',
-        'css': '/lib/require-css',
-        'jquery': '/lib/zepto',
-        'template': '/lib/template',
-        'swiper': '/lib/swiper',
-        'urlobject': '/js/urlobject',
-        'wechat': '/js/wechat',
-        'device': '/js/device',
-    },
-    shim: {
-        'jquery': {
-            exports: '$'
-        },
-        'wechat': ['jquery']
-    },
-    waitSeconds: 15
-});
-
-
-require([
-    'jquery',
-    'template',
-    'urlobject',
-    'wechat',
-    'swiper',
-    'device'
-], function($, template, urlObject, wechat, Swiper) {
+$(function() {
     'use strict';
 
-    var url = urlObject();
+    var id = location.pathname.split('/').slice(1)[1];
 
-    $.getJSON('/services/post/' + url.segments[1], function(result) {
+    $.getJSON('/services/post/' + id, function(result) {
         if(result.status == 'success') {
             initPost(result.data);
         }
@@ -43,7 +14,7 @@ require([
 
     function initPost(post) {
         // 微信分享
-        if(wechat) {
+        if(typeof wechat !== 'undefined') {
             wechat.init(location.href.split('#')[0], {
                 imgUrl: (location.origin + post.Entity.picture).replace(/.*http/g, 'http'),
                 title: post.Entity.title,
@@ -51,19 +22,13 @@ require([
             });
         }
 
+        $('<link rel="stylesheet"/>').attr('href', '/page/' + post.Entity.Theme.code + '/css/style.css').appendTo('head');
 
-        var $panel = $('.panel');
-
-
-        var deps = [
-            'text!/page/' + post.Entity.Theme.code + '/index.html',
-            'css!/page/' + post.Entity.Theme.code + '/css/style.css'
-        ];
-
-        require(deps, function(cardTemplate) {
+        $.get('/page/' + post.Entity.Theme.code + '/index.html', function(cardTemplate) {
             $('<script id="card-template" type="text/html"/>').html(cardTemplate).appendTo($('body'));
 
-            $panel.append(template('post-template', post));
+
+            $('.panel').append(template('post-template', post));
 
             var $cardIndex = $('.post-card-index');
 
@@ -80,14 +45,11 @@ require([
 
             // 返回
             $('.footer-bar-back').on('click', function() {
-                if(url.params.from === 'catalog') {
-                    history.go(-1);
-                    return false;
-                }
+                history.back();
+                return false;
             });
 
             initLikeCount(post);
-
         });
 
     }

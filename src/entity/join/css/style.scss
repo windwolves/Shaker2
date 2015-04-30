@@ -3,14 +3,8 @@
 @import "../../../css/sass/reset";
 @import "../../../css/sass/swiper";
 
-
 html, body {
     height: 100%;
-}
-
-img {
-    max-width: 100%;
-    width: 100%;
 }
 
 .panel {
@@ -29,8 +23,9 @@ img {
 
 .picture {
     background-color: transparent;
-    background-position: 50% 50%;
+    background-position: 50% 100%;
     background-repeat: no-repeat;
+    cursor: pointer;
     @include background-size(cover);
 }
 
@@ -39,27 +34,88 @@ img {
     width: 100%;
 }
 
+.preview-container {
+    .swiper-slide {
+        padding-bottom: size(48px);
+    }
+}
+
+
 %footer-bar {
     background-color: rgba(255, 255, 255, .95);
     border-top: 1px solid rgba(0, 0, 0, .08);
     box-shadow: 0 0 3.5px rgba(0, 0, 0, .08);
     bottom: 0;
     left: 0;
-    height: size(88px);
-    opacity: 1;
     position: absolute;
-    @include transition(.5s);
     width: 100%;
-    z-index: 100;
 }
 
-%join-bar {
+.join-footer-bar {
     @extend %footer-bar;
+
+    $footer-height: 88px;
+    $icon-size: $footer-height;
+
+    height: size($footer-height);
+    z-index: 100;
+
+    %footer-icon {
+        background-color: transparent;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        cursor: pointer;
+        height: size($icon-size);
+        position: absolute;
+        top: 0;
+        width: size($icon-size);
+    }
+
+    &-list {
+        @extend %footer-icon;
+
+        background-image: url('../img/footer-card-list.png');
+        background-size: 58px / $icon-size * 100% 59px / $icon-size * 100%;
+        left: size-h(80px);
+    }
+
+    &-add {
+        @extend %footer-icon;
+
+        background-image: url('../img/footer-card-add.png');
+        background-size: 78px / $icon-size * 100% 60px / $icon-size * 100%;
+        left: size-h(243px);
+    }
+
+    &-layout {
+        @extend %footer-icon;
+
+        background-image: url('../img/footer-layout.png');
+        background-size: 39px / $icon-size * 100% 62px / $icon-size * 100%;
+        left: size-h(420px);
+    }
+
+    &-publish {
+        @extend %footer-icon;
+
+        background-image: url('../img/footer-publish.png');
+        background-size: 39px / $icon-size * 100% 61px / $icon-size * 100%;
+        left: size-h(590px);
+    }
+}
+
+
+%footer-list {
+    @extend %footer-bar;
+
+    $icon-size: 88px;
 
     height: size-v(376px);
     opacity: 0;
-    padding-top: size(80px);
+    padding-top: size(94px);
+    padding-bottom: size(22px);
     @include transform(translate3d(0, 100%, 0));
+    @include transition(.5s);
     z-index: 200;
 
     &.in {
@@ -71,157 +127,93 @@ img {
         color: #2a2a2a;
         font-size: size(30px);
         left: 0;
-        line-height: 1;
+        line-height: size($icon-size);
         position: absolute;
         text-align: center;
-        top: size(32px, 376px);
-        width: 100%;
-    }
-
-    .join-bar-close {
-        background: transparent url('../img/icon-close.png') 0 0 no-repeat;
-        background-size: 100% 100%;
-        cursor: pointer;
-        left: size-h(28px);
-        position: absolute;
-        top: size(30px, 376px);
-        @include wh(34px, 32px);
-        z-index: 200;
-    }
-
-    .join-bar-save {
-        background: transparent url('../img/icon-save.png') 0 0 no-repeat;
-        background-size: 100% 100%;
-        cursor: pointer;
-        left: size-h(676px);
-        position: absolute;
-        top: size(32px, 376px);
-        @include wh(42px, 28px);
-        z-index: 200;
-    }
-
-    .preview-list {
-        overflow: hidden;
-    }
-
-    .preview-item {
-        cursor: pointer;
-        float: left;
-        height: 100%;
-        padding: size(20px);
-        position: relative;
-
-        &.active {
-            img {
-                box-shadow: 0 0 0 1px #3ce2ba;
-            }
-        }
-
-        img {
-            box-shadow: 0 0 0 1px #ccc;
-            height: 100%;
-            width: auto;
-        }
-
-        &-remove {
-            background: transparent url('../img/icon-remove.png') 0 0 no-repeat;
-            background-size: 100% 100%;
-            cursor: pointer;
-            height: size(34px);
-            position: absolute;
-            right: size(50px - 34px / 2);
-            top: size(20px - 34px / 2);
-            width: size(34px);
-            z-index: 300;
-        }
-    }
-}
-
-.preview-content {
-    height: 100%;
-    @include transform-origin(50% 0%);
-    @include transition(.5s);
-
-    &.smaller {
-        padding: size(10px);
-        @include transform(scale(1 - size-v(376px) / 100%));
-    }
-}
-
-.join-footer-bar {
-    @extend %footer-bar;
-
-    &-list {
-        background: transparent url('../img/footer-card-list.png') 0 0 no-repeat;
-        background-size: 100% 100%;
-        cursor: pointer;
-        left: size-h(94px);
-        position: absolute;
-        top: 50% - size(59px / 2, 88px);
-        @include wh(58px, 59px);
-    }
-
-    &-add {
-        background: transparent url('../img/footer-card-add.png') 0 0 no-repeat;
-        background-size: 100% 100%;
-        cursor: pointer;
-        left: size-h(248px);
-        position: absolute;
-        top: 50% - size(60px / 2, 88px);
-        @include wh(78px, 60px);
-    }
-
-    &-layout {
-        background: transparent url('../img/footer-layout.png') 0 0 no-repeat;
-        background-size: 100% 100%;
-        cursor: pointer;
-        left: size-h(444px);
-        position: absolute;
-        top: 50% - size(62px / 2, 88px);
-        @include wh(39px, 62px);
-    }
-
-    &-publish {
-        background: transparent url('../img/footer-publish.png') 0 0 no-repeat;
-        background-size: 100% 100%;
-        cursor: pointer;
-        left: size-h(614px);
-        position: absolute;
-        top: 50% - size(61px / 2, 88px);
-        @include wh(39px, 61px);
-    }
-}
-
-.card-list {
-    @extend %join-bar;
-}
-
-.layout-list {
-    @extend %join-bar;
-}
-
-.picture {
-    position: relative;
-
-    &-mask {
-        border-radius: inherit;
-        cursor: pointer;
-        height: 100%;
-        left: 0;
-        position: absolute;
         top: 0;
         width: 100%;
     }
 
-    &-tip {
-        bottom: 20px;
-        color: #fff;
-        font-size: size(28px);
-        left: 0;
-        pointer-events: none;
+    .join-bar-close,
+    .join-bar-save,
+    .join-bar-remove {
+        background-color: transparent;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        cursor: pointer;
+        height: size($icon-size);
         position: absolute;
+        top: 0;
+        width: size($icon-size);
+        z-index: 200;
+    }
+
+    .join-bar-close {
+        background-image: url('../img/icon-close.png');
+        background-size: 34px / $icon-size * 100% 32px / $icon-size * 100%;
+        left: 0;
+    }
+
+    .join-bar-save {
+        background-image: url('../img/icon-save.png');
+        background-size: 42px / $icon-size * 100% 28px / $icon-size * 100%;
+        right: 0;
+    }
+
+    .join-bar-remove {
+        background-image: url('../img/icon-remove.png');
+        background-size: 34px / $icon-size * 100% 34px / $icon-size * 100%;
+        right: 0;
+        @include transform(translate3d(50%, -50%, 0) scale(4));
+    }
+}
+
+.card-list {
+    @extend %footer-list;
+
+
+    .swiper-container {
+        overflow: visible;
+        // @include transform(scale(0.2368));
+        @include transform-origin(50% 0);
+    }
+
+    .swiper-slide {
+        cursor: pointer;
+        position: relative;
+
+        .wrapper {
+            border: 4px solid #ccc;
+        }
+
+        &.active {
+            .wrapper {
+                border-color: #3ce2ba;
+            }
+        }
+    }
+
+    .wrapper {
+        border: 1px solid #ccc;
+    }
+}
+
+.layout-list {
+    @extend %footer-list;
+
+    .swiper-slide {
+        cursor: pointer;
         text-align: center;
-        width: 100%;
+
+        img {
+            border: 1px solid #ccc;
+        }
+
+        &.active {
+            img {
+                border-color: #3ce2ba;
+            }
+        }
     }
 }
 

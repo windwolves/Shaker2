@@ -17,10 +17,8 @@
             root.classList.add('ios');
         }
     }
-    else {
-        if(isInWechat(userAgent)) {
-            root.classList.add('wechat');
-        }
+    else if(isInWechat(userAgent)) {
+        root.classList.add('wechat');
     }
 
 

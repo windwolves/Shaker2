@@ -7,11 +7,6 @@ html, body {
     height: 100%;
 }
 
-img {
-    max-width: 100%;
-    width: 100%;
-}
-
 .panel {
     height: 100%;
 }
@@ -36,38 +31,41 @@ img {
     width: 100%;
 }
 
-$icon-size: 88px;
-%icon {
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    height: size($icon-size);
-    width: size($icon-size);
-}
 
 .post-footer-bar {
+    $footer-height: 88px;
+    $icon-size: $footer-height;
+
     background-color: rgba(255, 255, 255, .95);
     border-top: 1px solid rgba(0, 0, 0, .08);
     box-shadow: 0 0 3.5px rgba(0, 0, 0, .08);
     bottom: 0;
     left: 0;
-    height: size(88px);
+    height: size($footer-height);
     opacity: 1;
     position: absolute;
     @include transition(.5s);
     width: 100%;
     z-index: 100;
 
+    %footer-icon {
+        background-color: transparent;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        bottom: 0;
+        cursor: pointer;
+        height: size($icon-size);
+        position: absolute;
+        top: 0;
+        width: size($icon-size);
+    }
+
     .footer-bar-back {
-        @extend %icon;
+        @extend %footer-icon;
 
         background-image: url('../img/footer-back.png');
         background-size: 19px / $icon-size * 100% 34px / $icon-size * 100%;
-        bottom: 0;
-        cursor: pointer;
         left: size-h(20px);
-        position: absolute;
-        top: 0;
     }
 
     .post-card-index {

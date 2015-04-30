@@ -6,15 +6,20 @@
 </div>
 {{/if}}
 
-{{if Layout && Layout.code.search('layout_01') > -1}}
+
+{{if Layout && Layout.code}}
+
+{{if Layout.code.search('layout_01') > -1}}
 <div class="wrapper layout_01">
     <div class="picture swiper-lazy" data-background="{{pictures[0]}}"></div>
     <p class="content">{{contents[0]}}</p>
 </div>
 {{/if}}
 
-{{if Layout && Layout.code.search('layout_02') > -1}}
+{{if Layout.code.search('layout_02') > -1}}
 <div class="wrapper layout_02">
     <p class="content">{{contents[0]}}</p>
 </div>
+{{/if}}
+
 {{/if}}

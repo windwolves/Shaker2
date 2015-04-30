@@ -9,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
 
     <link rel="stylesheet" href="/entity/join/css/style.css">
-    <script data-main="/entity/join/js/main" src="/lib/require.js"></script>
 </head>
 
 <body>
@@ -25,15 +24,19 @@
         </div>
 
         <div class="card-list">
+            <p class="join-bar-title">已添加</p>
             <div class="join-bar-close"></div>
             <div class="join-bar-save"></div>
-            <p class="join-bar-title">已添加</p>
+
+            <div class="swiper-container"></div>
         </div>
 
         <div class="layout-list">
+            <p class="join-bar-title">设置版式</p>
             <div class="join-bar-close"></div>
             <div class="join-bar-save"></div>
-            <p class="join-bar-title">设置版式</p>
+
+            <div class="swiper-container"></div>
         </div>
 
     </div>
@@ -49,28 +52,33 @@
     </script>
 
     <script id="card-list-template" type="text/html">
-        <div class="swiper-container">
-            <div class="swiper-wrapper {{entity.Theme.code}}">
-                {{each cards as card index}}
-                <div class="swiper-slide preview-item">
-                    {{include 'card-template' card}}
-                </div>
-                {{/each}}
+        <div class="swiper-wrapper {{entity.Theme.code}}">
+            {{each cards as card index}}
+            <div class="swiper-slide">
+                {{include 'card-template' card}}
+                <div class="join-bar-remove"></div>
             </div>
+            {{/each}}
         </div>
     </script>
 
     <script id="layout-list-template" type="text/html">
-        <div class="swiper-container">
-            <div class="swiper-wrapper">
-                {{each Layouts as layout index}}
-                <div class="swiper-slide preview-item">
-                    <img src="/page/{{code}}/img/{{layout.code}}.png" />
-                </div>
-                {{/each}}
+        <div class="swiper-wrapper">
+            {{each Layouts as layout index}}
+            <div class="swiper-slide">
+                <img src="/page/{{code}}/img/{{layout.code}}.png" />
             </div>
+            {{/each}}
         </div>
     </script>
+
+    <script src="/lib/zepto.js"></script>
+    <script src="/lib/template.js"></script>
+    <script src="/lib/swiper.js"></script>
+    <script src="/lib/flow.js"></script>
+    <script src="/js/wechat.js"></script>
+    <script src="/js/device.js"></script>
+    <script src="/entity/join/index.js"></script>
 
 </body>
 

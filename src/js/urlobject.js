@@ -34,7 +34,7 @@
     }
 
     if(typeof define === 'function') {
-        define('urlobject', [], function() {
+        define('urlObject', [], function() {
             return urlObject;
         });
     }

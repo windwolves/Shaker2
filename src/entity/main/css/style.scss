@@ -12,11 +12,6 @@ html, body {
     height: 100%;
 }
 
-img {
-    max-width: 100%;
-    width: 100%;
-}
-
 .panel {
     background: rgba(0, 0, 0, .05);
     height: 100%;
@@ -49,6 +44,9 @@ $scale: 0.9;
 }
 
 .ads {
+    $ads-height: 90px;
+    $icon-size: $ads-height;
+
     background: transparent url('../img/ads-bg.png') 0 0 no-repeat;
     background-size: 100% 100%;
     left: 0;
@@ -56,7 +54,7 @@ $scale: 0.9;
     position: absolute;
     top: 0;
     @include transition(.5s);
-    @include wh(750px, 90px);
+    @include wh(750px, $ads-height);
     z-index: 100;
 
     &.out {
@@ -65,12 +63,14 @@ $scale: 0.9;
     }
 
     &-close {
-        background: transparent url('../img/ads-close.png') 0 0 / 100% 100% no-repeat;
+        background: transparent url('../img/ads-close.png') 50% 50% no-repeat;
+        background-size: 22px / 88px * 100% 19px / $icon-size * 100%;
         cursor: pointer;
-        left: size-h(30px);
+        height: size($icon-size);
+        left: size(-10px);
         position: absolute;
-        top: 50% - size(19px / 2, 90px);
-        @include wh(22px, 19px);
+        top: 0;
+        width: size($icon-size);
     }
 
     &-download {
@@ -112,64 +112,55 @@ $scale: 0.9;
 }
 
 .footer-bar {
-    $foolter-height: 88px;
-    $icon-size: $foolter-height;
+    $footer-height: 88px;
+    $icon-size: $footer-height;
 
     background-color: rgba(255, 255, 255, .95);
     border-top: 1px solid rgba(0, 0, 0, .08);
     box-shadow: 0 0 3.5px rgba(0, 0, 0, .08);
     bottom: 0;
     left: 0;
-    height: size($foolter-height);
+    height: size($footer-height);
     position: absolute;
     width: 100%;
     z-index: 100;
 
-    %icon {
+    %footer-icon {
         background-color: transparent;
         background-repeat: no-repeat;
         background-position: 50% 50%;
+        cursor: pointer;
         height: size($icon-size);
+        position: absolute;
+        top: 0;
         width: size($icon-size);
     }
 
     .logo {
-        @extend %icon;
+        @extend %footer-icon;
 
         background-image: url('../img/logo.png');
         background-size: 100% 49px / $icon-size * 100%;
-        bottom: 0;
-        cursor: pointer;
         left: 0;
         margin: auto;
-        position: absolute;
         right: 0;
-        top: 0;
         width: size(110px);
     }
 
     &-catalog {
-        @extend %icon;
+        @extend %footer-icon;
 
         background-image: url('../img/footer-catalog.png');
         background-size: 43px / $icon-size * 100% 67px / $icon-size * 100%;
-        bottom: 0;
-        cursor: pointer;
         left: size-h(20px);
-        position: absolute;
-        top: 0;
     }
 
     &-join {
-        @extend %icon;
+        @extend %footer-icon;
 
         background-image: url('../img/footer-join.png');
         background-size: 69px / $icon-size * 100% 63px / $icon-size * 100%;
-        bottom: 0;
-        cursor: pointer;
         left: size-h(630px);
-        position: absolute;
-        top: 0;
     }
 }
 

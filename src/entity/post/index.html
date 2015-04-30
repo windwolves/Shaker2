@@ -9,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
 
     <link rel="stylesheet" href="/entity/post/css/style.css">
-    <script data-main="/entity/post/js/main" src="/lib/require.js"></script>
 </head>
 
 <body>
@@ -31,7 +30,7 @@
 
         <div class="post-footer-bar">
             <div class="post-card-index">1/{{Cards.length}}</div>
-            <a class="footer-bar-back" href="/entity/{{Entity.id}}?pid={{id}}"></a>
+            <a class="footer-bar-back" href></a>
             <div class="post-like_count">
                 <img src="/module/entity/img/icon-like.png" alt="">
                 <span>{{likeCount}}</span>
@@ -39,6 +38,13 @@
         </div>
 
     </script>
+
+    <script src="/lib/zepto.js"></script>
+    <script src="/lib/template.js"></script>
+    <script src="/lib/swiper.js"></script>
+    <script src="/js/wechat.js"></script>
+    <script src="/js/device.js"></script>
+    <script src="/entity/post/index.js"></script>
 </body>
 
 </html>

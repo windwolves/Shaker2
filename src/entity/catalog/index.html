@@ -9,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
 
     <link rel="stylesheet" href="/entity/catalog/css/style.css">
-    <script data-main="/entity/catalog/js/main" src="/lib/require.js"></script>
 </head>
 
 <body>
@@ -32,7 +31,7 @@
 
                     <div class="swiper-slide">
                         {{each Posts as post index}}
-                        <a class="post-item" href="/post/{{post.id}}?from=catalog">
+                        <a class="post-item" href="/post/{{post.id}}">
                             <img class="post-picture swiper-lazy" data-src="{{post.Cards[0].pictures[0] || '/entity/catalog/img/picture.png'}}" />
 
                             <div class="post-item-content">
@@ -57,6 +56,13 @@
         </div>
 
     </script>
+
+    <script src="/lib/zepto.js"></script>
+    <script src="/lib/template.js"></script>
+    <script src="/lib/swiper.js"></script>
+    <script src="/js/wechat.js"></script>
+    <script src="/js/device.js"></script>
+    <script src="/entity/catalog/index.js"></script>
 </body>
 
 </html>

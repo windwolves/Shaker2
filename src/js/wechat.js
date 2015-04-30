@@ -12,12 +12,12 @@
         cleartoken: '/services/wechat/cleartoken'
     };
 
-    var Wechat = function(wx, urlObject) {
+    var Wechat = function(wx) {
         var ready = function(url, callback) {
             $.get(serviceUrls.signature.replace(':url', encodeURIComponent(url)), function(result) {
                 if(result.status == 'success') {
                     wx.config({
-                        debug: urlObject().params.debug,
+                        debug: !!(location.href.match(/\?.*debug=([^&]*)/)),
                         appId: result.data.appId,
                         nonceStr: result.data.nonceStr,
                         timestamp: result.data.timestamp,
@@ -93,12 +93,14 @@
         };
 
         var auth = function(callback) {
-            var url = urlObject();
-
             typeof callback !== 'function' && (callback = function() {});
 
-            if(url.params.code) {
-                $.get(serviceUrls.auth.replace(':code', url.params.code), function(result) {
+            var result = location.href.match(/\?.*code=([^&]*)/);
+
+            var code = result && result[1];
+
+            if(code) {
+                $.get(serviceUrls.auth.replace(':code', code), function(result) {
                     if(result.status == 'success') {
                         var user = result.data;
 
@@ -167,12 +169,11 @@
 
 
     if(typeof define === 'function') {
-        define('wechat', ['http://res.wx.qq.com/open/js/jweixin-1.0.0.js', 'urlobject'], Wechat);
+        define('wechat', ['http://res.wx.qq.com/open/js/jweixin-1.0.0.js'], Wechat);
     }
     else if($) {
-        $.getScript('http://res.wx.qq.com/open/js/jweixin-1.0.0', function() {
-            window.wechat = Wechat(window.wx, window.urlObject);
-        });
+        $('<script/>').attr('src', 'http://res.wx.qq.com/open/js/jweixin-1.0.0.js').appendTo('head');
+        window.wechat = Wechat(window.wx);
     }
     else {
         throw 'Please load jquery first';

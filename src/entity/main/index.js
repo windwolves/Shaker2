@@ -1,38 +1,13 @@
-require.config({
-    baseUrl: '/module/entity',
-    paths: {
-        'text': '/lib/require-text',
-        'css': '/lib/require-css',
-        'jquery': '/lib/zepto',
-        'template': '/lib/template',
-        'swiper': '/lib/swiper',
-        'urlobject': '/js/urlobject',
-        'wechat': '/js/wechat',
-        'device': '/js/device',
-    },
-    shim: {
-        'jquery': {
-            exports: '$'
-        },
-        'wechat': ['jquery']
-    },
-    waitSeconds: 15
-});
-
-
-require([
-    'jquery',
-    'template',
-    'urlobject',
-    'wechat',
-    'swiper',
-    'device'
-], function($, template, urlObject, wechat, Swiper) {
+$(function() {
     'use strict';
 
-    var url = urlObject();
+    var id = location.pathname.split('/').slice(1)[1];
 
-    $.getJSON('/services/entity/' + url.segments[1], function(result) {
+    var result = location.href.match(/\?.*pid=([^&]*)/);
+
+    var pid = result && result[1];
+
+    $.getJSON('/services/entity/' + id, function(result) {
         if(result.status == 'success') {
             initEntity(result.data);
         }
@@ -42,9 +17,8 @@ require([
     });
 
     function initEntity(entity) {
-
         // 微信分享
-        if(wechat) {
+        if(typeof wechat !== 'undefined') {
             wechat.init(location.href.split('#')[0], {
                 imgUrl: (location.origin + entity.picture).replace(/.*http/g, 'http'),
                 title: entity.title,
@@ -72,15 +46,22 @@ require([
         }, 3000);
 
 
-        var deps = [
-            'text!/page/' + entity.Theme.code + '/index.html',
-            'css!/page/' + entity.Theme.code + '/css/style.css'
-        ];
+        $('<link rel="stylesheet"/>').attr('href', '/page/' + entity.Theme.code + '/css/style.css').appendTo('head');
 
-        require(deps, function(cardTemplate) {
+        $.get('/page/' + entity.Theme.code + '/index.html', function(cardTemplate) {
             $('<script id="card-template" type="text/html"/>').html(cardTemplate).appendTo($('body'));
 
             $panel.append(template('entity-template', entity));
+
+            var index = 0;
+
+            if(pid) {
+                entity.Posts.forEach(function(d, i) {
+                    if(d.id == pid) {
+                        index = i + 1;
+                    }
+                });
+            }
 
             var swiper = new Swiper('.swiper-container', {
                 spaceBetween: 10,
@@ -88,12 +69,15 @@ require([
                 lazyLoading: true,
                 lazyLoadingInPrevNext: true,
                 lazyLoadingOnTransitionStart: true,
+                initialSlide: parseInt(window.location.hash.slice(1)) || index,
                 onClick: function(swiper, evt) {
-                    if(swiper.activeIndex && entity.Posts[swiper.activeIndex - 1]) {
-                        location.href = '/post/' + entity.Posts[swiper.activeIndex - 1].id;
+                    var activeIndex = swiper.activeIndex;
+                    if(activeIndex && entity.Posts[activeIndex - 1]) {
+                        window.location.hash = activeIndex;
+                        location.href = '/post/' + entity.Posts[activeIndex - 1].id;
                     }
                 },
-                onSlideChangeStart: function() {
+                onSlideChangeStart: function(swiper) {
                     $tip.addClass('out');
                 }
             });
@@ -102,14 +86,6 @@ require([
             $panel.find('.footer-bar .logo').on('click', function() {
                 swiper.slideTo(0);
             });
-
-            if(url.params.pid) {
-                entity.Posts.forEach(function(post, index) {
-                    if(post.id == url.params.pid) {
-                        swiper.slideTo(index + 1);
-                    }
-                });
-            }
 
         });
 
