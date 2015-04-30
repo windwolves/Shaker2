@@ -67,7 +67,7 @@
 
             entitys.forEach(function(entity) {
                 var $li = $('<li/>').appendTo($entitys);
-                var $link = $('<a/>').attr('href', '/module/entity/' + entity.id).html(entity.title);
+                var $link = $('<a/>').attr('href', '/entity/' + entity.id).html(entity.title);
 
                 $li.append($link);
             });
