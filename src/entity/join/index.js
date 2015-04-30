@@ -10,7 +10,7 @@ $(function() {
     wechat.auth(function(authedUser) {
         user = authedUser;
 
-        $.getJSON('/services/entity/' + url.segments[1], function(result) {
+        $.getJSON('/services/entity/' + id, function(result) {
             if(result.status == 'success') {
                 var entity = result.data;
 
