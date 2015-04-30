@@ -167,13 +167,19 @@
         return str.slice(1);
     }
 
+    if(window.wx) return;
 
     if(typeof define === 'function') {
         define('wechat', ['http://res.wx.qq.com/open/js/jweixin-1.0.0.js'], Wechat);
     }
     else if($) {
-        $('<script/>').attr('src', 'http://res.wx.qq.com/open/js/jweixin-1.0.0.js').appendTo('head');
-        window.wechat = Wechat(window.wx);
+        $.ajax({
+            url: 'http://res.wx.qq.com/open/js/jweixin-1.0.0.js',
+            dataType: 'script',
+            success: function() {
+                window.wechat = Wechat(window.wx);
+            }
+        });
     }
     else {
         throw 'Please load jquery first';
