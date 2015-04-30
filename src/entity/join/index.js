@@ -2,12 +2,19 @@ $(function() {
     'use strict';
 
     var user;
-
     var id = location.pathname.split('/').slice(1)[1];
 
     if(typeof wechat === 'undefined') return;
 
-    wechat.auth(function(authedUser) {
+    wechat.auth(setUser);
+
+    // setUser({
+    //     username: 'admin',
+    //     password: '21232f297a57a5a743894a0e4a801fc3'
+    // });
+
+
+    function setUser(authedUser) {
         user = authedUser;
 
         $.getJSON('/services/entity/' + id, function(result) {
@@ -26,29 +33,7 @@ $(function() {
                 console.error(result.data);
             }
         });
-    });
-
-    // user = {
-    //     username: 'admin',
-    //     password: '21232f297a57a5a743894a0e4a801fc3'
-    // };
-
-    // $.getJSON('/services/entity/' + id, function(result) {
-    //     if(result.status == 'success') {
-    //         var entity = result.data;
-
-    //         $.getJSON('/services/theme/' + entity.themeId, function(result) {
-    //             if(result.status != 'success') return;
-
-    //             entity.Theme = result.data;
-
-    //             initEntity(entity);
-    //         });
-    //     }
-    //     else {
-    //         console.error(result.data);
-    //     }
-    // });
+    }
 
 
     var $panel, $preview, $cardList, $layoutList;
