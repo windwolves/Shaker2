@@ -44,7 +44,6 @@
 
         var signature = function(url, callback) {
             ready(function() {
-                alert(serviceUrls.signature.replace(':url', encodeURIComponent(url)));
                 $.get(serviceUrls.signature.replace(':url', encodeURIComponent(url)), function(result) {
                     if(result.status == 'success') {
                         wx.config({
@@ -169,7 +168,7 @@
                 !options.link && (options.link = location.href.split('#')[0]);
 
                 signature(options.link, function() {
-                    _share(options);
+                    share(options);
                 });
 
             },
