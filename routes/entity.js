@@ -117,6 +117,7 @@ router.get('/type/:type', function(req, res) {
     db.Entity.findAll({
         where: where,
         order: 'likeCount',
+        include: [{ model: db.User, as: 'Owner' }],
         limit: limit,
         offset: offset
     }).then(res.success, res.error);
