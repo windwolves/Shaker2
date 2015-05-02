@@ -30,12 +30,10 @@
                     var script = document.createElement('script');
                     script.src = 'http://res.wx.qq.com/open/js/jweixin-1.0.0.js';
 
-                    alert('Loading wechat js-sdk');
-
                     $(script).appendTo('head').on('load error', function(evt) {
-                        alert(evt.type);
-
                         wx = window.wx;
+                        alert(wx);
+                        alert(callback);
                         callback();
                     });
                 }
