@@ -4,6 +4,14 @@ $(function() {
     if(typeof wechat !== 'undefined') {
         wechat.auth(setUser);
     }
+    // else {
+    //     var wechat = { share: function() {} };
+
+    //     setUser({
+    //         username: 'admin',
+    //         password: '21232f297a57a5a743894a0e4a801fc3'
+    //     });
+    // }
 
     var user;
 
@@ -14,11 +22,6 @@ $(function() {
     var post = { cards: [] };
 
     var defaultPictrue = '/entity/join/img/picture-placeholder.jpg';
-
-    // setUser({
-    //     username: 'admin',
-    //     password: '21232f297a57a5a743894a0e4a801fc3'
-    // });
 
     // 设置用户信息
     function setUser(authedUser) {
@@ -50,9 +53,9 @@ $(function() {
 
         wechat.share({
             link: location.origin + '/entity/' + entity.id,
-            imgUrl: (location.origin + post.Entity.picture).replace(/.*http/g, 'http'),
-            title: post.Entity.title,
-            description: post.Entity.content
+            imgUrl: (location.origin + entity.picture).replace(/.*http/g, 'http'),
+            title: entity.title,
+            description: entity.content
         });
 
         $('<link rel="stylesheet"/>').attr('href', '/page/' + entity.Theme.code + '/css/style.css').appendTo('head');
@@ -139,7 +142,7 @@ $(function() {
 
             $.post('/services/post?' + userAccess, data, function(result) {
                 if(result.status == 'success') {
-                    location.href = '/entity/' + result.data.entityId + '?pid=' + result.data.id;
+                    location.href = '/entity/' + result.data.entityId + '/joined/' + result.data.id;
                 }
                 else {
                     console.error(result);
@@ -177,7 +180,7 @@ $(function() {
 
         var scale = oldHeight / newHeight;
 
-        $container.css({ width: $panel.width(), height: newHeight, transform: 'scale(' + scale + ')' });
+        $container.css({ height: newHeight, transform: 'scale(' + scale + ')' });
 
         $cardList.find('.join-bar-close').on('click', function() {
             $preview.removeClass('smaller');

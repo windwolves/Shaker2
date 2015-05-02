@@ -1,0 +1,38 @@
+
+html, body {
+    height: 100%;
+}
+
+.panel {
+    height: 100%;
+    overflow: hidden;
+}
+
+.swiper-container {
+    height: 100%;
+    width: 100%;
+}
+
+.swiper-slide {
+    padding-bottom: size(48px);
+
+    // .swiper-container-free-mode.swiper-container-horizontal & {
+    //     width: auto;
+    // }
+
+    .swiper-container-free-mode.swiper-container-vertical & {
+        height: auto;
+    }
+}
+
+.picture {
+    background-color: transparent;
+    background-position: 50% 100%;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    @include background-size(cover);
+
+    &.uploaded {
+        background-position-y: 50%;
+    }
+}

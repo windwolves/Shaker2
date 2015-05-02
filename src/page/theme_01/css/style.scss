@@ -4,6 +4,11 @@
 
     .wrapper {
         background-color: #fff;
+        height: 100%;
+        line-height: 0;
+        overflow: hidden;
+        position: relative;
+        width: 100%;
     }
 
     .cover {

@@ -8,65 +8,28 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
 
-    <link rel="stylesheet" href="/entity/join/css/style.css">
+    <link rel="stylesheet" href="/entity/joined/css/style.css">
 </head>
 
 <body>
     <div class="panel">
 
-        <div class="preview-container swiper-container"></div>
+        <div class="tip"><img src="/entity/joined/img/icon-success.png" alt="">发布成功</div>
 
-        <div class="join-footer-bar">
-            <a class="join-footer-bar-list"></a>
-            <a class="join-footer-bar-add"></a>
-            <a class="join-footer-bar-layout"></a>
-            <a class="join-footer-bar-publish"></a>
+        <div class="hot">
+            <h4 class="hot-title">热门话题</h4>
+            <div class="hot-list swiper-container"></div>
         </div>
 
-        <div class="card-list">
-            <p class="join-bar-title">已添加</p>
-            <div class="join-bar-close"></div>
-            <div class="join-bar-save"></div>
-
-            <div class="swiper-container"></div>
-        </div>
-
-        <div class="layout-list">
-            <p class="join-bar-title">设置版式</p>
-            <div class="join-bar-close"></div>
-            <div class="join-bar-save"></div>
-
-            <div class="swiper-container"></div>
-        </div>
+        <div class="back"></div>
 
     </div>
 
-    <script id="preview-template" type="text/html">
-        <div class="swiper-wrapper {{entity.Theme.code}}">
-            {{each cards as card index}}
-            <div class="swiper-slide">
-                {{include 'card-template' card}}
-            </div>
-            {{/each}}
-        </div>
-    </script>
-
-    <script id="card-list-template" type="text/html">
-        <div class="swiper-wrapper {{entity.Theme.code}}">
-            {{each cards as card index}}
-            <div class="swiper-slide">
-                {{include 'card-template' card}}
-                <div class="join-bar-remove"></div>
-            </div>
-            {{/each}}
-        </div>
-    </script>
-
-    <script id="layout-list-template" type="text/html">
+    <script id="hot-list-template" type="text/html">
         <div class="swiper-wrapper">
-            {{each Layouts as layout index}}
-            <div class="swiper-slide">
-                <img src="/page/{{code}}/img/{{layout.code}}.png" />
+            {{each entitys as entity index}}
+            <div class="swiper-slide {{entity.Theme.code}}">
+                <a class="hot-item" href="/entity/{{entity.id}}"></a>
             </div>
             {{/each}}
         </div>
@@ -80,10 +43,7 @@
     <script src="/js/device.js"></script>
     <!-- endbuild  -->
 
-    <!-- build:js /entity/join/index.js -->
-    <script src="/lib/flow.js"></script>
-    <script src="/entity/join/index.js"></script>
-    <!-- endbuild  -->
+    <script src="/entity/joined/index.js"></script>
 
 </body>
 

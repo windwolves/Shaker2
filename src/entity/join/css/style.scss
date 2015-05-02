@@ -2,48 +2,7 @@
 @import "../../../css/sass/normalize";
 @import "../../../css/sass/reset";
 @import "../../../css/sass/swiper";
-
-html, body {
-    height: 100%;
-}
-
-.panel {
-    background: rgba(0, 0, 0, .05);
-    height: 100%;
-    overflow: hidden;
-}
-
-.wrapper {
-    height: 100%;
-    line-height: 0;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-}
-
-.picture {
-    background-color: transparent;
-    background-position: 50% 100%;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    @include background-size(cover);
-
-    &.uploaded {
-        background-position-y: 50%;
-    }
-}
-
-.swiper-container {
-    height: 100%;
-    width: 100%;
-}
-
-.preview-container {
-    .swiper-slide {
-        padding-bottom: size(48px);
-    }
-}
-
+@import "../../../css/sass/entity";
 
 %footer-bar {
     background-color: rgba(255, 255, 255, .95);
@@ -107,7 +66,6 @@ html, body {
         left: size-h(590px);
     }
 }
-
 
 %footer-list {
     @extend %footer-bar;
@@ -174,7 +132,6 @@ html, body {
 
 .card-list {
     @extend %footer-list;
-
 
     .swiper-container {
         overflow: visible;

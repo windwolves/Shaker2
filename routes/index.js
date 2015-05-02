@@ -32,6 +32,12 @@ router.get('/entity/:id/join', function(req, res) {
     });
 });
 
+router.get('/entity/:id/joined/:postid', function(req, res) {
+    res.sendFile('/entity/joined/index.html', {
+        root: __dirname + '/../' + staticDir
+    });
+});
+
 router.get('/post/:id', function(req, res) {
     res.sendFile('/entity/post/index.html', {
         root: __dirname + '/../' + staticDir

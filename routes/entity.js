@@ -94,6 +94,10 @@ router.get('/demo', function(req, res) {
     }, res.error);
 });
 
+router.get('/hot', function(req, res) {
+    db.Entity.findAll({ include: [db.Theme] }).then(res.success, res.error);
+});
+
 router.get('/type', function(req, res) {
     db.Entity.findAll({
         group: 'type',

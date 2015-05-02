@@ -2,228 +2,65 @@
 @import "../../../css/sass/normalize";
 @import "../../../css/sass/reset";
 @import "../../../css/sass/swiper";
-
-html, body {
-    height: 100%;
-}
-
-.panel {
-    background: rgba(0, 0, 0, .05);
-    height: 100%;
-    overflow: hidden;
-}
-
-.wrapper {
-    height: 100%;
-    line-height: 0;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-}
-
-.picture {
-    background-color: transparent;
-    background-position: 50% 100%;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    @include background-size(cover);
-
-    &.uploaded {
-        background-position-y: 50%;
-    }
-}
+@import "../../../css/sass/entity";
 
 .swiper-container {
-    height: 100%;
-    width: 100%;
-}
-
-.preview-container {
-    .swiper-slide {
-        padding-bottom: size(48px);
-    }
-}
-
-
-%footer-bar {
-    background-color: rgba(255, 255, 255, .95);
-    border-top: 1px solid rgba(0, 0, 0, .08);
-    box-shadow: 0 0 3.5px rgba(0, 0, 0, .08);
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    width: 100%;
-}
-
-.join-footer-bar {
-    @extend %footer-bar;
-
-    $footer-height: 88px;
-    $icon-size: $footer-height;
-
-    height: size($footer-height);
-    z-index: 100;
-
-    %footer-icon {
-        background-color: transparent;
-        background-repeat: no-repeat;
-        background-position: 50% 50%;
-        cursor: pointer;
-        height: size($icon-size);
-        position: absolute;
-        top: 0;
-        width: size($icon-size);
-    }
-
-    &-list {
-        @extend %footer-icon;
-
-        background-image: url('../img/footer-card-list.png');
-        background-size: 58px / $icon-size * 100% 59px / $icon-size * 100%;
-        left: size-h(80px);
-    }
-
-    &-add {
-        @extend %footer-icon;
-
-        background-image: url('../img/footer-card-add.png');
-        background-size: 78px / $icon-size * 100% 60px / $icon-size * 100%;
-        left: size-h(243px);
-    }
-
-    &-layout {
-        @extend %footer-icon;
-
-        background-image: url('../img/footer-layout.png');
-        background-size: 39px / $icon-size * 100% 62px / $icon-size * 100%;
-        left: size-h(420px);
-    }
-
-    &-publish {
-        @extend %footer-icon;
-
-        background-image: url('../img/footer-publish.png');
-        background-size: 39px / $icon-size * 100% 61px / $icon-size * 100%;
-        left: size-h(590px);
-    }
-}
-
-
-%footer-list {
-    @extend %footer-bar;
-
-    $icon-size: 88px;
-
-    height: size-v(376px);
-    opacity: 0;
-    padding-top: size(94px);
-    padding-bottom: size(22px);
-    @include transform(translate3d(0, 100%, 0));
-    @include transition(.5s);
-    z-index: 200;
-
-    &.in {
-        opacity: 1;
-        @include transform(translate3d(0, 0, 0));
-    }
-
-    .join-bar-title {
-        color: #2a2a2a;
-        font-size: size(30px);
-        left: 0;
-        line-height: size($icon-size);
-        position: absolute;
-        text-align: center;
-        top: 0;
-        width: 100%;
-    }
-
-    .join-bar-close,
-    .join-bar-save,
-    .join-bar-remove {
-        background-color: transparent;
-        background-repeat: no-repeat;
-        background-position: 50% 50%;
-        cursor: pointer;
-        height: size($icon-size);
-        position: absolute;
-        top: 0;
-        width: size($icon-size);
-        z-index: 200;
-    }
-
-    .join-bar-close {
-        background-image: url('../img/icon-close.png');
-        background-size: 34px / $icon-size * 100% 32px / $icon-size * 100%;
-        left: 0;
-    }
-
-    .join-bar-save {
-        background-image: url('../img/icon-save.png');
-        background-size: 42px / $icon-size * 100% 28px / $icon-size * 100%;
-        right: 0;
-    }
-
-    .join-bar-remove {
-        background-image: url('../img/icon-remove.png');
-        background-size: 34px / $icon-size * 100% 34px / $icon-size * 100%;
-        right: 0;
-        @include transform(translate3d(50%, -50%, 0) scale(4));
-    }
-}
-
-.card-list {
-    @extend %footer-list;
-
-
-    .swiper-container {
-        overflow: visible;
-        // @include transform(scale(0.2368));
-        @include transform-origin(50% 0);
-    }
+    overflow: visible;
+    @include transform-origin(50% 0);
 
     .swiper-slide {
         cursor: pointer;
+        height: 100%;
         position: relative;
 
         .wrapper {
-            border: 4px solid #ccc;
-        }
-
-        &.active {
-            .wrapper {
-                border-color: #3ce2ba;
-            }
-        }
-    }
-
-    .wrapper {
-        border: 1px solid #ccc;
-    }
-}
-
-.layout-list {
-    @extend %footer-list;
-
-    .swiper-slide {
-        cursor: pointer;
-        text-align: center;
-
-        img {
-            border: 1px solid #ccc;
-        }
-
-        &.active {
-            img {
-                border-color: #3ce2ba;
-            }
+            border: 3px solid #ccc;
         }
     }
 }
 
-.input-content {
-    border: 1px dashed #a7a7a7;
-    border-radius: 0;
-    font-size: size(28px);
-    width: 100%;
+.tip {
+    color: #a7a7a7;
+    font-size: size(24px);
+    height: size(32px);
+    line-height: size(32px);
+    margin: size(150px) 0 size(120px);
+    text-align: center;
+
+    img {
+        display: inline-block;
+        height: size(25px);
+        margin-right: size(10px);
+    }
+}
+
+.hot {
+    border-bottom: 1px solid #a8a8a8;
+    height: size(450px);
+    margin-left: size(24px);
+    padding-bottom: size(24px);
+    padding-top: size(68px);
+
+    &-title {
+        border-bottom: 1px solid #a8a8a8;
+        color: #a7a7a7;
+        font-size: size(24px);
+        line-height: size(44px);
+        height: size(44px);
+        margin-bottom: size(24px);
+        margin-top: size(-68px);
+    }
+
+    &-item {
+        display: block;
+        height: 100%;
+    }
+}
+
+.back {
+    background: transparent url('../img/icon-back.png') 50% 50% / 100% 100% no-repeat;
+    cursor: pointer;
+    height: size(106px);
+    margin: size(150px) auto 0;
+    width: size(106px);
 }
