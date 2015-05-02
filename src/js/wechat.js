@@ -32,8 +32,6 @@
 
                     $(script).appendTo('head').on('load error', function(evt) {
                         wx = window.wx;
-                        alert(wx);
-                        alert(callback);
                         callback();
                     });
                 }
@@ -46,6 +44,7 @@
 
         var signature = function(url, callback) {
             ready(function() {
+                alert(serviceUrls.signature.replace(':url', encodeURIComponent(url)));
                 $.get(serviceUrls.signature.replace(':url', encodeURIComponent(url)), function(result) {
                     if(result.status == 'success') {
                         wx.config({
