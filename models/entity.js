@@ -17,6 +17,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.TEXT,
             allowNull: true
         },
+        thumbnail: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
         postLimit: {
             type: DataTypes.INTEGER(11),
             defaultValue: 0

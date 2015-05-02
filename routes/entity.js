@@ -55,7 +55,10 @@ var entity = new Rest({
         },
         afterCreate: function(model, req, res) {
             if(req.files && req.files.photo) {
-                model.updateAttributes({ picture: movePicture(model.id, req.files.photo) });
+                model.updateAttributes({
+                    picture: movePicture(model.id, req.files.photo),
+                    thumbnail: movePicture(model.id, req.files.thumbnail, isThumb)
+                });
             }
         }
     },
@@ -71,6 +74,11 @@ var entity = new Rest({
             if(req.files && req.files.photo) {
                 oldModel.picture && removePicture(oldModel.picture);
                 newModel.picture = movePicture(oldModel.id, req.files.photo);
+            }
+
+            if(req.files && req.files.thumbnail) {
+                oldModel.thumbnail && removePicture(oldModel.thumbnail);
+                newModel.thumbnail = movePicture(oldModel.id, req.files.thumbnail, isThumb);
             }
         },
         afterUpdate: function(model, req, res) {
@@ -140,7 +148,7 @@ function removePicture(picture) {
     }
 }
 
-function movePicture(entityDirName, photo) {
+function movePicture(entityDirName, photo, isThumb) {
     var relativeDir = '/entity/' + entityDirName;
     var absoluteDir = path.join(__dirname, '/../upload' + relativeDir);
 
@@ -148,7 +156,7 @@ function movePicture(entityDirName, photo) {
         fs.mkdirSync(absoluteDir);
     }
 
-    var pictureFileName = Date.now() + '-' + Math.round(Math.random() * 10000) + '-' + photo.name;
+    var pictureFileName = ['thumbnail', Date.now(), Math.round(Math.random()) * 10000, photo.name].slice(isThumb ? 1 : 0).join('-');
 
     fs.renameSync(photo.path, path.join(absoluteDir, pictureFileName));
 
