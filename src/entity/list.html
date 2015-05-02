@@ -49,7 +49,7 @@
     <!-- endbuild  -->
 
     <script>
-        $.getJSON('/services/entity/recommend', function(result) {
+        $.getJSON('/services/entity/demo', function(result) {
             if(result.status == 'success') {
                 init(result.data);
             }
@@ -59,11 +59,6 @@
         });
 
         function init(entitys) {
-            entitys.unshift({
-                id: 'demo',
-                title: 'Demo'
-            });
-
             var $panel = $('.panel');
 
             var $entitys = $('<ul class="entity-list"/>').appendTo($panel);

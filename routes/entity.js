@@ -83,6 +83,17 @@ var entity = new Rest({
 
 var router = entity.getRouter();
 
+router.get('/demo', function(req, res) {
+    db.User.find({ where: { username: 'admin' } }).then(function(user) {
+        if(user) {
+            user.getEntities().then(res.success, res.error);
+        }
+        else {
+            res.warning('NOT_ADMIN_USER');
+        }
+    }, res.error);
+});
+
 router.get('/type', function(req, res) {
     db.Entity.findAll({
         group: 'type',
