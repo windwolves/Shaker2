@@ -19,7 +19,7 @@ $(function() {
 
     var swiper;
 
-    var post = { cards: [] };
+    var post = { cards: [], deletedCards: [] };
 
     var defaultPictrue = '/entity/join/img/picture-placeholder.jpg';
 
@@ -154,7 +154,7 @@ $(function() {
 
     // 初始化主要预览区域
     function initPreview() {
-        $preview = $('.preview-container').append(template('preview-template', post));
+        $preview = $('.preview-container').html(template('preview-template', post));
 
         swiper = new Swiper($preview[0], {
             preloadImages: false,
@@ -184,11 +184,30 @@ $(function() {
         elStyle.webkitTransform = elStyle.MsTransform = elStyle.msTransform = elStyle.MozTransform = elStyle.OTransform = elStyle.transform = 'scale(' + scale + ')';
 
         $cardList.find('.join-bar-close').on('click', function() {
+            if(post.deletedCards.length) {
+                var i, n;
+                var cards = post.cards.slice(0);
+
+                for(i = post.deletedCards.length - 1; i >= 0; i--) {
+                    cards.splice(post.deletedCards[i][0], 0, post.deletedCards[i][1]);
+                }
+
+                post.deletedCards = [];
+                post.cards = [];
+                swiper.removeAllSlides();
+
+                for(i = 0, n = cards.length; i < n; i++) {
+                    addCard(cards[i]);
+                }
+            }
+
             $preview.removeClass('smaller');
             $cardList.removeClass('in');
         });
 
         $cardList.find('.join-bar-save').on('click', function() {
+            post.deletedCards = [];
+
             $preview.removeClass('smaller');
             $cardList.removeClass('in');
         });
@@ -196,7 +215,11 @@ $(function() {
         $cardList.on('click', '.join-bar-remove', function() {
             var index = $(this).parent().index();
 
+            post.deletedCards.push([index, post.cards[index]]);
             post.cards.splice(index, 1);
+
+            swiper.removeSlide(index);
+
             updateCardList();
         });
     }
@@ -227,11 +250,24 @@ $(function() {
         $layoutList.find('.join-bar-close').on('click', function() {
             $preview.removeClass('smaller');
             $layoutList.removeClass('in');
+
+            var card = post.cards[swiper.activeIndex];
+
+            if(card.layout_origin) {
+                card.Layout = card.layout_origin;
+                card.layoutId = card.Layout.id;
+
+                card.layout_origin = null;
+
+                updateCard(card);
+            }
         });
 
         $layoutList.find('.join-bar-save').on('click', function() {
             $preview.removeClass('smaller');
             $layoutList.removeClass('in');
+
+            post.cards[swiper.activeIndex].layout_origin = null;
         });
     }
 
@@ -254,31 +290,28 @@ $(function() {
             slidesPerView: 3,
             centeredSlides: true,
             slideToClickedSlide: true,
-            onSlideChangeStart: function(swiper) {
-                var index = swiper.activeIndex;
-                var layout = theme.Layouts[index];
-
-                card.Layout = layout;
-                card.layoutId = layout.id;
-
-                updateCard(card);
-            },
-            onTap: function(swiper) {
-                var index = swiper.activeIndex;
-                var layout = theme.Layouts[index];
-
-                card.Layout = layout;
-                card.layoutId = layout.id;
-
-                updateCard(card);
-            }
+            onSlideChangeStart: update
         });
+
+        function update(swiper) {
+            var index = swiper.activeIndex;
+            var layout = theme.Layouts[index];
+
+            card.layout_origin = card.Layout;
+
+            card.Layout = layout;
+            card.layoutId = card.Layout.id;
+
+            updateCard(card);
+        }
     }
 
     // 添加卡片
-    function addCard() {
-        var layout = post.entity.Theme.Layouts[0];
-        var card = { layoutId: layout.id, Layout: layout, contents: [], pictures: [defaultPictrue] };
+    function addCard(card) {
+        if(!card) {
+            var layout = post.entity.Theme.Layouts[0];
+            card = { layoutId: layout.id, Layout: layout, contents: [], pictures: [defaultPictrue] };
+        }
 
         post.cards.push(card);
 
