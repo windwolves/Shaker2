@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>目录</title>
+    <title>话题目录</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
@@ -31,11 +31,11 @@
 
                     <div class="swiper-slide">
                         {{each Posts as post index}}
-                        <a class="post-item" href="/post/{{post.id}}">
-                            <img class="post-picture swiper-lazy" data-src="{{post.Cards[0].pictures[0] || '/entity/catalog/img/picture.png'}}" />
+                        <a class="post-item" href="/post/{{post.id}}?from=catalog">
+                            <div class="post-picture swiper-lazy" data-background="{{post.Cards[0] && post.Cards[0].pictures[0] || '/entity/catalog/img/picture.png'}}"></div>
 
                             <div class="post-item-content">
-                                <p class="post-content">{{post.Cards[0].contents[0]}}</p>
+                                <p class="post-content">{{post.Cards[0] && post.Cards[0].contents[0]}}</p>
 
                                 <div class="post-owner">
                                     <span>{{post.Owner.nickname}}</span>
@@ -57,12 +57,14 @@
 
     </script>
 
+    <!-- build:js /js/common.js -->
     <script src="/lib/zepto.js"></script>
     <script src="/lib/template.js"></script>
     <script src="/lib/swiper.js"></script>
-    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script src="/js/wechat.js"></script>
     <script src="/js/device.js"></script>
+    <!-- endbuild  -->
+
     <script src="/entity/catalog/index.js"></script>
 </body>
 

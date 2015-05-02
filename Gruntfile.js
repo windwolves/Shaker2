@@ -2,10 +2,6 @@ var fs = require('fs');
 
 var sassFiles = {};
 
-fs.readdirSync('./src/module/').forEach(function(dir) {
-    sassFiles['src/module/' + dir + '/css/style.css'] = 'src/module/' + dir + '/css/style.scss';
-});
-
 fs.readdirSync('./src/entity/').forEach(function(dir) {
     sassFiles['src/entity/' + dir + '/css/style.css'] = 'src/entity/' + dir + '/css/style.scss';
 });
@@ -65,10 +61,6 @@ module.exports = function(grunt) {
                 ignores: ['src/lib/*.js']
             },
             all: ['Gruntfile.js', 'src/**/*.js']
-        },
-
-        exec: {
-            zepto: 'cd app/lib/zeptojs && npm install && SET MODULES=zepto event ajax data touch ie && coffee make dist && cd ../../../'
         }
     });
 
@@ -77,6 +69,4 @@ module.exports = function(grunt) {
 
     //define tasks
     grunt.registerTask('default', ['watch']);
-
-    grunt.registerTask('zepto', ['exec:zepto']);
 };

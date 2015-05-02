@@ -1,0 +1,36 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>目录</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,minimal-ui"><link rel="stylesheet" href="/entity/catalog/css/style.css"></head><body><div class="panel"></div><script id="catalog-template" type="text/html"><div class="header">
+            <div class="header-inner">
+                <span class="left">话题参与人列表</span>
+                <span class="right">共<span class="post-count">{{Posts.length}}</span>人参与</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+
+                    <div class="swiper-slide">
+                        {{each Posts as post index}}
+                        <a class="post-item" href="/post/{{post.id}}?from=catalog">
+                            <div class="post-picture swiper-lazy" data-background="{{post.Cards[0] && post.Cards[0].pictures[0] || '/entity/catalog/img/picture.png'}}"></div>
+
+                            <div class="post-item-content">
+                                <p class="post-content">{{post.Cards[0] && post.Cards[0].contents[0]}}</p>
+
+                                <div class="post-owner">
+                                    <span>{{post.Owner.nickname}}</span>
+                                </div>
+
+                                <div class="post-like_count">
+                                    <img src="/entity/catalog/img/icon-like.png">
+                                    <span>{{post.likeCount}}</span>
+                                </div>
+                            </div>
+                        </a>
+                        {{/each}}
+                    </div>
+
+                </div>
+                <div class="swiper-scrollbar"></div>
+            </div>
+        </div></script><script src="/js/common.js"></script><script src="/entity/catalog/index.js"></script></body></html>

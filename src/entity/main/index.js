@@ -19,7 +19,7 @@ $(function() {
     function initEntity(entity) {
         // 微信分享
         if(typeof wechat !== 'undefined') {
-            wechat.init(location.href.split('#')[0], {
+            wechat.init({
                 imgUrl: (location.origin + entity.picture).replace(/.*http/g, 'http'),
                 title: entity.title,
                 description: entity.content
@@ -71,10 +71,8 @@ $(function() {
                 lazyLoadingOnTransitionStart: true,
                 initialSlide: parseInt(window.location.hash.slice(1)) || index,
                 onClick: function(swiper, evt) {
-                    var activeIndex = swiper.activeIndex;
-                    if(activeIndex && entity.Posts[activeIndex - 1]) {
-                        window.location.hash = activeIndex;
-                        location.href = '/post/' + entity.Posts[activeIndex - 1].id;
+                    if(swiper.activeIndex > 0) {
+                        location.href = '/post/' + entity.Posts[swiper.activeIndex - 1].id;
                     }
                 },
                 onSlideChangeStart: function(swiper) {

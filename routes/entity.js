@@ -47,9 +47,9 @@ var entity = new Rest({
             handler.convertBodyField('theme', [db.Theme, 'code', 'id'], 'themeId'),
             handler.convertBodyField('category', [db.Category, 'name', 'id'], 'categoryId')
         ],
-        requireKeys: ['title'],
+        requireKeys: ['title', 'type'],
         uniqueKeys: [],
-        createKeys: ['title', 'content', 'themeId', 'categoryId'],
+        createKeys: ['title', 'content', 'type', 'themeId', 'categoryId'],
         beforeCreate: function(model, req, res) {
             model.ownerId = req.session.user.id;
         },
@@ -83,10 +83,32 @@ var entity = new Rest({
 
 var router = entity.getRouter();
 
-router.get('/recommend', function(req, res) {
-    db.Entity.findAll({ order: 'recommend' }).then(function(entitys) {
-        res.success(entitys);
+router.get('/type', function(req, res) {
+    db.Entity.findAll({
+        group: 'type',
+        attributes: ['type']
+    }).then(function(entitys) {
+        var types = [];
+
+        entitys.forEach(function(entity) {
+            types.push(entity.type);
+        });
+
+        res.success(types);
     }, res.error);
+});
+
+router.get('/type/:type', function(req, res) {
+    var where = { type: req.params.type };
+    var offset = req.query.offset || 0;
+    var limit = req.query.limit || 10;
+
+    db.Entity.findAll({
+        where: where,
+        order: 'likeCount',
+        limit: limit,
+        offset: offset
+    }).then(res.success, res.error);
 });
 
 

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Shaker</title>
+    <title>话题首页</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
@@ -56,7 +56,9 @@
                 {{each Posts as post index}}
                 <div class="swiper-slide {{Theme.code}}">
                     <div class="slide-inner">
+                        {{if post.Cards[0]}}
                         {{include 'card-template' post.Cards[0]}}
+                        {{/if}}
                         <div class="post-summary">
                             <div class="post-owner">
                                 <img class="owner-profile swiper-lazy" data-src="{{post.Owner.profile}}">
@@ -89,12 +91,14 @@
 
     </script>
 
+    <!-- build:js /js/common.js -->
     <script src="/lib/zepto.js"></script>
     <script src="/lib/template.js"></script>
     <script src="/lib/swiper.js"></script>
-    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script src="/js/wechat.js"></script>
     <script src="/js/device.js"></script>
+    <!-- endbuild  -->
+
     <script src="/entity/main/index.js"></script>
 
 </body>

@@ -64,6 +64,7 @@ if (!config.isRelease) {
                     title: '反现实 Or 超现实',
                     content: '反现实赐我一把匕首，剖开我所有不想剖开的现实',
                     picture: 'http://placekitten.com/288/288',
+                    type: '反现实',
                     likeCount: 100,
                     postLimit: 25
                 });

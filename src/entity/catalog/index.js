@@ -16,7 +16,7 @@ $(function() {
 
         // 微信分享
         if(typeof wechat !== 'undefined') {
-            wechat.init(location.href.split('#')[0], {
+            wechat.init({
                 imgUrl: (location.origin + entity.picture).replace(/.*http/g, 'http'),
                 title: entity.title,
                 description: entity.content

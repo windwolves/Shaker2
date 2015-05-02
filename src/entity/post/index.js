@@ -15,7 +15,7 @@ $(function() {
     function initPost(post) {
         // 微信分享
         if(typeof wechat !== 'undefined') {
-            wechat.init(location.href.split('#')[0], {
+            wechat.share({
                 imgUrl: (location.origin + post.Entity.picture).replace(/.*http/g, 'http'),
                 title: post.Entity.title,
                 description: post.Entity.content
@@ -45,8 +45,10 @@ $(function() {
 
             // 返回
             $('.footer-bar-back').on('click', function() {
-                history.back();
-                return false;
+                if(location.href.match(/\?.*from=catalog/)) {
+                    history.back();
+                    return false;
+                }
             });
 
             initLikeCount(post);
@@ -71,6 +73,9 @@ $(function() {
         if(likedPosts.indexOf(post.id) > -1) {
             $likeCount.addClass('active');
             $likeCountImg.attr('src', likeImgs[1]);
+        }
+        else {
+            $likeCountImg.attr('src', likeImgs[0]);
         }
 
         $likeCount.on('click', function() {

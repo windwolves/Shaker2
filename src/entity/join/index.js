@@ -1,21 +1,30 @@
 $(function() {
     'use strict';
 
+    // if(typeof wechat !== 'undefined') {
+    //     wechat.auth(setUser);
+    // }
+
     var user;
-    var id = location.pathname.split('/').slice(1)[1];
 
-    if(typeof wechat === 'undefined') return;
+    var $panel, $preview, $cardList, $layoutList;
 
-    wechat.auth(setUser);
+    var swiper;
 
-    // setUser({
-    //     username: 'admin',
-    //     password: '21232f297a57a5a743894a0e4a801fc3'
-    // });
+    var post = { cards: [] };
 
+    var defaultPictrue = '/entity/join/img/picture-placeholder.jpg';
 
+    setUser({
+        username: 'admin',
+        password: '21232f297a57a5a743894a0e4a801fc3'
+    });
+
+    // 设置用户信息
     function setUser(authedUser) {
         user = authedUser;
+
+        var id = location.pathname.split('/').slice(1)[1];
 
         $.getJSON('/services/entity/' + id, function(result) {
             if(result.status == 'success') {
@@ -35,24 +44,25 @@ $(function() {
         });
     }
 
-
-    var $panel, $preview, $cardList, $layoutList;
-
-    var swiper;
-
-    var post = { cards: [] };
-
-    var defaultPictrue = '/entity/join/img/picture-placeholder.jpg';
-
+    // 加载主题模板内容，初始化页面
     function initEntity(entity) {
         post.entity = entity;
+
+        wechat.share({
+            link: location.origin + '/entity/' + entity.id,
+            imgUrl: (location.origin + post.Entity.picture).replace(/.*http/g, 'http'),
+            title: post.Entity.title,
+            description: post.Entity.content
+        });
 
         $('<link rel="stylesheet"/>').attr('href', '/page/' + entity.Theme.code + '/css/style.css').appendTo('head');
 
         $.get('/page/' + entity.Theme.code + '/index.html', function(cardTemplate) {
             $('<script id="card-template" type="text/html"/>').html(cardTemplate).appendTo('body');
 
-            initPanel();
+            $panel = $('.panel');
+
+            initFooterBar();
             initPreview();
             initCardList();
             initLayoutList();
@@ -61,29 +71,29 @@ $(function() {
         });
     }
 
+    // 初始化底部导航栏
+    function initFooterBar() {
+        var $footer = $('.join-footer-bar');
 
-    function initPanel() {
-        $panel = $('.panel');
-
-        $panel.find('.join-footer-bar-list').on('click', function() {
+        $footer.find('.join-footer-bar-list').on('click', function() {
             updateCardList();
 
             $preview.addClass('smaller');
             $cardList.addClass('in');
         });
 
-        $panel.find('.join-footer-bar-add').on('click', function() {
+        $footer.find('.join-footer-bar-add').on('click', function() {
             addCard();
         });
 
-        $panel.find('.join-footer-bar-layout').on('click', function() {
+        $footer.find('.join-footer-bar-layout').on('click', function() {
             updateLayoutList(post.cards[swiper.activeIndex]);
 
             $preview.addClass('smaller');
             $layoutList.addClass('in');
         });
 
-        $panel.find('.join-footer-bar-publish').on('click', function() {
+        $footer.find('.join-footer-bar-publish').on('click', function() {
             var cards = [];
 
             var isValid = post.cards.every(function(card, index) {
@@ -93,17 +103,32 @@ $(function() {
                     layoutId: card.Layout.id
                 });
 
-                var uploadPictrues = card.pictures.filter(function(p) {
-                    return p != defaultPictrue;
+                var $slide = $(swiper.slides[index]);
+
+                var mustUploadLength = $slide.find('.picture').length;
+                var mustEnterTextLength = $slide.find('.content').length;
+
+                var uploadPictrues = card.pictures.filter(function(d) {
+                    return d != defaultPictrue;
                 });
 
-                var mustUploadLength = $(swiper.slides[index]).find('.picture').length;
+                var enterContents = card.contents.filter(function(d) {
+                    return d;
+                });
 
-                if(uploadPictrues.length < mustUploadLength) {
+                if(mustUploadLength) {
+                    if(uploadPictrues.length < mustUploadLength) {
+                        swiper.slideTo(index);
+                        alert('请先上传图片再发布！');
+                        return false;
+                    }
+                }
+                else if(enterContents.length < mustEnterTextLength) {
                     swiper.slideTo(index);
-                    alert('请先上传图片再发布！');
+                    alert('请先上传填写文字再发布！');
                     return false;
                 }
+
                 return true;
             });
 
@@ -124,7 +149,7 @@ $(function() {
         });
     }
 
-
+    // 初始化主要预览区域
     function initPreview() {
         $preview = $('.preview-container').append(template('preview-template', post));
 
@@ -141,37 +166,7 @@ $(function() {
         });
     }
 
-    function addCard() {
-        var layout = post.entity.Theme.Layouts[0];
-        var card = { layoutId: layout.id, Layout: layout, contents: [], pictures: [defaultPictrue] };
-
-        post.cards.push(card);
-
-        if(swiper) {
-            swiper.appendSlide('<div class="swiper-slide">' + template('card-template', card) + '</div>');
-
-            var slideIndex = swiper.slides.length - 1;
-            var $slide = $(swiper.slides[slideIndex]);
-
-            swiper.slideTo(slideIndex);
-            swiper.lazy.loadImageInSlide(slideIndex);
-
-            initSlide($slide, card);
-        }
-    }
-
-    function updateCard(card) {
-        var index = post.cards.indexOf(card);
-
-        if(swiper) {
-            swiper.slides[index].innerHTML = template('card-template', card);
-            swiper.lazy.loadImageInSlide(index);
-
-            initSlide($(swiper.slides[index]), card);
-        }
-    }
-
-
+    // 初始化卡片缩略图列表
     function initCardList() {
         $cardList = $('.card-list');
 
@@ -202,6 +197,7 @@ $(function() {
         });
     }
 
+    // 更新卡片缩略图列表
     function updateCardList() {
         var $container = $('.card-list .swiper-container').html(template('card-list-template', post));
 
@@ -220,7 +216,7 @@ $(function() {
         });
     }
 
-
+    // 初始化版式缩略图列表
     function initLayoutList() {
         $layoutList = $('.layout-list');
 
@@ -235,6 +231,7 @@ $(function() {
         });
     }
 
+    // 更新版式缩略图列表
     function updateLayoutList(card) {
         var theme = post.entity.Theme;
 
@@ -265,8 +262,45 @@ $(function() {
         });
     }
 
+    // 添加卡片
+    function addCard() {
+        var layout = post.entity.Theme.Layouts[0];
+        var card = { layoutId: layout.id, Layout: layout, contents: [], pictures: [defaultPictrue] };
+
+        post.cards.push(card);
+
+        if(swiper) {
+            swiper.appendSlide('<div class="swiper-slide">' + template('card-template', card) + '</div>');
+
+            var slideIndex = swiper.slides.length - 1;
+            var $slide = $(swiper.slides[slideIndex]);
+
+            swiper.slideTo(slideIndex);
+            swiper.lazy.loadImageInSlide(slideIndex);
+
+            initSlide($slide, card);
+        }
+    }
+
+    // 更新主要预览区域卡片
+    function updateCard(card) {
+        var index = post.cards.indexOf(card);
+
+        if(swiper) {
+            swiper.slides[index].innerHTML = template('card-template', card);
+            swiper.lazy.loadImageInSlide(index);
+
+            initSlide($(swiper.slides[index]), card);
+        }
+    }
+
+    // 预览区域Slide设置
     function initSlide($slide, card) {
         $slide.find('.picture').each(function(index) {
+            if(card.pictures[index] != defaultPictrue) {
+                $(this).addClass('uploaded');
+            }
+
             initUpload(this, card, index);
         });
 
@@ -286,6 +320,7 @@ $(function() {
         });
     }
 
+    // 上传图片设置
     function initUpload(element, card, index) {
         var flow = new Flow({
             target: '/upload',

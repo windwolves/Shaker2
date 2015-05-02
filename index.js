@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(cookieParser(config.cookieSecret));
 app.use(session({ secret: config.cookieSecret, resave: true, saveUninitialized: true }));
-app.use(express.static(path.join(__dirname, 'src')));
+app.use(express.static(path.join(__dirname, config.isProduction ? 'dist' : 'src')));
 app.use(express.static(path.join(__dirname, 'upload')));
 app.use(favicon(path.join(__dirname, 'favicon.ico')));
 app.use(multipart({ uploadDir: path.join(__dirname, '/upload/temp') }));

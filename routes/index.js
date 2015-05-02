@@ -1,43 +1,40 @@
 var express = require('express');
 var router = express.Router();
 
+var config = require('../config');
 var fileUtils = require('../common/fileUtils');
 // var flow = require('../common/flow')('upload/temp');
+
+var staticDir = config.isProduction ? 'dist' : 'src';
 
 
 router.get('/', function(req, res) {
     res.sendFile('/index.html', {
-        root: __dirname + '/../src'
-    });
-});
-
-router.get('/module/entity/:id', function(req, res) {
-    res.sendFile('/module/entity/index.html', {
-        root: __dirname + '/../src'
+        root: __dirname + '/../' + staticDir
     });
 });
 
 router.get('/entity/:id', function(req, res) {
     res.sendFile('/entity/main/index.html', {
-        root: __dirname + '/../src'
+        root: __dirname + '/../' + staticDir
     });
 });
 
 router.get('/entity/:id/catalog', function(req, res) {
     res.sendFile('/entity/catalog/index.html', {
-        root: __dirname + '/../src'
+        root: __dirname + '/../' + staticDir
     });
 });
 
 router.get('/entity/:id/join', function(req, res) {
     res.sendFile('/entity/join/index.html', {
-        root: __dirname + '/../src'
+        root: __dirname + '/../' + staticDir
     });
 });
 
 router.get('/post/:id', function(req, res) {
     res.sendFile('/entity/post/index.html', {
-        root: __dirname + '/../src'
+        root: __dirname + '/../' + staticDir
     });
 });
 

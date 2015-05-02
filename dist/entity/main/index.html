@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Shaker</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,minimal-ui"><link rel="stylesheet" href="/entity/main/css/style.css"></head><body><div class="panel"><div class="ads"><a class="ads-close"></a> <a class="ads-download" href="http://mp.weixin.qq.com/mp/redirect?url=https%3A%2F%2Fitunes.apple.com%2Fcn%2Fapp%2Fxi-ke%2Fid924809913%3Fmt%3D8%26uo%3D4"></a></div><div class="tip"><div class="tip-hand"></div></div></div><script id="entity-template" type="text/html"><div class="swiper-container">
+            <div class="swiper-wrapper">
+
+                <div class="swiper-slide {{Theme.code}}">
+                    <div class="slide-inner">
+                        {{include 'card-template'}}
+                        <div class="entity-summary">
+                            <div class="entity-owner">
+                                <img class="owner-profile swiper-lazy" data-src="{{Owner.profile}}">
+                                <div>
+                                    <p class="owner-index">{{postLimit === 0 ? '作者' : '发起人'}}</p>
+                                    <strong class="owner-nickname">{{Owner.nickname}}</strong>
+                                </div>
+                            </div>
+                            <div class="entity-joined">
+                                <img class="swiper-lazy" data-src="/entity/main/img/icon-posts.png">
+                                <span>{{Posts.length}}</span><em>人参与</em>
+                            </div>
+                            <div class="entity-like_count">
+                                <img class="swiper-lazy" data-src="/entity/main/img/icon-like.png">
+                                <span>{{likeCount}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{each Posts as post index}}
+                <div class="swiper-slide {{Theme.code}}">
+                    <div class="slide-inner">
+                        {{if post.Cards[0]}}
+                        {{include 'card-template' post.Cards[0]}}
+                        {{/if}}
+                        <div class="post-summary">
+                            <div class="post-owner">
+                                <img class="owner-profile swiper-lazy" data-src="{{post.Owner.profile}}">
+                                <div>
+                                    <p class="owner-index">{{index + 1}}号</p>
+                                    <strong class="owner-nickname">{{post.Owner.nickname}}</strong>
+                                </div>
+                            </div>
+                            <div class="post-cards">
+                                <img class="swiper-lazy" data-src="/entity/main/img/icon-cards.png">
+                                <span>{{post.Cards.length}}</span>
+                            </div>
+                            <div class="post-like_count">
+                                <img class="swiper-lazy" data-src="/entity/main/img/icon-like.png">
+                                <span>{{post.likeCount}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+
+            </div>
+        </div>
+
+        <div class="footer-bar">
+            {{if postLimit !== 0}}<a class="footer-bar-catalog" href="/entity/{{id}}/catalog"></a>{{/if}}
+            <div class="logo"></div>
+            {{if postLimit > Posts.length}}<a class="footer-bar-join" href="/entity/{{id}}/join"></a>{{/if}}
+        </div></script><script src="/js/common.js"></script><script src="/entity/main/index.js"></script></body></html>

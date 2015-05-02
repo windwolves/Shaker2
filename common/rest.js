@@ -149,6 +149,8 @@ REST.prototype = {
                 var beforeCreate = toFunction(post.beforeCreate);
                 var afterCreate = toFunction(post.afterCreate);
 
+                callbacks.push(handler.requireKeys(requireKeys));
+
                 callbacks.push(function(req, res) {
                     var _where = copyByKeys(uniqueKeys, req.body);
                     var _model = copyByKeys(createKeys, req.body);
@@ -169,7 +171,7 @@ REST.prototype = {
                     }, res.error);
                 });
 
-                router.post.apply(router, ['/'].concat(callbacks).concat([handler.requireKeys(requireKeys)]));
+                router.post.apply(router, ['/'].concat(callbacks));
 
             })(toObject(options.post));
         }
@@ -186,6 +188,8 @@ REST.prototype = {
                 var beforeUpdate = toFunction(put.beforeUpdate);
                 var afterUpdate = toFunction(put.afterUpdate);
                 var notFoundWarningCode = put.notFoundWarningCode || defaultMSG.NOT_FOUND;
+
+                callbacks.push(handler.requireKeys(requireKeys));
 
                 callbacks.push(function(req, res) {
                     var _id = req.params.id;
@@ -220,7 +224,7 @@ REST.prototype = {
                     }, res.error);
                 });
 
-                router.put.apply(router, ['/:id'].concat(callbacks).concat([handler.requireKeys(requireKeys)]));
+                router.put.apply(router, ['/:id'].concat(callbacks));
 
             })(toObject(options.put));
         }

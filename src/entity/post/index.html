@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>目录</title>
+    <title>话题参与详情</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
@@ -30,21 +30,23 @@
 
         <div class="post-footer-bar">
             <div class="post-card-index">1/{{Cards.length}}</div>
-            <a class="footer-bar-back" href></a>
+            <a class="footer-bar-back" href="/entity/{{entityId}}?pid={{id}}"></a>
             <div class="post-like_count">
-                <img src="/module/entity/img/icon-like.png" alt="">
+                <img src="">
                 <span>{{likeCount}}</span>
             </div>
         </div>
 
     </script>
 
+    <!-- build:js /js/common.js -->
     <script src="/lib/zepto.js"></script>
     <script src="/lib/template.js"></script>
     <script src="/lib/swiper.js"></script>
-    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script src="/js/wechat.js"></script>
     <script src="/js/device.js"></script>
+    <!-- endbuild  -->
+
     <script src="/entity/post/index.js"></script>
 </body>
 

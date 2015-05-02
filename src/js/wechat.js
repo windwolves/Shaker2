@@ -12,92 +12,117 @@
         cleartoken: '/services/wechat/cleartoken'
     };
 
-    var Wechat = function(wx) {
-        var ready = function(url, callback) {
-            $.get(serviceUrls.signature.replace(':url', encodeURIComponent(url)), function(result) {
-                if(result.status == 'success') {
-                    wx.config({
-                        debug: !!(location.href.match(/\?.*debug=([^&]*)/)),
-                        appId: result.data.appId,
-                        nonceStr: result.data.nonceStr,
-                        timestamp: result.data.timestamp,
-                        signature: result.data.signature,
-                        jsApiList: ['onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo']
+    var wechat = function() {
+        var wx = window.wx;
+
+        var ready = function(callback) {
+            if(wx) {
+                callback();
+            }
+            else {
+                if(typeof define == 'function') {
+                    require(['http://res.wx.qq.com/open/js/jweixin-1.0.0.js'], function(_wx) {
+                        wx = _wx;
+                        callback();
                     });
-
-                    wx.ready(callback);
-
-                    wx.error(function(reason) {
-                        if(reason == 'invalid signature') {
-                            $.get(serviceUrls.cleartoken);
+                }
+                else if($ && typeof $.ajax == 'function') {
+                    $.ajax({
+                        url: 'http://res.wx.qq.com/open/js/jweixin-1.0.0.js',
+                        dataType: 'script',
+                        success: function() {
+                            wx = window.wx;
+                            callback();
                         }
                     });
-
                 }
                 else {
-                    console.error(result.data);
+                    throw 'Please load jquery first';
                 }
-            });
+            }
+
         };
 
-        var initShare = function(options) {
-            options || (options = {});
-            var link = options.link || location.href.split('#')[0];
+        var signature = function(url, callback) {
+            ready(function() {
+                $.get(serviceUrls.signature.replace(':url', encodeURIComponent(url)), function(result) {
+                    if(result.status == 'success') {
+                        wx.config({
+                            debug: !!(location.href.match(/\?.*debug=([^&]*)/)),
+                            appId: result.data.appId,
+                            nonceStr: result.data.nonceStr,
+                            timestamp: result.data.timestamp,
+                            signature: result.data.signature,
+                            jsApiList: ['onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo']
+                        });
 
-            wx.onMenuShareTimeline({
-                title: options.title,
-                link: link,
-                imgUrl: options.imgUrl,
-                fail: function(err) {
-                    console.log(err);
-                }
+                        wx.ready(callback);
+
+                        wx.error(function(reason) {
+                            if(reason == 'invalid signature') {
+                                $.get(serviceUrls.cleartoken);
+                            }
+                        });
+
+                    }
+                    else {
+                        console.error(result.data);
+                    }
+                });
             });
 
-            wx.onMenuShareAppMessage({
-                title: options.title,
-                desc: options.description,
-                link: link,
-                imgUrl: options.imgUrl,
-                success: function(err) {
-                    console.log(err);
-                },
-                fail: function(err) {
-                    console.log(err);
-                }
-            });
-
-            wx.onMenuShareQQ({
-                title: options.title,
-                desc: options.description,
-                link: link,
-                imgUrl: options.imgUrl,
-                fail: function(err) {
-                    console.log(err);
-                }
-            });
-
-            wx.onMenuShareWeibo({
-                title: options.title,
-                link: link,
-                imgUrl: options.imgUrl,
-                fail: function(err) {
-                    console.log(err);
-                }
-            });
         };
 
-        var init = function(url, options) {
-            ready(url, function() {
-                initShare(options);
+        var share = function(options) {
+            signature(options.link, function() {
+                wx.onMenuShareTimeline({
+                    title: options.title,
+                    link: options.link,
+                    imgUrl: options.imgUrl,
+                    fail: function(err) {
+                        console.log(err);
+                    }
+                });
+
+                wx.onMenuShareAppMessage({
+                    title: options.title,
+                    desc: options.description,
+                    link: options.link,
+                    imgUrl: options.imgUrl,
+                    success: function(err) {
+                        console.log(err);
+                    },
+                    fail: function(err) {
+                        console.log(err);
+                    }
+                });
+
+                wx.onMenuShareQQ({
+                    title: options.title,
+                    desc: options.description,
+                    link: options.link,
+                    imgUrl: options.imgUrl,
+                    fail: function(err) {
+                        console.log(err);
+                    }
+                });
+
+                wx.onMenuShareWeibo({
+                    title: options.title,
+                    link: options.link,
+                    imgUrl: options.imgUrl,
+                    fail: function(err) {
+                        console.log(err);
+                    }
+                });
             });
+
         };
 
         var auth = function(callback) {
-            typeof callback !== 'function' && (callback = function() {});
+            var urlParams = location.href.match(/\?.*code=([^&]*)/);
 
-            var result = location.href.match(/\?.*code=([^&]*)/);
-
-            var code = result && result[1];
+            var code = urlParams && urlParams[1];
 
             if(code) {
                 $.get(serviceUrls.auth.replace(':code', code), function(result) {
@@ -108,6 +133,7 @@
                         callback(user);
                     }
                 });
+
             }
             else {
                 var refresh_token = localStorage.getItem('refresh_token');
@@ -138,8 +164,25 @@
         };
 
         return {
-            init: init,
-            auth: auth
+            share: function(options) {
+                !options && (options = {});
+                !options.link && (options.link = location.href.split('#')[0]);
+
+                signature(options.link, function() {
+                    _share(options);
+                });
+
+            },
+            auth: function(callback) {
+                if(typeof callback !== 'function') {
+                    throw 'callback must be function';
+                }
+
+                ready(function() {
+                    auth(callback);
+                });
+
+            }
         };
     };
 
@@ -167,25 +210,6 @@
         return str.slice(1);
     }
 
-    if(window.wx) {
-        window.wechat = Wechat(window.wx);
-        return;
-    }
-
-    if(typeof define === 'function') {
-        define('wechat', ['http://res.wx.qq.com/open/js/jweixin-1.0.0.js'], Wechat);
-    }
-    else if($) {
-        $.ajax({
-            url: 'http://res.wx.qq.com/open/js/jweixin-1.0.0.js',
-            dataType: 'script',
-            success: function() {
-                window.wechat = Wechat(window.wx);
-            }
-        });
-    }
-    else {
-        throw 'Please load jquery first';
-    }
+    window.wechat = wechat();
 
 })(window.$);
