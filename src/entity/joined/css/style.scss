@@ -58,6 +58,7 @@
         a {
             background: transparent 50% 50% no-repeat;
             @include background-size(cover);
+            border: 1px solid #ccc;
             display: block;
             height: 100%;
             width: 100%;
