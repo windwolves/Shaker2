@@ -1,9 +1,9 @@
 $(function() {
     'use strict';
 
-    // if(typeof wechat !== 'undefined') {
-    //     wechat.auth(setUser);
-    // }
+    if(typeof wechat !== 'undefined') {
+        wechat.auth(setUser);
+    }
 
     var user;
 
@@ -15,10 +15,10 @@ $(function() {
 
     var defaultPictrue = '/entity/join/img/picture-placeholder.jpg';
 
-    setUser({
-        username: 'admin',
-        password: '21232f297a57a5a743894a0e4a801fc3'
-    });
+    // setUser({
+    //     username: 'admin',
+    //     password: '21232f297a57a5a743894a0e4a801fc3'
+    // });
 
     // 设置用户信息
     function setUser(authedUser) {
