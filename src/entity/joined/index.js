@@ -62,7 +62,8 @@ $(function() {
 
             var scale = oldHeight / newHeight;
 
-            $container.css({ height: newHeight, transform: 'scale(' + scale + ')' });
+            var elStyle = $container.css({ height: newHeight })[0].style;
+            elStyle.webkitTransform = elStyle.MsTransform = elStyle.msTransform = elStyle.MozTransform = elStyle.OTransform = elStyle.transform = 'scale(' + scale + ')';
 
             $container.html(template('hot-list-template', { entitys: entitys }));
 

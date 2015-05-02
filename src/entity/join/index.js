@@ -180,7 +180,8 @@ $(function() {
 
         var scale = oldHeight / newHeight;
 
-        $container.css({ height: newHeight, transform: 'scale(' + scale + ')' });
+        var elStyle = $container.css({ height: newHeight })[0].style;
+        elStyle.webkitTransform = elStyle.MsTransform = elStyle.msTransform = elStyle.MozTransform = elStyle.OTransform = elStyle.transform = 'scale(' + scale + ')';
 
         $cardList.find('.join-bar-close').on('click', function() {
             $preview.removeClass('smaller');
@@ -253,6 +254,15 @@ $(function() {
             slidesPerView: 3,
             centeredSlides: true,
             slideToClickedSlide: true,
+            onSlideChangeStart: function(swiper) {
+                var index = swiper.activeIndex;
+                var layout = theme.Layouts[index];
+
+                card.Layout = layout;
+                card.layoutId = layout.id;
+
+                updateCard(card);
+            },
             onTap: function(swiper) {
                 var index = swiper.activeIndex;
                 var layout = theme.Layouts[index];
