@@ -26,14 +26,14 @@
                         callback();
                     });
                 }
-                else if($ && typeof $.ajax == 'function') {
-                    $.ajax({
-                        url: 'http://res.wx.qq.com/open/js/jweixin-1.0.0.js',
-                        dataType: 'script',
-                        success: function() {
-                            wx = window.wx;
-                            callback();
-                        }
+                else if($) {
+                    var script = document.createElement('script');
+                    script.src = 'http://res.wx.qq.com/open/js/jweixin-1.0.0.js';
+                    document.head.appendChild(script);
+
+                    $(script).on('load', function() {
+                        wx = window.wx;
+                        callback();
                     });
                 }
                 else {
