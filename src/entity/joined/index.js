@@ -31,62 +31,19 @@ $(function() {
             location.href = backUrl;
         });
 
-        var themes = [];
+        $('.hot-list').html(template('hot-list-template', { entitys: entitys }));
 
-        entitys.forEach(function(entity) {
-            if(themes.indexOf(entity.Theme.code) == -1) {
-                themes.push(entity.Theme.code);
-            }
+        var swiper = new Swiper('.swiper-container', {
+            direction: 'horizontal',
+            slidesPerView: 'auto',
+            spaceBetween: 20,
+            mousewheelControl: true,
+            freeMode: true,
+            preloadImages: false,
+            lazyLoading: true,
+            lazyLoadingInPrevNext: true,
+            lazyLoadingOnTransitionStart: true
         });
-
-        var len = themes.length;
-
-        var themeTemplates = [];
-
-        themes.forEach(function(theme) {
-            $('<link rel="stylesheet"/>').attr('href', '/page/' + theme + '/css/style.css').appendTo('head');
-
-            $.get('/page/' + theme + '/index.html', function(themeTemplate) {
-                $('<script id="theme-template-' + theme + '" type="text/html"/>').html(themeTemplate).appendTo($('body'));
-
-                themeTemplates[theme] = themeTemplate;
-                --len || init();
-            });
-        });
-
-        function init() {
-            var $container = $('.hot-list');
-
-            var oldHeight = $container.height();
-            var newHeight = $('.panel').height();
-
-            var scale = oldHeight / newHeight;
-
-            var elStyle = $container.css({ height: newHeight })[0].style;
-            elStyle.webkitTransform = elStyle.MsTransform = elStyle.msTransform = elStyle.MozTransform = elStyle.OTransform = elStyle.transform = 'scale(' + scale + ')';
-
-            $container.html(template('hot-list-template', { entitys: entitys }));
-
-            $container.find('.hot-item').each(function(i) {
-                var entity = entitys[i];
-
-                $(this).html(template('theme-template-' + entity.Theme.code, entity));
-            });
-
-            var swiper = new Swiper('.swiper-container', {
-                // scrollbar: '.swiper-scrollbar',
-                direction: 'horizontal',
-                slidesPerView: 'auto',
-                spaceBetween: 100,
-                mousewheelControl: true,
-                freeMode: true,
-                preloadImages: false,
-                lazyLoading: true,
-                lazyLoadingInPrevNext: true,
-                lazyLoadingOnTransitionStart: true
-            });
-
-        }
 
     }
 

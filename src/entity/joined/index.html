@@ -29,7 +29,7 @@
         <div class="swiper-wrapper">
             {{each entitys as entity index}}
             <div class="swiper-slide {{entity.Theme.code}}">
-                <a class="hot-item" href="/entity/{{entity.id}}"></a>
+                <a class="hot-item swiper-lazy" href="/entity/{{entity.id}}" data-background="{{entity.thumbnail}}"></a>
             </div>
             {{/each}}
         </div>

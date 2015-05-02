@@ -36,7 +36,6 @@
 
 .hot {
     border-bottom: 1px solid #a8a8a8;
-    height: size(450px);
     margin-left: size(24px);
     padding-bottom: size(24px);
     padding-top: size(68px);
@@ -51,9 +50,18 @@
         margin-top: size(-68px);
     }
 
-    &-item {
-        display: block;
-        height: 100%;
+    .swiper-slide {
+        height: size(356px);
+        padding-bottom: 0;
+        width: size(230px);
+
+        a {
+            background: transparent 50% 50% no-repeat;
+            @include background-size(cover);
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
     }
 }
 
