@@ -62,28 +62,7 @@ var entity = new Rest({
             }
         }
     },
-    put: {
-        beforeCallbacks: [
-            handler.needLogin,
-            handler.checkOwner([db.Entity, 'ownerId'])
-        ],
-        requireKeys: [],
-        uniqueKeys: [],
-        updateKeys: ['title', 'content'],
-        beforeUpdate: function(oldModel, newModel, req, res) {
-            if(req.files && req.files.photo) {
-                oldModel.picture && removePicture(oldModel.picture);
-                newModel.picture = movePicture(oldModel.id, req.files.photo);
-            }
-
-            if(req.files && req.files.thumbnail) {
-                oldModel.thumbnail && removePicture(oldModel.thumbnail);
-                newModel.thumbnail = movePicture(oldModel.id, req.files.thumbnail, true);
-            }
-        },
-        afterUpdate: function(model, req, res) {
-        }
-    },
+    put: false,
     delete: {
         beforeCallbacks: [handler.needLogin, handler.checkOwner([db.Entity, 'ownerId'])]
     }

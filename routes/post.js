@@ -77,16 +77,7 @@ var post = new Rest({
             model.Cards = cards;
         }
     },
-    put: {
-        beforeCallbacks: [handler.needLogin, handler.checkOwner([db.Post, 'ownerId'])],
-        requireKeys: [],
-        uniqueKeys: [],
-        updateKeys: [],
-        beforeUpdate: function(oldModel, newModel, req, res) {
-        },
-        afterUpdate: function(model, req, res) {
-        }
-    },
+    put: false,
     delete: {
         beforeCallbacks: [handler.needLogin, handler.checkOwner([db.Post, 'ownerId'])]
     }
