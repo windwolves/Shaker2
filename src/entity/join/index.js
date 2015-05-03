@@ -4,14 +4,30 @@ $(function() {
     if(typeof wechat !== 'undefined') {
         wechat.auth(setUser);
     }
-    // else {
-    //     var wechat = { share: function() {} };
+    else {
+        var urlParams = (function() {
+            var ret = {},
+                seg = location.search.replace(/^\?/, '').split('&'),
+                s;
+            for(var i = 0, len = seg.length; i < len; i++) {
+                if (!seg[i]) {
+                    continue;
+                }
+                s = seg[i].split('=');
+                ret[s[0]] = s[1];
+            }
+            return ret;
+        })();
 
-    //     setUser({
-    //         username: 'admin',
-    //         password: '21232f297a57a5a743894a0e4a801fc3'
-    //     });
-    // }
+        if(urlParams._username && urlParams._password) {
+            var wechat = { share: function() {} };
+
+            setUser({
+                username: urlParams._username,
+                password: urlParams._password // 21232f297a57a5a743894a0e4a801fc3
+            });
+        }
+    }
 
     var user;
 
