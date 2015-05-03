@@ -41,10 +41,17 @@
                                     <strong class="owner-nickname">{{Owner.nickname}}</strong>
                                 </div>
                             </div>
+                            {{if postLimit === 0 }}
+                            <div class="post-cards">
+                                <img class="swiper-lazy" data-src="/entity/main/img/icon-cards.png">
+                                <span>{{Posts.length}}</span>
+                            </div>
+                            {{else}}
                             <div class="entity-joined">
                                 <img class="swiper-lazy" data-src="/entity/main/img/icon-posts.png">
                                 <span>{{Posts.length}}</span><em>人参与</em>
                             </div>
+                            {{/if}}
                             <div class="entity-like_count">
                                 <img class="swiper-lazy" data-src="/entity/main/img/icon-like.png">
                                 <span>{{likeCount}}</span>

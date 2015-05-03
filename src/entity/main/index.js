@@ -51,17 +51,17 @@ $(function() {
         $.get('/page/' + entity.Theme.code + '/index.html', function(cardTemplate) {
             $('<script id="card-template" type="text/html"/>').html(cardTemplate).appendTo($('body'));
 
-            $panel.append(template('entity-template', entity));
-
             var index = 0;
 
-            if(pid) {
-                entity.Posts.forEach(function(d, i) {
-                    if(d.id == pid) {
-                        index = i + 1;
-                    }
-                });
-            }
+            entity.Posts.forEach(function(d, i) {
+                entity.likeCount += d.likeCount;
+
+                if(d.id == pid) {
+                    index = i + 1;
+                }
+            });
+
+            $panel.append(template('entity-template', entity));
 
             var swiper = new Swiper('.swiper-container', {
                 spaceBetween: 10,
