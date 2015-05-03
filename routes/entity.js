@@ -135,7 +135,7 @@ function movePicture(entityDirName, photo, isThumb) {
         fs.mkdirSync(absoluteDir);
     }
 
-    var pictureFileName = ['thumbnail', Date.now(), Math.round(Math.random()) * 10000, photo.name].slice(isThumb ? 0 : 1).join('-');
+    var pictureFileName = ['thumbnail', Date.now(), Math.round(Math.random()) * 10000,'photo.jpg'].slice(isThumb ? 0 : 1).join('-');
 
     fs.renameSync(photo.path, path.join(absoluteDir, pictureFileName));
 
