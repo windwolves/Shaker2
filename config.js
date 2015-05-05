@@ -4,7 +4,7 @@ exports.port = 8083;
 
 exports.cookieSecret = 'shaker2';
 
-exports.isProduction = false;
+exports.isProduction = true;
 exports.isRelease = false;
 
 exports.wechat = {
@@ -15,9 +15,9 @@ exports.wechat = {
 
 var dbInfo = {
     type: 'mysql',
-    username: 'root',
-    password: '',
-    host: '127.0.0.1',
+    username: 'shaker2_admin',
+    password: 'Initial1',
+    host: 'rdsauea6fyyanf3.mysql.rds.aliyuncs.com',
     port: '3306',
     name: 'shaker2'
 };

@@ -49,7 +49,7 @@ var entity = new Rest({
         ],
         requireKeys: ['title', 'type'],
         uniqueKeys: [],
-        createKeys: ['title', 'content', 'type', 'themeId', 'categoryId'],
+        createKeys: ['title', 'content', 'type', 'themeId', 'categoryId','postLimit'],
         beforeCreate: function(model, req, res) {
             model.ownerId = req.session.user.id;
         },
