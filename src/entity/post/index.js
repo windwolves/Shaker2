@@ -14,8 +14,8 @@ $(function() {
 
     function initPost(post) {
         // 微信分享
-        if(typeof wechat !== 'undefined') {
-            wechat.share({
+        if(typeof window.wechat !== 'undefined') {
+            window.wechat.share({
                 imgUrl: (location.origin + post.Entity.picture).replace(/.*http/g, 'http'),
                 title: post.Entity.title,
                 description: post.Entity.content

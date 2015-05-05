@@ -27,8 +27,8 @@ $(function() {
         var backUrl = location.origin + '/entity/' + entityId + '?pid=' + postId;
 
         // 微信分享
-        if(typeof wechat !== 'undefined') {
-            wechat.share({
+        if(typeof window.wechat !== 'undefined') {
+            window.wechat.share({
                 link: backUrl,
                 imgUrl: (location.origin + entity.picture).replace(/.*http/g, 'http'),
                 title: entity.title,

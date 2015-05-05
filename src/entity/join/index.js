@@ -1,6 +1,8 @@
 $(function() {
     'use strict';
 
+    var wechat = window.wechat;
+
     if(typeof wechat !== 'undefined') {
         wechat.auth(setUser);
     }
@@ -20,7 +22,7 @@ $(function() {
         })();
 
         if(urlParams._username && urlParams._password) {
-            var wechat = { share: function() {} };
+            wechat = { share: function() {} };
 
             setUser({
                 username: urlParams._username,
