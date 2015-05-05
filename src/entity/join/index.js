@@ -95,6 +95,7 @@ $(function() {
     // 初始化底部导航栏
     function initFooterBar() {
         var $footer = $('.join-footer-bar');
+        var maxCardsLength = 10;
 
         $footer.find('.join-footer-bar-list').on('click', function() {
             updateCardList();
@@ -104,7 +105,13 @@ $(function() {
         });
 
         $footer.find('.join-footer-bar-add').on('click', function() {
-            addCard();
+            if(post.cards.length < maxCardsLength) {
+                addCard();
+            }
+
+            if(post.cards.length >= maxCardsLength) {
+                $(this).addClass('disabled');
+            }
         });
 
         $footer.find('.join-footer-bar-layout').on('click', function() {
@@ -246,6 +253,10 @@ $(function() {
     function updateCardList() {
         var $container = $('.card-list .swiper-container').html(template('card-list-template', post));
 
+        if($container[0].swiper) {
+            $container[0].swiper.destroy();
+        }
+
         new Swiper($container[0], {
             slideActiveClass: 'active',
             initialSlide: swiper.activeIndex,
@@ -302,26 +313,28 @@ $(function() {
             }
         }
 
+        if($container[0].swiper) {
+            $container[0].swiper.destroy();
+        }
+
         new Swiper($container[0], {
             slideActiveClass: 'active',
             initialSlide: i,
             slidesPerView: 3,
             centeredSlides: true,
             slideToClickedSlide: true,
-            onSlideChangeStart: update
+            onSlideChangeStart: function(swiper) {
+                var index = swiper.activeIndex;
+                var layout = theme.Layouts[index];
+
+                card.layout_origin = card.Layout;
+
+                card.Layout = layout;
+                card.layoutId = card.Layout.id;
+
+                updateCard(card);
+            }
         });
-
-        function update(swiper) {
-            var index = swiper.activeIndex;
-            var layout = theme.Layouts[index];
-
-            card.layout_origin = card.Layout;
-
-            card.Layout = layout;
-            card.layoutId = card.Layout.id;
-
-            updateCard(card);
-        }
     }
 
     // 添加卡片
@@ -394,11 +407,21 @@ $(function() {
 
         flow.assignBrowse(element, false, true, { accept: 'image/*' });
 
+        flow.on('fileAdded', function(file) {
+            $(element).addClass('uploading').append('<div class="upload-mask"><p class="upload-tip">图片上传中...</p></div>');
+            $('.join-footer-bar-publish').addClass('disabled');
+        });
+
         flow.on('filesSubmitted', function(file) {
             flow.upload();
         });
 
-        flow.on('fileSuccess', function(file, message){
+        flow.on('complete', function(file) {
+            $(element).removeClass('uploading').find('.upload-mask').remove();
+            $('.join-footer-bar-publish').removeClass('disabled');
+        });
+
+        flow.on('fileSuccess', function(file, message) {
             try {
                 var result = JSON.parse(message);
 

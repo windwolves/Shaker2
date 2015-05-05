@@ -66,9 +66,9 @@
 }
 
 .post-content {
+    color: #2a2a2a;
     font-size: size(28px);
     @extend %text-ellipsis;
-
     width: 100%;
 }
 
