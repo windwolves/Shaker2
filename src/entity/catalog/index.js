@@ -19,7 +19,7 @@ $(function() {
             window.wechat.share({
                 imgUrl: (location.origin + entity.picture).replace(/.*http/g, 'http'),
                 title: entity.title,
-                description: entity.content
+                description: entity.content || '稀客--带你离开现实表面的互动内容社区'
             });
         }
 

@@ -33,7 +33,6 @@ module.exports = function(sequelize, DataTypes) {
                 Post.belongsTo(models.User, { as: 'Owner', foreignKey: 'ownerId' });
 
                 Post.hasMany(models.Card, { foreignKey: 'postId' });
-                Post.hasMany(models.Post_Like, { foreignKey: 'postId' });
             }
         }
     });

@@ -1,11 +1,24 @@
 $(function() {
     'use strict';
 
-    var id = location.pathname.split('/').slice(1)[1];
+    var segs = location.pathname.split('/').slice(1);
 
-    $.getJSON('/services/post/' + id, function(result) {
+    $.getJSON('/services/' + segs[0] + '/' + segs[1], function(result) {
         if(result.status == 'success') {
-            initPost(result.data);
+            if(result.data.Cards) {
+                initPost(result.data);
+            }
+            else {
+                var entity = result.data;
+
+                initPost({
+                    id: entity.id,
+                    isCover: true,
+                    Entity: entity,
+                    Cards: [entity],
+                    likeCount: entity.likeCount
+                });
+            }
         }
         else {
             console.error(result.data);
@@ -18,7 +31,7 @@ $(function() {
             window.wechat.share({
                 imgUrl: (location.origin + post.Entity.picture).replace(/.*http/g, 'http'),
                 title: post.Entity.title,
-                description: post.Entity.content
+                description: post.Cards[0] && post.Cards[0].contents[0] || '稀客--带你离开现实表面的互动内容社区'
             });
         }
 
@@ -81,7 +94,9 @@ $(function() {
         $likeCount.on('click', function() {
             var isLiked = $likeCount.hasClass('active');
 
-            $.get('/services/post/' + post.id + '/' + (isLiked ? 'unlike' : 'like'), function(result) {
+            var url = '/services/' + (post.isCover ? 'entity' : 'post') + '/' + post.id + '/' + (isLiked ? 'unlike' : 'like');
+
+            $.get(url, function(result) {
                 if(result.status != 'success') {
                     console.error(result.data);
                     return;

@@ -20,6 +20,12 @@ router.get('/entity/:id', function(req, res) {
     });
 });
 
+router.get('/entity/:id/cover', function(req, res) {
+    res.sendFile('/entity/post/index.html', {
+        root: __dirname + '/../' + staticDir
+    });
+});
+
 router.get('/entity/:id/catalog', function(req, res) {
     res.sendFile('/entity/catalog/index.html', {
         root: __dirname + '/../' + staticDir

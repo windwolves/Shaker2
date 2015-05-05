@@ -4,10 +4,8 @@
     <p class="title">{{title}}</p>
     <p class="content">{{content}}</p>
 </div>
-{{/if}}
 
-
-{{if Layout && Layout.code}}
+{{else if Layout && Layout.code}}
 
 {{if Layout.code.search('layout_01') > -1}}
 <div class="wrapper layout_01">

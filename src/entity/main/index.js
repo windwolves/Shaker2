@@ -22,7 +22,7 @@ $(function() {
             window.wechat.share({
                 imgUrl: (location.origin + entity.picture).replace(/.*http/g, 'http'),
                 title: entity.title,
-                description: entity.content
+                description: entity.content || '稀客--带你离开现实表面的互动内容社区'
             });
         }
 
@@ -64,6 +64,7 @@ $(function() {
             $panel.append(template('entity-template', entity));
 
             var swiper = new Swiper('.swiper-container', {
+                effect: 'cube',
                 spaceBetween: 10,
                 preloadImages: false,
                 lazyLoading: true,
@@ -73,6 +74,9 @@ $(function() {
                 onClick: function(swiper, evt) {
                     if(swiper.activeIndex > 0) {
                         location.href = '/post/' + entity.Posts[swiper.activeIndex - 1].id;
+                    }
+                    else {
+                        location.href = '/entity/' + entity.id + '/cover';
                     }
                 },
                 onSlideChangeStart: function(swiper) {

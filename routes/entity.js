@@ -18,7 +18,8 @@ var entity = new Rest({
                 { model: db.User, as: 'Owner' },
                 { model: db.Card, include: [db.Layout, db.Skin] }
             ] },
-            db.Theme
+            db.Theme,
+            // db.Layout
         ],
         order: 'Posts.likeCount desc, Posts.createdAt asc, `Posts.Cards`.index asc',
         beforeSend: function(model) {
@@ -45,12 +46,14 @@ var entity = new Rest({
         beforeCallbacks: [
             handler.needLogin,
             handler.convertBodyField('theme', [db.Theme, 'code', 'id'], 'themeId'),
+            // handler.convertBodyField('layout', [db.Layout, 'code', 'id'], 'layoutId'),
             handler.convertBodyField('category', [db.Category, 'name', 'id'], 'categoryId')
         ],
-        requireKeys: ['title', 'type'],
+        requireKeys: ['title'],
         uniqueKeys: [],
-        createKeys: ['title', 'content', 'type', 'themeId', 'categoryId','postLimit'],
+        createKeys: ['title', 'content', 'postLimit', 'themeId', 'categoryId'],
         beforeCreate: function(model, req, res) {
+            model.type = 'realism';
             model.ownerId = req.session.user.id;
         },
         afterCreate: function(model, req, res) {
@@ -70,6 +73,36 @@ var entity = new Rest({
 
 var router = entity.getRouter();
 
+router.get('/:id/like', function(req, res) {
+    var _where = {
+        id: req.params.id
+    };
+
+    db.Entity.find({ where: _where }).then(function(entity) {
+        if(entity) {
+            entity.increment({ likeCount: 1 }).then(res.success, res.error);
+        }
+        else {
+            res.warning('POST_NOT_FOUND');
+        }
+    }, res.error);
+});
+
+router.get('/:id/unlike', function(req, res) {
+    var _where = {
+        id: req.params.id
+    };
+
+    db.Entity.find({ where: _where }).then(function(entity) {
+        if(entity) {
+            entity.decrement({ likeCount: 1 }).then(res.success, res.error);
+        }
+        else {
+            res.warning('POST_NOT_FOUND');
+        }
+    }, res.error);
+});
+
 router.get('/demo', function(req, res) {
     db.User.find({ where: { username: 'admin' } }).then(function(user) {
         if(user) {
@@ -82,7 +115,10 @@ router.get('/demo', function(req, res) {
 });
 
 router.get('/hot', function(req, res) {
-    db.Entity.findAll({ include: [db.Theme] }).then(res.success, res.error);
+    db.Entity.findAll({
+        where: { type: { $in: ['anti-realism', 'surrealism'] } },
+        limit: 10
+    }).then(res.success, res.error);
 });
 
 router.get('/type', function(req, res) {
