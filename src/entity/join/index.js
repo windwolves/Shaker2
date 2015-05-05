@@ -359,8 +359,8 @@ $(function() {
     // 预览区域Slide设置
     function initSlide($slide, card) {
         $slide.find('.picture').each(function(index) {
-            if(card.pictures[index] != defaultPictrue) {
-                $(this).addClass('uploaded');
+            if(card.pictures[index] == defaultPictrue) {
+                $(this).addClass('picture-default');
             }
 
             initUpload(this, card, index);

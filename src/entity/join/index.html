@@ -56,7 +56,7 @@
             {{each cards as card index}}
             <div class="swiper-slide">
                 {{include 'card-template' card}}
-                <div class="join-bar-remove"></div>
+                {{if cards.length > 1}}<div class="join-bar-remove"></div>{{/if}}
             </div>
             {{/each}}
         </div>
