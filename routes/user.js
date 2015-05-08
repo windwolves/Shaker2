@@ -13,7 +13,7 @@ var user = new Rest({
     list: false,
     get: false,
     post: {
-        beforeCallbacks: [handler.needLogout],
+        beforeCallbacks: [],
         requireKeys: ['username', 'password', 'deviceToken'],
         uniqueKeys: ['username'],
         createKeys: ['username', 'password', 'deviceToken'],
@@ -67,9 +67,13 @@ var router = user.getRouter();
 // );
 
 router.post('/login',
-    handler.needLogout,
     handler.requireKeys(['username', 'password']),
     function(req, res) {
+        if(req.session.user) {
+            res.success(req.session.user);
+            return;
+        }
+
         var _where = {
             username: req.body.username,
             password: utils.md5(req.body.password)
@@ -99,7 +103,6 @@ router.get('/logout',
 );
 
 router.get('/check/username/:username',
-    handler.needLogout,
     handler.requireKeys(['username'], 'params'),
     function(req, res) {
         var _where = {

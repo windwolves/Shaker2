@@ -18,8 +18,7 @@ var entity = new Rest({
                 { model: db.User, as: 'Owner' },
                 { model: db.Card, include: [db.Layout, db.Skin] }
             ] },
-            db.Theme,
-            // db.Layout
+            db.Theme
         ],
         order: 'Posts.likeCount desc, Posts.createdAt asc, `Posts.Cards`.index asc',
         beforeSend: function(model) {
@@ -46,7 +45,7 @@ var entity = new Rest({
         beforeCallbacks: [
             handler.needLogin,
             handler.convertBodyField('theme', [db.Theme, 'code', 'id'], 'themeId'),
-            // handler.convertBodyField('layout', [db.Layout, 'code', 'id'], 'layoutId'),
+            handler.convertBodyField('layout', [db.Layout, 'code', 'id'], 'layoutId'),
             handler.convertBodyField('category', [db.Category, 'name', 'id'], 'categoryId')
         ],
         requireKeys: ['title'],
@@ -57,12 +56,37 @@ var entity = new Rest({
             model.ownerId = req.session.user.id;
         },
         afterCreate: function(model, req, res) {
-            if(req.files && req.files.photo) {
-                model.updateAttributes({
-                    picture: movePicture(model.id, req.files.photo),
-                    thumbnail: movePicture(model.id, req.files.thumbnail, true)
-                });
+            if(req.files && req.files.thumbnail && req.files.photo) {
+                model.thumbnail = movePicture(model.id, req.files.thumbnail, true);
+                model.picture = movePicture(model.id, req.files.photo);
+
+                model.save();
             }
+
+            db.Post.create({ entityId: model.id, ownerId: model.ownerId, isCover: true }).then(function(post) {
+                db.Card.create({
+                    postId: post.id,
+                    layoutId: req.body.layoutId,
+                    index: 0,
+                    title: model.title,
+                    contents: JSON.stringify([model.content]),
+                    pictures: JSON.stringify([model.picture])
+                });
+            });
+
+            setTimeout(function() {
+                db.Entity.find({ where: { id: model.id, status: 'pending' } }).then(function(entity) {
+                    if(entity) {
+                        entity.updateAttributes({ status: 'accept' });
+
+                        db.Post.find({ where: { entityId: entity.id, isCover: true, status: 'pending' } }).then(function(post) {
+                            if(post) {
+                                post.updateAttributes({ status: 'accept' });
+                            }
+                        });
+                    }
+                });
+            }, 1000 * 60 * 1);
         }
     },
     put: false,
@@ -73,35 +97,35 @@ var entity = new Rest({
 
 var router = entity.getRouter();
 
-router.get('/:id/like', function(req, res) {
-    var _where = {
-        id: req.params.id
-    };
+// router.get('/:id/like', function(req, res) {
+//     var _where = {
+//         id: req.params.id
+//     };
 
-    db.Entity.find({ where: _where }).then(function(entity) {
-        if(entity) {
-            entity.increment({ likeCount: 1 }).then(res.success, res.error);
-        }
-        else {
-            res.warning('POST_NOT_FOUND');
-        }
-    }, res.error);
-});
+//     db.Entity.find({ where: _where }).then(function(entity) {
+//         if(entity) {
+//             entity.increment({ likeCount: 1 }).then(res.success, res.error);
+//         }
+//         else {
+//             res.warning('POST_NOT_FOUND');
+//         }
+//     }, res.error);
+// });
 
-router.get('/:id/unlike', function(req, res) {
-    var _where = {
-        id: req.params.id
-    };
+// router.get('/:id/unlike', function(req, res) {
+//     var _where = {
+//         id: req.params.id
+//     };
 
-    db.Entity.find({ where: _where }).then(function(entity) {
-        if(entity) {
-            entity.decrement({ likeCount: 1 }).then(res.success, res.error);
-        }
-        else {
-            res.warning('POST_NOT_FOUND');
-        }
-    }, res.error);
-});
+//     db.Entity.find({ where: _where }).then(function(entity) {
+//         if(entity) {
+//             entity.decrement({ likeCount: 1 }).then(res.success, res.error);
+//         }
+//         else {
+//             res.warning('POST_NOT_FOUND');
+//         }
+//     }, res.error);
+// });
 
 router.get('/demo', function(req, res) {
     db.User.find({ where: { username: 'admin' } }).then(function(user) {

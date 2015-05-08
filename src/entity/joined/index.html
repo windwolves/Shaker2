@@ -31,14 +31,14 @@
             <div class="hot-list swiper-container"></div>
         </div>
 
-        <div class="back"></div>
+        <div class="back"><div class="icon-back"></div>返回</div>
 
     </div>
 
     <script id="hot-list-template" type="text/html">
         <div class="swiper-wrapper">
             {{each entitys as entity index}}
-            <div class="swiper-slide {{entity.Theme.code}}">
+            <div class="swiper-slide">
                 <a class="hot-item swiper-lazy" href="/entity/{{entity.id}}" data-background="{{entity.thumbnail}}"></a>
             </div>
             {{/each}}

@@ -5,25 +5,17 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
-        title: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        },
-        content: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        },
         likeCount: {
             type: DataTypes.INTEGER(11),
             defaultValue: 0
         },
-        type: {
-            type: DataTypes.STRING(50),
-            allowNull: true
+        isCover: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         },
         status: {
-            type: DataTypes.STRING(50),
-            allowNull: true
+            type: DataTypes.ENUM('pending', 'accept', 'reject'),
+            defaultValue: 'pending'
         }
     }, {
         freezeTableName: true,

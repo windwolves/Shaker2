@@ -5,9 +5,9 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
-        index: {
-            type: DataTypes.INTEGER(11),
-            defaultValue: 0
+        title: {
+            type: DataTypes.STRING(256),
+            allowNull: true
         },
         contents: {
             type: DataTypes.TEXT,
@@ -16,6 +16,10 @@ module.exports = function(sequelize, DataTypes) {
         pictures: {
             type: DataTypes.TEXT,
             allowNull: true
+        },
+        index: {
+            type: DataTypes.INTEGER(11),
+            defaultValue: 0
         }
     }, {
         freezeTableName: true,

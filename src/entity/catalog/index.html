@@ -31,7 +31,7 @@
         <div class="header">
             <div class="header-inner">
                 <span class="left">话题参与人列表</span>
-                <span class="right">共<span class="post-count">{{Posts.length}}</span>人参与</span>
+                <span class="right">共<span class="post-count">{{Posts.length - 1}}</span>人参与</span>
             </div>
         </div>
 
@@ -40,7 +40,7 @@
                 <div class="swiper-wrapper">
 
                     <div class="swiper-slide">
-                        {{each Posts as post index}}
+                        {{each Posts.slice(1) as post index}}
                         <a class="post-item" href="/post/{{post.id}}?from=catalog">
                             <div class="post-picture swiper-lazy" data-background="{{post.Cards[0] && post.Cards[0].pictures[0] || '/entity/catalog/img/picture.png'}}"></div>
 

@@ -54,12 +54,14 @@ $(function() {
             var index = 0;
 
             entity.Posts.forEach(function(d, i) {
-                entity.likeCount += d.likeCount;
-
                 if(d.id == pid) {
-                    index = i + 1;
+                    index = i;
                 }
             });
+
+            if(entity.Posts[0]) {
+                entity.Posts[0].likeCount += entity.likeCount;
+            }
 
             $panel.append(template('entity-template', entity));
 
@@ -72,12 +74,7 @@ $(function() {
                 lazyLoadingOnTransitionStart: true,
                 initialSlide: parseInt(window.location.hash.slice(1)) || index,
                 onClick: function(swiper, evt) {
-                    if(swiper.activeIndex > 0) {
-                        location.href = '/post/' + entity.Posts[swiper.activeIndex - 1].id;
-                    }
-                    else {
-                        location.href = '/entity/' + entity.id + '/cover';
-                    }
+                    location.href = '/post/' + entity.Posts[swiper.activeIndex].id;
                 },
                 onSlideChangeStart: function(swiper) {
                     $tip.addClass('out');

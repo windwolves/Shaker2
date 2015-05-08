@@ -1,24 +1,11 @@
 $(function() {
     'use strict';
 
-    var segs = location.pathname.split('/').slice(1);
+    var id = location.pathname.split('/').slice(1)[1];
 
-    $.getJSON('/services/' + segs[0] + '/' + segs[1], function(result) {
+    $.getJSON('/services/post/' + id, function(result) {
         if(result.status == 'success') {
-            if(result.data.Cards) {
-                initPost(result.data);
-            }
-            else {
-                var entity = result.data;
-
-                initPost({
-                    id: entity.id,
-                    isCover: true,
-                    Entity: entity,
-                    Cards: [entity],
-                    likeCount: entity.likeCount
-                });
-            }
+            initPost(result.data);
         }
         else {
             console.error(result.data);
@@ -28,11 +15,18 @@ $(function() {
     function initPost(post) {
         // 微信分享
         if(typeof window.wechat !== 'undefined') {
+            var img = post.Cards[0].pictures[0] || post.Entity.picture;
+            var content = post.Cards[0] && post.Cards[0].contents[0] || '稀客--带你离开现实表面的互动内容社区';
+
             window.wechat.share({
-                imgUrl: (location.origin + post.Entity.picture).replace(/.*http/g, 'http'),
+                imgUrl: (location.origin + img).replace(/.*http/g, 'http'),
                 title: post.Entity.title,
-                description: post.Cards[0] && post.Cards[0].contents[0] || '稀客--带你离开现实表面的互动内容社区'
+                description: content
             });
+        }
+
+        if(post.isCover) {
+            post.likeCount += post.Entity.likeCount;
         }
 
         $('<link rel="stylesheet"/>').attr('href', '/page/' + post.Entity.Theme.code + '/css/style.css').appendTo('head');
@@ -94,7 +88,7 @@ $(function() {
         $likeCount.on('click', function() {
             var isLiked = $likeCount.hasClass('active');
 
-            var url = '/services/' + (post.isCover ? 'entity' : 'post') + '/' + post.id + '/' + (isLiked ? 'unlike' : 'like');
+            var url = '/services/post/' + post.id + '/' + (isLiked ? 'unlike' : 'like');
 
             $.get(url, function(result) {
                 if(result.status != 'success') {

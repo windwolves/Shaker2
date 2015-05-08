@@ -54,7 +54,7 @@ $(function() {
                 $.getJSON('/services/theme/' + entity.themeId, function(result) {
                     if(result.status != 'success') return;
 
-                    entity.Theme = result.data;
+                    entity.Theme = result.data; // 覆盖原Theme, 需要Layouts
 
                     initEntity(entity);
                 });
@@ -400,7 +400,7 @@ $(function() {
     // 上传图片设置
     function initUpload(element, card, index) {
         var flow = new Flow({
-            target: '/upload',
+            target: '/upload?' + $.param({ _username: user.username, _password: user.password }),
             chunkSize: 1024 * 1024,
             testChunks: false
         });

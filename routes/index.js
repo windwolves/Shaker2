@@ -3,6 +3,7 @@ var router = express.Router();
 
 var config = require('../config');
 var fileUtils = require('../common/fileUtils');
+var handler = require('../common/handler');
 // var flow = require('../common/flow')('upload/temp');
 
 var staticDir = config.isProduction ? 'dist' : 'src';
@@ -16,12 +17,6 @@ router.get('/', function(req, res) {
 
 router.get('/entity/:id', function(req, res) {
     res.sendFile('/entity/main/index.html', {
-        root: __dirname + '/../' + staticDir
-    });
-});
-
-router.get('/entity/:id/cover', function(req, res) {
-    res.sendFile('/entity/post/index.html', {
         root: __dirname + '/../' + staticDir
     });
 });
@@ -51,7 +46,7 @@ router.get('/post/:id', function(req, res) {
 });
 
 
-router.post('/upload', function(req, res) {
+router.post('/upload', handler.needLogin, function(req, res) {
     res.success(fileUtils.upload(req.files.file));
 });
 

@@ -6,7 +6,7 @@ module.exports = function(sequelize, DataTypes) {
             primaryKey: true
         },
         title: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(256),
             allowNull: false
         },
         content: {
@@ -14,11 +14,11 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: true
         },
         picture: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(256),
             allowNull: true
         },
         thumbnail: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(256),
             allowNull: true
         },
         postLimit: {
@@ -38,8 +38,8 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: true
         },
         status: {
-            type: DataTypes.STRING(50),
-            allowNull: true
+            type: DataTypes.ENUM('pending', 'accept', 'reject'),
+            defaultValue: 'pending'
         }
     }, {
         freezeTableName: true,

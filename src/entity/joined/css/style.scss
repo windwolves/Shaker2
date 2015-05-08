@@ -67,9 +67,16 @@
 }
 
 .back {
-    background: transparent url('../img/icon-back.png') 50% 50% / 100% 100% no-repeat;
+    color: #00d8a5;
     cursor: pointer;
-    height: size(106px);
     margin: size(150px) auto 0;
+    text-align: center;
     width: size(106px);
+
+    .icon-back {
+        background: transparent url('../img/icon-back.png') 50% 50% / 100% 100% no-repeat;
+        display: block;
+        height: size(106px);
+        margin-bottom: size(10px);
+    }
 }
