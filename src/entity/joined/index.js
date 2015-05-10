@@ -41,7 +41,7 @@ $(function() {
         }
 
         var isAccept = post.status == 'accept';
-        var card = post.Cards[0] || { pictures: [], contents: [] };
+        var card = post.Cards && post.Cards[0] || { pictures: [], contents: [] };
 
         // 微信分享
         window.wechat.share({

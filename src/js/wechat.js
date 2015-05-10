@@ -188,7 +188,7 @@
                 if(urlParams._username && urlParams._password) {
                     callback({
                         username: urlParams._username,
-                        password: urlParams._password // 21232f297a57a5a743894a0e4a801fc3
+                        password: urlParams._password
                     });
                 }
 
@@ -231,26 +231,26 @@
                         // username: 'admin',
                         // password: '21232f297a57a5a743894a0e4a801fc3'
                     });
-                    return;
                 }
+                else {
+                    ready(function() {
+                        var refresh_token = localStorage.getItem('REFRESH_TOKEN');
 
-                ready(function() {
-                    var refresh_token = localStorage.getItem('REFRESH_TOKEN');
-
-                    if(refresh_token) {
-                        $.get(serviceUrls.authRefresh.replace(':refresh_token', refresh_token), function(result) {
-                            if(result.status == 'success') {
-                                callback(result.data);
-                            }
-                            else {
-                                callback();
-                            }
-                        });
-                    }
-                    else {
-                        callback();
-                    }
-                });
+                        if(refresh_token) {
+                            $.get(serviceUrls.authRefresh.replace(':refresh_token', refresh_token), function(result) {
+                                if(result.status == 'success') {
+                                    callback(result.data);
+                                }
+                                else {
+                                    callback();
+                                }
+                            });
+                        }
+                        else {
+                            callback();
+                        }
+                    });
+                }
 
             }
         };
