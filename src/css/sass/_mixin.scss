@@ -157,6 +157,11 @@ $pi: 3.14159265359;
     @include css3(background-size, $ap, not -moz, not -webkit, not -o, not -ms, not -khtml, official);
 }
 
+@mixin box-orient($ap) {
+    $ap: unquote($ap);
+    @include css3(box-orient, $ap, not -moz, -webkit, not -o, not -ms, not -khtml, official);
+}
+
 @mixin box-shadow($ap) {
     $ap: unquote($ap);
     @include css3(box-shadow, $ap, -moz, -webkit, -o, -ms, not -khtml, official);
@@ -167,9 +172,19 @@ $pi: 3.14159265359;
     @include css3(box-sizing, $ap, -moz, -webkit, -o, -ms, not -khtml, official);
 }
 
+@mixin display($ap) {
+    $ap: unquote($ap);
+    @include css3-value(display, $ap, not -moz, -webkit, not -o, not -ms, not -khtml, official);
+}
+
 @mixin filter($ap) {
     $ap: unquote($ap);
     @include css3(filter, $ap, -moz, -webkit, -o, -ms, not -khtml, official);
+}
+
+@mixin line-clamp($ap) {
+    $ap: unquote($ap);
+    @include css3(line-clamp, $ap, not -moz, -webkit, not -o, not -ms, not -khtml, official);
 }
 
 @mixin perspective($ap) {
@@ -219,13 +234,6 @@ $pi: 3.14159265359;
 @mixin transition-timing-function($ap) {
     $ap: unquote($ap);
     @include css3(transition-timing-function, $ap, -moz, -webkit, -o, -ms, not -khtml, official);
-}
-
-@mixin transition-transform($transition...) {
-  -webkit-transition: -webkit-transform $transition;
-     -moz-transition: -moz-transform $transition;
-       -o-transition: -o-transform $transition;
-          transition: transform $transition;
 }
 
 @mixin wh($width, $height, $parentWidth: false) {

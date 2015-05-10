@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Shaker</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,minimal-ui"><link rel="stylesheet" href="/entity/join/css/style.css"></head><body><div class="panel"><div class="preview-container swiper-container"></div><div class="join-footer-bar"><a class="join-footer-bar-list"></a> <a class="join-footer-bar-add"></a> <a class="join-footer-bar-layout"></a> <a class="join-footer-bar-publish"></a></div><div class="card-list"><p class="join-bar-title">已添加</p><div class="join-bar-close"></div><div class="join-bar-save"></div><div class="swiper-container"></div></div><div class="layout-list"><p class="join-bar-title">设置版式</p><div class="join-bar-close"></div><div class="join-bar-save"></div><div class="swiper-container"></div></div></div><script id="preview-template" type="text/html"><div class="swiper-wrapper {{entity.Theme.code}}">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Shaker</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,minimal-ui"><link rel="stylesheet" href="/entity/join/css/style.css"><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="//hm.baidu.com/hm.js?1e49323ae223913623d986d1e31871bf";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}();</script></head><body><div class="panel"><div class="preview-container swiper-container"></div><div class="join-footer-bar"><a class="join-footer-bar-list"></a> <a class="join-footer-bar-add"></a> <a class="join-footer-bar-layout"></a> <a class="join-footer-bar-publish"></a></div><div class="card-list"><p class="join-bar-title">已添加</p><div class="join-bar-close"></div><div class="join-bar-save"></div><div class="swiper-container"></div></div><div class="layout-list"><p class="join-bar-title">设置版式</p><div class="join-bar-close"></div><div class="join-bar-save"></div><div class="swiper-container"></div></div></div><script id="preview-template" type="text/html"><div class="swiper-wrapper {{entity.Theme.code}}">
             {{each cards as card index}}
             <div class="swiper-slide">
                 {{include 'card-template' card}}
@@ -8,7 +8,7 @@
             {{each cards as card index}}
             <div class="swiper-slide">
                 {{include 'card-template' card}}
-                <div class="join-bar-remove"></div>
+                {{if cards.length > 1}}<div class="join-bar-remove"></div>{{/if}}
             </div>
             {{/each}}
         </div></script><script id="layout-list-template" type="text/html"><div class="swiper-wrapper">

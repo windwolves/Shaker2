@@ -2,6 +2,16 @@
 
 .theme_01 {
 
+    %full {
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+
+    $body-mask-color: rgba(0, 0, 0, .2);
+
     .wrapper {
         background-color: #fff;
         height: 100%;
@@ -9,178 +19,246 @@
         overflow: hidden;
         position: relative;
         width: 100%;
+
+        &-body {
+            display: table;
+            margin: 0 auto;
+            position: relative;
+            z-index: 15;
+
+            &-inner {
+                display: table-cell;
+                vertical-align: middle;
+            }
+        }
     }
 
-    // .cover {
-    //     .picture {
-    //         border-radius: 50%;
-    //         margin: size(156px) auto size(130px);
-    //         @include wh(288px * 2, 288px * 2);
-    //     }
+    .picture {
+        z-index: 5;
+    }
 
-    //     .title {
-    //         @extend %text-ellipsis;
-    //         color: #2a2a2a;
-    //         font-size: size(48px);
-    //         height: size(90px);
-    //         line-height: size(90px);
-    //         margin: 0 auto;
-    //         text-align: center;
-    //         width: size(550px);
-    //     }
+    %center {
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        @include transform(translate3d(-50%, -50%, 0));
+    }
 
-    //     .content {
-    //         color: #2a2a2a;
-    //         font-size: size(32px);
-    //         line-height: size(40px);
-    //         margin: size(14px) auto 0;
-    //         text-align: center;
-    //         width: size(550px);
-    //     }
-    // }
+    @mixin multiple-row($row-height, $row) {
+        @include box-orient(vertical);
+        @include display(box);
+        @include line-clamp($row);
+        line-height: size($row-height);
+        max-height: $row-height * $row;
+        overflow : hidden;
+        text-overflow: ellipsis;
+    }
+
+    @mixin multiple-row-max($row-height, $row) {
+        @include line-clamp($row);
+        max-height: $row-height * $row;
+    }
 
     &-layout_01 {
-
         .picture {
-            height: 100%;
-            left: 0;
-            position: absolute;
-            top: 0;
-            width: 100%;
-            z-index: 5;
+            @extend %full;
         }
 
-        &.cover {
-            .title {
-                color: #fff;
-                font-size: size(48px);
-                height: size(90px);
-                left: 50%;
-                line-height: size(90px);
-                margin: size(200px) auto 0;
-                position: absolute;
-                text-align: center;
-                @extend %text-ellipsis;
-                @include transform(translate3d(-50%, -50%, 0));
-                top: 20%;
-                width: size(550px);
-                z-index: 10;
-            }
+        .wrapper-body {
+            background-color: $body-mask-color;
+            height: 100%;
+            padding: 0 size(105px);
+            width: 100%;
+        }
+
+        .title {
+            color: #fff;
+            font-family: 'Heiti SC Medium', 'SimHei', 'Microsoft YaHei';
+            font-size: size(60px);
+            margin: size(24px) size(24px) size(24px + 24px);
+            @include multiple-row(74px, 2);
+            text-align: center;
         }
 
         .content {
             color: #fff;
+            font-family: 'Hiragino Sans GB w3', 'Microsoft YaHei';
             font-size: size(32px);
-            left: 50%;
-            line-height: size(40px);
-            max-height: 100% - size-v(142px * 2);
-            overflow: hidden;
-            position: absolute;
-            top: 50%;
-            @include transform(translate3d(-50%, -50%, 0));
-            width: 100% - size-h(118px * 2);
-            z-index: 10;
+            @include multiple-row(42px, 18);
+            margin: size(10px);
+            text-align: center;
+        }
+
+        &.cover {
+            .content {
+                @include multiple-row-max(42px, 13);
+                opacity: .5;
+            }
         }
     }
 
     &-layout_02 {
         .picture {
+            @extend %full;
+        }
+
+        .wrapper-body {
+            background-color: $body-mask-color;
             height: 100%;
-            left: 0;
-            position: absolute;
-            top: 0;
+            padding: 0 size(118px);
             width: 100%;
-            z-index: 5;
+        }
+
+        .title {
+            color: #fff;
+            font-family: 'FangSong Regular', 'STFangsong', 'FangSong', 'Microsoft YaHei';
+            font-size: size(60px);
+            margin: size(8px) size(57px) size(8px + 18px);
+            @include multiple-row(74px, 2);
+            text-align: center;
         }
 
         .content {
             color: #fff;
+            font-family: 'STSong Regular', 'STSong', 'SimSun', 'Microsoft YaHei';
             font-size: size(32px);
-            left: 50%;
-            line-height: size(40px);
-            max-height: 100% - size-v(142px * 2);
-            overflow: hidden;
-            position: absolute;
-            top: 50%;
-            @include transform(translate3d(-50%, -50%, 0));
-            width: 100% - size-h(118px * 2);
-            z-index: 10;
+            @include multiple-row(48px, 18);
+            text-align: center;
+        }
+
+        &.cover {
+            .content {
+                @include multiple-row-max(48px, 14);
+            }
         }
     }
-
 
     &-layout_03 {
         .picture {
             border-radius: 50%;
-            margin: size(156px) auto size(130px);
+            margin: size(156px) auto 0;
             @include wh(288px * 2, 288px * 2);
+        }
+
+        .wrapper-body {
+            height: size(426px);
+            width: size(550px);
+        }
+
+        .title {
+            color: #2a2a2a;
+            font-family: 'STSong Regular', 'STSong', 'SimSun', 'Microsoft YaHei';
+            font-size: size(48px);
+            margin: size(15px) 0 size(15px + 14px);
+            @include multiple-row(60px, 2);
         }
 
         .content {
             color: #2a2a2a;
+            font-family: 'STSong Regular', 'STSong', 'SimSun', 'Microsoft YaHei';
             font-size: size(32px);
-            line-height: size(40px);
-            margin: size(14px) auto 0;
-            text-align: center;
-            width: size(550px);
+            @include multiple-row(36px, 7);
+        }
+
+        &.cover {
+            .content {
+                @include multiple-row-max(36px, 4);
+            }
         }
     }
 
     &-layout_04 {
         .picture {
-            margin: size(156px) auto size(130px);
-            @include wh(288px * 2, 288px * 2);
+            margin: size(40px) auto 0;
+            @include wh(670px, 670px);
+        }
+
+        .wrapper-body {
+            height: size(448px);
+            width: size(638px);
+        }
+
+        .title {
+            color: #2a2a2a;
+            font-family: 'FangSong Regular', 'STFangsong', 'FangSong', 'Microsoft YaHei';
+            font-size: size(48px);
+            margin: size(20px) 0 size(20px + 18px);
+            @include multiple-row(50px, 2);
         }
 
         .content {
             color: #2a2a2a;
+            font-family: 'FangSong Regular', 'STFangsong', 'FangSong', 'Microsoft YaHei';
             font-size: size(32px);
-            line-height: size(40px);
-            margin: size(14px) auto 0;
-            text-align: center;
-            width: size(550px);
+            @include multiple-row(50px, 6);
+        }
+
+        &.cover {
+            .content {
+                @include multiple-row(45px, 4);
+            }
         }
     }
 
     &-layout_05 {
+        .wrapper-body {
+            height: 100%;
+            width: size(638px);
+        }
+
+        .title {
+            color: #2a2a2a;
+            font-family: 'STSong Regular', 'STSong', 'SimSun', 'Microsoft YaHei';
+            font-size: size(48px);
+            margin: size(18px) 0 size(18px + 14px);
+            @include multiple-row(54px, 2);
+        }
+
         .content {
+            color: #2a2a2a;
+            font-family: 'STSong Regular', 'STSong', 'SimSun', 'Microsoft YaHei';
             font-size: size(32px);
-            left: 50%;
-            line-height: size(40px);
-            max-height: 100% - size-v(142px * 2);
-            overflow: hidden;
-            position: absolute;
-            top: 50%;
-            @include transform(translate3d(-50%, -50%, 0));
-            width: 100% - size-h(118px * 2);
-            z-index: 10;
+            @include multiple-row(45px, 19);
+        }
+
+        &.cover {
+            .content {
+                @include multiple-row(45px, 15);
+            }
         }
     }
 
     &-layout_06 {
-        .content-container {
+        .wrapper-body {
             border-color: #a7a7a7;
             border-style: solid;
             border-width: 1px 0 1px;
-            display: table;
-            left: 50%;
-            max-height: size(774px);
-            min-height: size(486px);
-            overflow: hidden;
-            padding: size(46px);
-            position: absolute;
+            min-height: size(620px);
+            padding: size(46px) size(49px);
+            @include transform(translate3d(0, -50%, 0));
             top: 50%;
-            @include transform(translate3d(-50%, -50%, 0));
-            width: size(486px);
-            position: absolute;
-            z-index: 10;
+            width: size(580px);
+        }
+
+        .title {
+            color: #2a2a2a;
+            font-family: 'Hiragino Sans GB w3', 'Microsoft YaHei';
+            font-size: size(48px);
+            margin: size(18px) 0 size(18px + 20px);
+            @include multiple-row(54px, 2);
         }
 
         .content {
-            display: table-cell;
+            color: #2a2a2a;
+            font-family: 'Hiragino Sans GB w3', 'Microsoft YaHei';
             font-size: size(32px);
-            line-height: size(40px);
-            vertical-align: middle;
+            @include multiple-row(48px, 16);
+        }
+
+        &.cover {
+            .content {
+                @include multiple-row(48px, 13);
+            }
         }
     }
 

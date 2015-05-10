@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>话题参与详情</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,minimal-ui"><link rel="stylesheet" href="/entity/post/css/style.css"></head><body><div class="panel"></div><script id="post-template" type="text/html"><div class="swiper-container {{Entity.Theme.code}}">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>话题参与详情</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,minimal-ui"><link rel="stylesheet" href="/entity/post/css/style.css"><script>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="//hm.baidu.com/hm.js?1e49323ae223913623d986d1e31871bf";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}();</script></head><body><div class="panel"></div><script id="post-template" type="text/html"><div class="swiper-container {{Entity.Theme.code}}">
             <div class="swiper-wrapper">
                 {{each Cards as card index}}
                 <div class="swiper-slide">
@@ -10,7 +10,7 @@
 
         <div class="post-footer-bar">
             <div class="post-card-index">1/{{Cards.length}}</div>
-            <a class="footer-bar-back" href="/entity/{{entityId}}?pid={{id}}"></a>
+            <a class="footer-bar-back" href="/entity/{{Entity.id}}?pid={{id}}"></a>
             <div class="post-like_count">
                 <img src="">
                 <span>{{likeCount}}</span>
