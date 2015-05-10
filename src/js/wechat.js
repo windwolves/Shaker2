@@ -177,8 +177,6 @@
 
             },
             auth: function(callback) {
-                if(!isInWechat) return;
-
                 if(typeof callback !== 'function') {
                     throw 'callback must be function';
                 }
@@ -191,10 +189,11 @@
                         password: urlParams._password
                     });
                 }
-
-                ready(function() {
-                    auth(callback);
-                });
+                else if(isInWechat) {
+                    ready(function() {
+                        auth(callback);
+                    });
+                }
 
             },
             checkUser: function(isReturnQueryString, callback) {
@@ -226,13 +225,7 @@
                         password: urlParams._password
                     });
                 }
-                else if(!isInWechat) {
-                    callback({
-                        // username: 'admin',
-                        // password: '21232f297a57a5a743894a0e4a801fc3'
-                    });
-                }
-                else {
+                else if(isInWechat) {
                     ready(function() {
                         var refresh_token = localStorage.getItem('REFRESH_TOKEN');
 
@@ -249,6 +242,12 @@
                         else {
                             callback();
                         }
+                    });
+                }
+                else {
+                    callback({
+                        // username: 'admin',
+                        // password: '21232f297a57a5a743894a0e4a801fc3'
                     });
                 }
 
