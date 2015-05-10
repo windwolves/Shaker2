@@ -77,6 +77,7 @@ $(function() {
                     location.href = '/post/' + entity.Posts[swiper.activeIndex].id;
                 },
                 onSlideChangeStart: function(swiper) {
+                    $ads.addClass('out');
                     $tip.addClass('out');
                 }
             });

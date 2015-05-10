@@ -6,7 +6,7 @@ $(function() {
     window.wechat.checkUser(true, function(userQueryString) {
         $.getJSON('/services/post/' + id + userQueryString, function(result) {
             if(result.status == 'success') {
-                if(result.data.Entity.status != 'accept') {
+                if(!result.data.isCover && result.data.Entity.status != 'accept') {
                     console.error('ENTITY_IS_PENDING');
                     return;
                 }

@@ -41,5 +41,5 @@
         <div class="footer-bar">
             {{if postLimit !== 0}}<a class="footer-bar-catalog" href="/entity/{{id}}/catalog"></a>{{/if}}
             <div class="logo"></div>
-            {{if postLimit > Posts.length - 1}}<a class="footer-bar-join" href="/entity/{{id}}/join"></a>{{/if}}
+            {{if status == 'accept' && postLimit > Posts.length - 1}}<a class="footer-bar-join" href="/entity/{{id}}/join"></a>{{/if}}
         </div></script><script src="/js/common.js"></script><script src="/entity/main/index.js"></script></body></html>
