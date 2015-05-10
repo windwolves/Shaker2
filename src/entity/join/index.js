@@ -361,12 +361,34 @@ $(function() {
 
             $this.html('');
 
-            var $textarea = $('<textarea class="input-content"/>').attr('placeholder', '输入内容').appendTo($this);
+            var $textarea = $('<textarea rows="2" class="input-content"/>').attr('placeholder', '输入内容').appendTo($this);
+            var $clone = $textarea.val(val).clone().addClass('input-content-clone').appendTo($this);
 
-            $textarea.val(val);
+            var minHeight = $textarea.height();
+            var maxHeight = Math.ceil(parseFloat($this.css('line-height')) * $this.attr('data-row'));
+            var lastScrollTop;
 
-            $textarea.on('blur', function() {
-                card.contents[i] = $textarea.val();
+            var scrollTop = $clone.height(0).val(val).scrollTop(10000).scrollTop();
+
+            scrollTop = Math.max(scrollTop, minHeight);
+            scrollTop = Math.min(scrollTop, maxHeight);
+
+            lastScrollTop = scrollTop;
+            $textarea.css({ height: scrollTop });
+
+            $textarea.on('keydown keyup', function() {
+                val = $textarea.val();
+                scrollTop = $clone.height(0).val(val).scrollTop(10000).scrollTop();
+
+                card.contents[i] = val;
+                scrollTop = Math.max(scrollTop, minHeight);
+
+                if(scrollTop === lastScrollTop || scrollTop >= maxHeight) {
+                    return;
+                }
+
+                lastScrollTop = scrollTop;
+                $textarea.css({ height: scrollTop });
             });
         });
     }

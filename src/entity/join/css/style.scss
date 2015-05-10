@@ -179,8 +179,18 @@
 }
 
 .input-content {
+    background-color: inherit;
     border: 1px dashed #a7a7a7;
     border-radius: 0;
-    font-size: size(28px);
+    font-size: inherit;
+    line-height: inherit;
+    overflow: hidden;
+    padding: 0;
     width: 100%;
+
+    &-clone {
+        left: -9999px;
+        position: absolute;
+        top: -9999px;
+    }
 }
