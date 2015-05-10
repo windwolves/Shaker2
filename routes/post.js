@@ -12,29 +12,36 @@ var post = new Rest({
     msgPrefix: 'POST',
     list: false,
     get: {
-        beforeCallbacks: [],
+        beforeCallbacks: [handler.setSessionUser],
         include: [
             { model: db.User, as: 'Owner' },
             { model: db.Entity, include: [db.Theme] },
             { model: db.Card, include: [db.Layout, db.Skin] }
         ],
         order: 'Cards.index asc',
-        beforeSend: function(model) {
-            model.Cards.forEach(function(card) {
-                try {
-                    card.contents = JSON.parse(card.contents);
-                    card.pictures = JSON.parse(card.pictures);
-                }
-                catch(ex) {}
+        beforeSend: function(model, req, res) {
+            var ownerId = req.session.user && req.session.user.id || 'none';
 
-                if(!Array.isArray(card.contents)) {
-                    card.contents = [];
-                }
+            if(model.status != 'accept' && model.ownerId != ownerId) {
+                res.warning('POST_NOT_AUDIT_PASS');
+            }
+            else {
+                model.Cards.forEach(function(card) {
+                    try {
+                        card.contents = JSON.parse(card.contents);
+                        card.pictures = JSON.parse(card.pictures);
+                    }
+                    catch(ex) {}
 
-                if(!Array.isArray(card.pictures)) {
-                    card.pictures = [];
-                }
-            });
+                    if(!Array.isArray(card.contents)) {
+                        card.contents = [];
+                    }
+
+                    if(!Array.isArray(card.pictures)) {
+                        card.pictures = [];
+                    }
+                });
+            }
         }
     },
     post: {

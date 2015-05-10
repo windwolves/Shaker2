@@ -127,7 +127,10 @@ REST.prototype = {
                     order && (_findOptions.order = order);
 
                     dbModel.find(_findOptions).then(function(data) {
-                        data && beforeSend(data, req, res);
+                        if(data) {
+                            data = data.toJSON();
+                            beforeSend(data, req, res);
+                        }
 
                         res.success(data);
                     }, res.error);

@@ -11,7 +11,7 @@ var entity = new Rest({
     msgPrefix: 'ENTITY',
     list: false,
     get: {
-        beforeCallbacks: [],
+        beforeCallbacks: [handler.setSessionUser],
         include: [
             { model: db.User, as: 'Owner' },
             { model: db.Post, include: [
@@ -21,24 +21,39 @@ var entity = new Rest({
             db.Theme
         ],
         order: 'Posts.likeCount desc, Posts.createdAt asc, `Posts.Cards`.index asc',
-        beforeSend: function(model) {
-            model.Posts.forEach(function(post) {
-                post.Cards.forEach(function(card) {
-                    try {
-                        card.contents = JSON.parse(card.contents);
-                        card.pictures = JSON.parse(card.pictures);
-                    }
-                    catch(ex) {}
+        beforeSend: function(model, req, res) {
+            var ownerId = req.session.user && req.session.user.id || 'none';
 
-                    if(!Array.isArray(card.contents)) {
-                        card.contents = [];
-                    }
+            if(model.status != 'accept' && model.ownerId != ownerId) {
+                res.warning('ENTITY_NOT_AUDIT_PASS');
+            }
+            else {
+                var posts = [];
 
-                    if(!Array.isArray(card.pictures)) {
-                        card.pictures = [];
+                model.Posts.forEach(function(post) {
+                    if(post.status == 'accept' || post.ownerId == ownerId) {
+                        post.Cards.forEach(function(card) {
+                            try {
+                                card.contents = JSON.parse(card.contents);
+                                card.pictures = JSON.parse(card.pictures);
+                            }
+                            catch(ex) {}
+
+                            if(!Array.isArray(card.contents)) {
+                                card.contents = [];
+                            }
+
+                            if(!Array.isArray(card.pictures)) {
+                                card.pictures = [];
+                            }
+                        });
+
+                        posts.push(post);
                     }
                 });
-            });
+
+                model.Posts = posts;
+            }
         }
     },
     post: {

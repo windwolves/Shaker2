@@ -3,25 +3,24 @@ $(function() {
 
     var id = location.pathname.split('/').slice(1)[1];
 
-    $.getJSON('/services/entity/' + id, function(result) {
-        if(result.status == 'success') {
-            initEntity(result.data);
-        }
-        else {
-            console.error(result.data);
-        }
+    window.wechat.checkUser(true, function(userQueryString) {
+        $.getJSON('/services/entity/' + id + userQueryString, function(result) {
+            if(result.status == 'success') {
+                initEntity(result.data);
+            }
+            else {
+                console.error(result.data);
+            }
+        });
     });
 
     function initEntity(entity) {
-
         // 微信分享
-        if(typeof window.wechat !== 'undefined') {
-            window.wechat.share({
-                imgUrl: (location.origin + entity.picture).replace(/.*http/g, 'http'),
-                title: entity.title,
-                description: entity.content || '稀客--带你离开现实表面的互动内容社区'
-            });
-        }
+        window.wechat.share({
+            imgUrl: entity.picture,
+            title: entity.title + (entity.status == 'pending' ? '(审核中)' : ''),
+            description: entity.content
+        });
 
         $('.panel').append(template('catalog-template', entity));
 

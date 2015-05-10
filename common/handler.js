@@ -11,6 +11,32 @@ var getRes = exports.getRes = function(status, code, data) {
     return res;
 };
 
+exports.setSessionUser = function(req, res, next) {
+    if(req.session.user) {
+        next();
+    }
+    else if(req.query && req.query._username && req.query._password) {
+        var _where = {
+            username: req.query._username,
+            password: req.query._password
+        };
+
+        db.User.find({ where: _where }).then(function(user) {
+            if(user) {
+                req.session.user = user;
+
+                next();
+            }
+            else {
+                next();
+            }
+        }, res.error);
+    }
+    else {
+        next();
+    }
+};
+
 exports.needLogin = function(req, res, next) {
     if(req.session.user) {
         next();

@@ -3,30 +3,36 @@ $(function() {
 
     var id = location.pathname.split('/').slice(1)[1];
 
-    $.getJSON('/services/post/' + id, function(result) {
-        if(result.status == 'success') {
-            // result.data.Cards[0].Layout.code = 'theme_01-layout_01';
-            // result.data.Cards[0].title = '反现实 Or 超现实反现实 Or 超现实反现实 Or 超现实反现实 Or 超现实反现实 Or 超现实反现实 Or 超现实反现实 Or 超现实';
-            // result.data.Cards[0].contents = ['反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实'];
-            initPost(result.data);
-        }
-        else {
-            console.error(result.data);
-        }
+    window.wechat.checkUser(true, function(userQueryString) {
+        $.getJSON('/services/post/' + id + userQueryString, function(result) {
+            if(result.status == 'success') {
+                if(result.data.Entity.status != 'accept') {
+                    console.error('ENTITY_IS_PENDING');
+                    return;
+                }
+
+                // result.data.Cards[0].Layout.code = 'theme_01-layout_01';
+                // result.data.Cards[0].title = '反现实 Or 超现实反现实 Or 超现实反现实 Or 超现实反现实 Or 超现实反现实 Or 超现实反现实 Or 超现实反现实 Or 超现实';
+                // result.data.Cards[0].contents = ['反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实反现实赐我一把匕首，剖开我所有不想剖开的现实'];
+                initPost(result.data);
+            }
+            else {
+                console.error(result.data);
+            }
+        });
     });
 
     function initPost(post) {
-        // 微信分享
-        if(typeof window.wechat !== 'undefined') {
-            var img = post.Cards[0].pictures[0] || post.Entity.picture;
-            var content = post.Cards[0] && post.Cards[0].contents[0] || '稀客--带你离开现实表面的互动内容社区';
+        var isAccept = post.status == 'accept';
+        var card = post.Cards[0] || { pictures: [], contents: [] };
 
-            window.wechat.share({
-                imgUrl: (location.origin + img).replace(/.*http/g, 'http'),
-                title: post.Entity.title,
-                description: content
-            });
-        }
+        // 微信分享
+        window.wechat.share({
+            link: !isAccept ? location.origin + '/entity/' + post.Entity.id : '',
+            imgUrl: (isAccept ? card.pictures[0] : '') || post.Entity.picture,
+            title: post.Entity.title,
+            description: (isAccept ? card.contents[0] : '') || post.Entity.content
+        });
 
         if(post.isCover) {
             post.likeCount += post.Entity.likeCount;

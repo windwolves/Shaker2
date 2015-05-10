@@ -1,37 +1,7 @@
 $(function() {
     'use strict';
 
-    var wechat = window.wechat;
-
-    if(typeof wechat !== 'undefined') {
-        wechat.auth(setUser);
-    }
-    else {
-        var urlParams = (function() {
-            var ret = {},
-                seg = location.search.replace(/^\?/, '').split('&'),
-                s;
-            for(var i = 0, len = seg.length; i < len; i++) {
-                if (!seg[i]) {
-                    continue;
-                }
-                s = seg[i].split('=');
-                ret[s[0]] = s[1];
-            }
-            return ret;
-        })();
-
-        if(urlParams._username && urlParams._password) {
-            wechat = { share: function() {} };
-
-            setUser({
-                username: urlParams._username,
-                password: urlParams._password // 21232f297a57a5a743894a0e4a801fc3
-            });
-        }
-    }
-
-    var user;
+    var userQueryString;
 
     var $panel, $preview, $cardList, $layoutList;
 
@@ -42,14 +12,19 @@ $(function() {
     var defaultPictrue = '/entity/join/img/picture-placeholder.jpg';
 
     // 设置用户信息
-    function setUser(authedUser) {
-        user = authedUser;
+    window.wechat.auth(function(user) {
+        userQueryString = '?' + $.param({ _username: user.username, _password: user.password });
 
         var id = location.pathname.split('/').slice(1)[1];
 
         $.getJSON('/services/entity/' + id, function(result) {
             if(result.status == 'success') {
                 var entity = result.data;
+
+                if(entity.status != 'accept') {
+                    console.error('ENTITY_IS_PENDING');
+                    return;
+                }
 
                 $.getJSON('/services/theme/' + entity.themeId, function(result) {
                     if(result.status != 'success') return;
@@ -63,15 +38,15 @@ $(function() {
                 console.error(result.data);
             }
         });
-    }
+    });
 
     // 加载主题模板内容，初始化页面
     function initEntity(entity) {
         post.entity = entity;
 
-        wechat.share({
+        window.wechat.share({
             link: location.origin + '/entity/' + entity.id,
-            imgUrl: (location.origin + entity.picture).replace(/.*http/g, 'http'),
+            imgUrl: entity.picture,
             title: entity.title,
             description: entity.content
         });
@@ -162,10 +137,9 @@ $(function() {
 
             if(!isValid) return;
 
-            var userAccess = $.param({ _username: user.username, _password: user.password });
             var data = { entityId: post.entity.id, cards: cards };
 
-            $.post('/services/post?' + userAccess, data, function(result) {
+            $.post('/services/post' + userQueryString, data, function(result) {
                 if(result.status == 'success') {
                     location.href = '/entity/' + result.data.entityId + '/joined/' + result.data.id;
                 }
@@ -400,7 +374,7 @@ $(function() {
     // 上传图片设置
     function initUpload(element, card, index) {
         var flow = new Flow({
-            target: '/upload?' + $.param({ _username: user.username, _password: user.password }),
+            target: '/upload' + userQueryString,
             chunkSize: 1024 * 1024,
             testChunks: false
         });

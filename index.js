@@ -73,6 +73,10 @@ function sendInject(req, res, next) {
 
     function inject(res, status) {
         return function(data) {
+            if(res._end) return;
+
+            res._end = true;
+
             res.send({
                 status: status,
                 data: data

@@ -7,6 +7,11 @@ $(function() {
 
     $.getJSON('/services/entity/' + entityId, function(result) {
         if(result.status == 'success') {
+            if(result.data.status != 'accept') {
+                console.error('ENTITY_IS_PENDING');
+                return;
+            }
+
             initEntity(result.data);
         }
         else {
@@ -26,15 +31,25 @@ $(function() {
     function initEntity(entity) {
         var backUrl = location.origin + '/entity/' + entityId + '?pid=' + postId;
 
-        // 微信分享
-        if(typeof window.wechat !== 'undefined') {
-            window.wechat.share({
-                link: backUrl,
-                imgUrl: (location.origin + entity.picture).replace(/.*http/g, 'http'),
-                title: entity.title,
-                description: entity.content
-            });
+        var post = {};
+
+        for(var i = 0, n = entity.Posts.length; i < n; i++) {
+            if(entity.Posts.pid == postId) {
+                post = entityId.Posts[i];
+                break;
+            }
         }
+
+        var isAccept = post.status == 'accept';
+        var card = post.Cards[0] || { pictures: [], contents: [] };
+
+        // 微信分享
+        window.wechat.share({
+            link: backUrl,
+            imgUrl: (isAccept ? card.pictures[0] : '') || entity.picture,
+            title: entity.title,
+            description: (isAccept ? card.contents[0] : '') || entity.content
+        });
 
         $('.back').on('click', function() {
             location.href = backUrl;
