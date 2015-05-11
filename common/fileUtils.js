@@ -118,9 +118,9 @@ _utils.create = function(paths, uniquePath, isNeedJSONParse) {
     }
 };
 
-_utils.remove = function(paths, aFunc) {
+_utils.remove = function(path, aFunc) {
     aFunc = aFunc || _utils.getAbsolutePathFunc();
-    var absolutePath = aFunc(paths);
+    var absolutePath = aFunc(path);
     if(fs.existsSync(absolutePath)) {
         fs.unlinkSync(absolutePath);
     }

@@ -82,6 +82,17 @@
         </div>
     </script>
 
+    <script id="picture-resize-template" type="text/html">
+        <div class="modal">
+            <img src="{{src}}" alt=""/>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-save">保存</button>
+                <button type="button" class="btn btn-cancel">取消</button>
+            </div>
+        </div>
+    </script>
+
     <!-- build:js /js/common.js -->
     <script src="/lib/zepto.js"></script>
     <script src="/lib/template.js"></script>
@@ -93,6 +104,7 @@
     <!-- build:js /entity/join/index.js -->
     <script src="/lib/flow.js"></script>
     <script src="/entity/join/index.js"></script>
+    <script src="/lib/cropper.js"></script>
     <!-- endbuild  -->
 
 </body>

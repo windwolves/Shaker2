@@ -47,6 +47,22 @@ router.get('/post/:id', function(req, res) {
 
 
 router.post('/upload', handler.needLogin, function(req, res) {
+    if(req.body.flowTotalSize > 2 * 1024 * 1024) {
+        fileUtils.remove(req.files.file.path, function(d) { return d; });
+        res.warning('FILE_SIZE_TOO_LARGE');
+        return;
+    }
+
+    if(req.files.file && req.files.file.size > 2 * 1024 * 1024) {
+        fileUtils.remove(req.files.file.path, function(d) { return d; });
+        res.warning('FILE_SIZE_TOO_LARGE');
+        return;
+    }
+
+    if(req.body.origin_file) {
+        fileUtils.remove(req.body.origin_file);
+    }
+
     res.success(fileUtils.upload(req.files.file));
 });
 

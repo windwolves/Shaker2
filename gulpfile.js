@@ -11,7 +11,7 @@ var paths = {
     distDir: 'dist',
     concat: {
         'js/common.js': ['./src/lib/zepto.js', './src/lib/template.js', './src/lib/swiper.js', './src/js/wechat.js', './src/js/device.js'],
-        'entity/join/index.js': ['./src/lib/flow.js', './src/entity/join/index.js']
+        'entity/join/index.js': ['./src/lib/flow.js', './src/entity/join/index.js', './src/lib/cropper.js']
     },
     js: ['./src/entity/**/*.js', '!./src/entity/join/index.js'],
     html: ['./src/**/*.html'],

@@ -1,3 +1,5 @@
+jQuery = $;
+
 $(function() {
     'use strict';
 
@@ -400,16 +402,18 @@ $(function() {
 
     // 上传图片设置
     function initUpload(element, card, index) {
+        var $element = $(element);
+
         var flow = new Flow({
             target: '/upload' + userQueryString,
-            chunkSize: 1024 * 1024,
+            chunkSize: 2 * 1024 * 1024,
             testChunks: false
         });
 
         flow.assignBrowse(element, false, true, { accept: 'image/*' });
 
         flow.on('fileAdded', function(file) {
-            $(element).addClass('uploading').append('<div class="upload-mask"><p class="upload-tip">图片上传中...</p></div>');
+            $element.addClass('uploading').append('<div class="upload-mask"><p class="upload-tip">图片上传中...</p></div>');
             $('.join-footer-bar-publish').addClass('disabled');
         });
 
@@ -418,28 +422,97 @@ $(function() {
         });
 
         flow.on('complete', function(file) {
-            $(element).removeClass('uploading').find('.upload-mask').remove();
+            $element.removeClass('uploading').find('.upload-mask').remove();
             $('.join-footer-bar-publish').removeClass('disabled');
         });
 
         flow.on('fileSuccess', function(file, message) {
+            var result;
+
             try {
-                var result = JSON.parse(message);
-
-                if(result.status == 'success') {
-                    var src = result.data[0].replace(/\\/g, '/');
-                    card.pictures[index] = src;
-
-                    updateCard(card);
-                }
-                else {
-                    console.log(result);
-                }
+                result = JSON.parse(message);
             }
             catch(ex) {
                 console.error(message);
             }
+
+            if(result.status == 'success') {
+                var src = result.data[0].replace(/\\/g, '/');
+
+                resizePicture({
+                    src: src,
+                    width: $element.width(),
+                    height: $element.height()
+                }, function(src) {
+                    card.pictures[index] = src.replace(/\\/g, '/');
+                    updateCard(card);
+                });
+            }
+            else if(result.status == 'warning' && result.data == 'FILE_SIZE_TOO_LARGE') {
+                alert('上传文件大小不得大于2M！');
+            }
+            else {
+                console.log(result);
+            }
         });
+    }
+
+    function resizePicture(picture, callback) {
+        var $modal = $(template('picture-resize-template', picture)).appendTo($panel);
+
+        var $img = $modal.find('img').cropper({
+            aspectRatio: picture.width / picture.height,
+            autoCropArea: 0.75,
+            mouseWheelZoom: false
+        });
+
+        $modal.find('.btn-save').on('click', function() {
+            var canvas = $img.cropper('getCroppedCanvas', picture);
+            var blob = canvasToBlob(canvas, 'image/jpeg', 0.8);
+            var filename = picture.src.split('/').pop().split('.')[0] + '.jpg';
+
+            var data = new FormData();
+            data.append('file', blob, filename);
+            data.append('origin_file', picture.src);
+
+            $.ajax({
+                type: 'post',
+                url: '/upload' + userQueryString,
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function(result) {
+                    if(result.status == 'success') {
+                        $img.cropper('destroy');
+                        $modal.remove();
+
+                        callback(result.data[0]);
+                    }
+                    else if(result.status == 'warning' && result.data == 'FILE_SIZE_TOO_LARGE') {
+                        alert('上传文件大小不得大于2M！');
+                    }
+                    else {
+                        console.log(result);
+                    }
+                }
+            });
+        });
+
+        $modal.find('.btn-cancel').on('click', function() {
+            $modal.remove();
+        });
+    }
+
+    function canvasToBlob(canvas, type, quality) {
+        var binStr = atob(canvas.toDataURL(type, quality).split(',')[1]),
+            len = binStr.length,
+            arr = new Uint8Array(len);
+
+        for (var i = 0; i < len; i++) {
+            arr[i] = binStr.charCodeAt(i);
+        }
+
+        return new Blob([arr], { type: type || 'image/png' });
     }
 
 });
