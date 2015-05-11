@@ -33,7 +33,7 @@ $scale: 0.9;
     top: 0;
     @include transition(.5s);
     @include wh(750px, $ads-height);
-    z-index: 100;
+    z-index: 9999;
 
     &.out {
         opacity: 0;
@@ -69,7 +69,7 @@ $scale: 0.9;
     top: size-v(148px);
     @include transition(.5s);
     @include wh(119px, 42px);
-    z-index: 100;
+    z-index: 9999;
 
     &.out {
         opacity: 0;
@@ -159,6 +159,12 @@ $scale: 0.9;
             position: absolute;
             width: 100%;
             z-index: 90;
+        }
+    }
+
+    &.swiper-slide-active {
+        .content {
+            position: relative;
         }
     }
 }

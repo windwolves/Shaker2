@@ -137,6 +137,8 @@ $(function() {
 
             if(!isValid) return;
 
+            $(this).addClass('disabled');
+
             var data = { entityId: post.entity.id, cards: cards };
 
             $.post('/services/post' + userQueryString, data, function(result) {
@@ -366,24 +368,27 @@ $(function() {
 
             var minHeight = $textarea.height();
             var maxHeight = Math.ceil(parseFloat($this.css('line-height')) * $this.attr('data-row'));
-            var lastScrollTop;
 
             var scrollTop = $clone.height(0).val(val).scrollTop(10000).scrollTop();
+            scrollTop = Math.min(Math.max(scrollTop, minHeight), maxHeight);
 
-            scrollTop = Math.max(scrollTop, minHeight);
-            scrollTop = Math.min(scrollTop, maxHeight);
+            var lastVal = val;
+            var lastScrollTop = scrollTop;
 
-            lastScrollTop = scrollTop;
-            $textarea.css({ height: scrollTop });
-
-            $textarea.on('keydown keyup', function() {
-                val = $textarea.val();
+            $textarea.css({ height: scrollTop }).on('keyup', function() {
+                val = card.contents[i] = $textarea.val();
                 scrollTop = $clone.height(0).val(val).scrollTop(10000).scrollTop();
 
-                card.contents[i] = val;
                 scrollTop = Math.max(scrollTop, minHeight);
 
-                if(scrollTop === lastScrollTop || scrollTop >= maxHeight) {
+                if(scrollTop >= maxHeight) {
+                    $textarea.val(lastVal);
+                    return;
+                }
+
+                lastVal = val;
+
+                if(scrollTop === lastScrollTop) {
                     return;
                 }
 

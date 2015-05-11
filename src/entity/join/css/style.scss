@@ -178,6 +178,10 @@
     }
 }
 
+.wrapper-body {
+      pointer-events: none;
+}
+
 .input-content {
     background-color: inherit;
     border: 1px dashed #a7a7a7;
@@ -186,6 +190,7 @@
     line-height: inherit;
     overflow: hidden;
     padding: 0;
+    pointer-events: auto;
     width: 100%;
 
     &-clone {
