@@ -11,6 +11,8 @@ $(function() {
 
     var post = { cards: [], deletedCards: [] };
 
+    var maxFileSize = 1; // 1M
+
     var defaultPictrue = '/entity/join/img/picture-placeholder.jpg';
 
     // 设置用户信息
@@ -377,7 +379,9 @@ $(function() {
             var lastVal = val;
             var lastScrollTop = scrollTop;
 
-            $textarea.css({ height: scrollTop }).on('keyup', function() {
+            $textarea.css({ height: scrollTop }).on('blur', function() {
+                card.contents[i] = $textarea.val();
+            }).on('keyup', function() {
                 val = card.contents[i] = $textarea.val();
                 scrollTop = $clone.height(0).val(val).scrollTop(10000).scrollTop();
 
@@ -406,7 +410,7 @@ $(function() {
 
         var flow = new Flow({
             target: '/upload' + userQueryString,
-            chunkSize: 2 * 1024 * 1024,
+            chunkSize: maxFileSize * 1024 * 1024,
             testChunks: false
         });
 
@@ -449,7 +453,7 @@ $(function() {
                 });
             }
             else if(result.status == 'warning' && result.data == 'FILE_SIZE_TOO_LARGE') {
-                alert('上传文件大小不得大于2M！');
+                alert('上传文件大小不得大于' + maxFileSize + 'M！');
             }
             else {
                 console.log(result);
@@ -489,7 +493,7 @@ $(function() {
                         callback(result.data[0]);
                     }
                     else if(result.status == 'warning' && result.data == 'FILE_SIZE_TOO_LARGE') {
-                        alert('上传文件大小不得大于2M！');
+                        alert('上传文件大小不得大于' + maxFileSize + 'M！');
                     }
                     else {
                         console.log(result);

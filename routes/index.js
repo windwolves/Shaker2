@@ -45,15 +45,16 @@ router.get('/post/:id', function(req, res) {
     });
 });
 
+var maxFileSize = 1 * 1024 * 1024;
 
 router.post('/upload', handler.needLogin, function(req, res) {
-    if(req.body.flowTotalSize > 2 * 1024 * 1024) {
+    if(req.body.flowTotalSize > maxFileSize) {
         fileUtils.remove(req.files.file.path, function(d) { return d; });
         res.warning('FILE_SIZE_TOO_LARGE');
         return;
     }
 
-    if(req.files.file && req.files.file.size > 2 * 1024 * 1024) {
+    if(req.files.file && req.files.file.size > maxFileSize) {
         fileUtils.remove(req.files.file.path, function(d) { return d; });
         res.warning('FILE_SIZE_TOO_LARGE');
         return;
