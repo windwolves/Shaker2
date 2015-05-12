@@ -3,6 +3,26 @@ html, body {
     height: 100%;
 }
 
+.loading {
+    background-color: #a7a7a7;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10000;
+
+    img {
+        height: 64px;
+        left: 50%;
+        margin-left: -30px;
+        margin-top: -30px;
+        position: absolute;
+        top: 50%;
+        width: 64px;
+    }
+}
+
 .panel {
     height: 100%;
     overflow: hidden;
