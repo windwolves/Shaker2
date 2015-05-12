@@ -877,7 +877,7 @@
     },
 
     wheel: function (event) {
-      var e = event.originalEvent,
+      var e = event.originalEvent || event,
           delta = 1;
 
       if (this.disabled) {
@@ -899,7 +899,7 @@
 
     dragstart: function (event) {
       var options = this.options,
-          originalEvent = event.originalEvent,
+          originalEvent = event.originalEvent || event,
           touches = originalEvent && originalEvent.touches,
           e = event,
           dragType,
@@ -957,7 +957,7 @@
 
     dragmove: function (event) {
       var options = this.options,
-          originalEvent = event.originalEvent,
+          originalEvent = event.originalEvent || event,
           touches = originalEvent && originalEvent.touches,
           e = event,
           dragType = this.dragType,
@@ -1017,7 +1017,7 @@
         event.preventDefault();
 
         dragEndEvent = $.Event(EVENT_DRAG_END, {
-          originalEvent: event.originalEvent,
+          originalEvent: event.originalEvent || event,
           dragType: dragType
         });
 

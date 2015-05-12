@@ -66,7 +66,7 @@ $(function() {
             $panel.append(template('entity-template', entity));
 
             var swiper = new Swiper('.swiper-container', {
-                effect: 'cube',
+                // effect: 'cube',
                 spaceBetween: 10,
                 preloadImages: false,
                 lazyLoading: true,

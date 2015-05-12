@@ -49,7 +49,7 @@
         @include display(box);
         @include line-clamp($row);
         line-height: size($row-height);
-        max-height: $row-height * $row;
+        max-height: size($row-height * $row);
         overflow : hidden;
         text-overflow: ellipsis;
     }

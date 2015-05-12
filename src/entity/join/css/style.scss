@@ -180,7 +180,12 @@
 }
 
 .wrapper-body {
-      pointer-events: none;
+    pointer-events: none;
+
+    .content {
+        padding: 1px;
+        position: relative;
+    }
 }
 
 .input-content {
@@ -255,3 +260,22 @@
         }
     }
 }
+
+
+// .picture {
+//     overflow: hidden;
+//     position: relative;
+// }
+
+// .modal {
+//     left: 50%;
+//     position: absolute;
+//     top: 50%;
+//     @include transform(translate3d(-50%, -50%, 0));
+//     min-height: 100%;
+//     min-width: 100%;
+
+//     &-footer {
+//         display: none;
+//     }
+// }

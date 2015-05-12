@@ -362,45 +362,43 @@ $(function() {
         });
 
         $slide.find('.content').each(function(i) {
-            var $this = $(this);
-            var val = $this.html();
-
-            $this.html('');
+            var $this = $(this).html('');
 
             var $textarea = $('<textarea rows="2" class="input-content"/>').attr('placeholder', '输入内容').appendTo($this);
-            var $clone = $textarea.val(val).clone().addClass('input-content-clone').appendTo($this);
+            var $clone = $textarea.clone().addClass('input-content-clone').height(0).appendTo($this);
 
             var minHeight = $textarea.height();
             var maxHeight = Math.ceil(parseFloat($this.css('line-height')) * $this.attr('data-row'));
 
-            var scrollTop = $clone.height(0).val(val).scrollTop(10000).scrollTop();
-            scrollTop = Math.min(Math.max(scrollTop, minHeight), maxHeight);
+            var val;
+            var scrollTop;
 
-            var lastVal = val;
-            var lastScrollTop = scrollTop;
+            $textarea.val(card.contents[i] || '');
 
-            $textarea.css({ height: scrollTop }).on('blur', function() {
-                card.contents[i] = $textarea.val();
-            }).on('keyup', function() {
-                val = card.contents[i] = $textarea.val();
-                scrollTop = $clone.height(0).val(val).scrollTop(10000).scrollTop();
+            limitText();
 
+            card.contents[i] = $textarea.val();
+
+
+            function limitText() {
+                val = $textarea.val();
+
+                scrollTop = $clone.val(val).scrollTop(10000).scrollTop();
                 scrollTop = Math.max(scrollTop, minHeight);
 
-                if(scrollTop >= maxHeight) {
-                    $textarea.val(lastVal);
-                    return;
+                while(scrollTop > maxHeight) {
+                    val = val.slice(0, -1);
+                    scrollTop = $clone.val(val).scrollTop(10000).scrollTop();
                 }
 
-                lastVal = val;
+                $textarea.val(val).css({ height: scrollTop });
+            }
 
-                if(scrollTop === lastScrollTop) {
-                    return;
-                }
-
-                lastScrollTop = scrollTop;
-                $textarea.css({ height: scrollTop });
-            });
+            $textarea.val(val).css({ height: scrollTop }).on('blur', function() {
+                card.contents[i] = $textarea.val();
+            }).on('paste', function() {
+                setTimeout(limitText, 0);
+            }).on('keyup', limitText);
         });
     }
 
@@ -467,7 +465,9 @@ $(function() {
         var $img = $modal.find('img').cropper({
             aspectRatio: picture.width / picture.height,
             autoCropArea: 0.75,
-            mouseWheelZoom: false
+            resizable: false,
+            movable: false,
+            dragCrop: false
         });
 
         $modal.find('.btn-save').on('click', function() {
