@@ -15,9 +15,9 @@ exports.wechat = {
 
 var dbInfo = {
     type: 'mysql',
-    username: 'shaker2_admin',
-    password: 'Initial1',
-    host: 'rdsauea6fyyanf3.mysql.rds.aliyuncs.com',
+    username: 'root',
+    password: '',
+    host: '127.0.0.1',
     port: '3306',
     name: 'shaker2'
 };

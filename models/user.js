@@ -20,6 +20,9 @@ module.exports = function(sequelize, DataTypes) {
         nickname: {
             type: DataTypes.STRING(50)
         },
+        desc: {
+            type: DataTypes.STRING(50)
+        },
         profile: {
             type: DataTypes.TEXT,
         },
