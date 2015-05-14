@@ -4,7 +4,7 @@ exports.port = 8083;
 
 exports.cookieSecret = 'shaker2';
 
-exports.isProduction = true;
+exports.isProduction = false;
 exports.isRelease = false;
 
 exports.wechat = {
