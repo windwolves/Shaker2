@@ -29,7 +29,7 @@ var user = new Rest({
         beforeCallbacks: [handler.needLogin],
         requireKeys: [],
         uniqueKeys: [],
-        updateKeys: ['nickname', 'phone', 'weibo', 'wechat', 'qq', 'deviceToken'],
+        updateKeys: ['nickname','desc', 'phone', 'weibo', 'wechat', 'qq', 'deviceToken'],
         beforeUpdate: function(oldModel, newModel, req, res) {
         },
         afterUpdate: function(model, req, res) {
