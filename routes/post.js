@@ -97,9 +97,7 @@ var post = new Rest({
         beforeCallbacks: [handler.checkPermission('post.update')],
         updateKeys: ['likeCount', 'status'],
         beforeUpdate: function(oldModel, newModel, req) {
-        },
-        afterUpdate: function(oldModel, newModel, req) {
-            var sql = "UPDATE `Post` SET `operateLog`=concat(`operateLog`, '" + utils.getOperateLog(oldModel.toJSON(), req.session.user) + "'),`updatedAt`='" + utils.formatDate(new Date()) + "' WHERE `id` = '" + newModel.id + "'";
+            var sql = "UPDATE `Post` SET `operateLog`=concat(`operateLog`, '" + utils.getOperateLog(newModel, req.session.user) + "') WHERE `id` = '" + oldModel.id + "'";
             db.sequelize.query(sql);
         }
     },

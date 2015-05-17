@@ -120,9 +120,7 @@ var entity = new Rest({
         beforeCallbacks: [handler.checkPermission('entity.update')],
         updateKeys: ['likeCount', 'status', 'isSelected'],
         beforeUpdate: function(oldModel, newModel, req) {
-        },
-        afterUpdate: function(oldModel, newModel, req) {
-            var sql = "UPDATE `Entity` SET `operateLog`=concat(`operateLog`, '" + utils.getOperateLog(oldModel.toJSON(), req.session.user) + "'),`updatedAt`='" + utils.formatDate(new Date()) + "' WHERE `id` = '" + newModel.id + "'";
+            var sql = "UPDATE `Entity` SET `operateLog`=concat(`operateLog`, '" + utils.getOperateLog(newModel, req.session.user) + "') WHERE `id` = '" + oldModel.id + "'";
             db.sequelize.query(sql);
         }
     },
