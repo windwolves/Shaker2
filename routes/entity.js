@@ -3,13 +3,25 @@ var path = require('path');
 
 var db = require('../models');
 
+var utils = require('../common/utils');
 var handler = require('../common/handler');
 var Rest = require('../common/rest');
 
 var entity = new Rest({
     model: db.Entity,
     msgPrefix: 'ENTITY',
-    list: false,
+    list: {
+        beforeCallbacks: [handler.checkPermission('entity.list')],
+        searchKeys: ['title', 'content'],
+        include: [
+            { model: db.User, as: 'Owner' },
+            { model: db.Post, include: [
+                { model: db.User, as: 'Owner' },
+            ] },
+            db.Theme
+        ],
+        order: 'Entity.createdAt, Posts.createdAt asc'
+    },
     get: {
         beforeCallbacks: [handler.setSessionUser],
         include: [
@@ -104,9 +116,18 @@ var entity = new Rest({
             }, 1000 * 60 * 30);
         }
     },
-    put: false,
+    put: {
+        beforeCallbacks: [handler.checkPermission('entity.update')],
+        updateKeys: ['likeCount', 'status', 'isSelected'],
+        beforeUpdate: function(oldModel, newModel, req) {
+        },
+        afterUpdate: function(oldModel, newModel, req) {
+            var sql = "UPDATE `Entity` SET `operateLog`=concat(`operateLog`, '" + utils.getOperateLog(oldModel.toJSON(), req.session.user) + "'),`updatedAt`='" + utils.formatDate(new Date()) + "' WHERE `id` = '" + newModel.id + "'";
+            db.sequelize.query(sql);
+        }
+    },
     delete: {
-        beforeCallbacks: [handler.needLogin, handler.checkOwner([db.Entity, 'ownerId'])]
+        beforeCallbacks: [handler.checkPermission('entity.delete')]
     }
 });
 

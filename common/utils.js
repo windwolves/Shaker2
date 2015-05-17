@@ -75,3 +75,7 @@ exports.copyByKeys = function(keys, from, to) {
 
     return to;
 };
+
+exports.getOperateLog = function(model, user) {
+    return exports.formatDate(new Date()) + ' "' + user.username + '" update from: ' + JSON.stringify(model) + '; \n';
+};

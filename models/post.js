@@ -16,6 +16,10 @@ module.exports = function(sequelize, DataTypes) {
         status: {
             type: DataTypes.ENUM('pending', 'accept', 'reject'),
             defaultValue: 'pending'
+        },
+        operateLog: {
+            type: DataTypes.TEXT,
+            defaultValue: ''
         }
     }, {
         freezeTableName: true,

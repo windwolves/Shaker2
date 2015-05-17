@@ -17,7 +17,8 @@ if (!config.isRelease) {
                         username: 'admin',
                         password: '21232f297a57a5a743894a0e4a801fc3',
                         nickname: 'Shaker',
-                        profile: 'http://placekitten.com/288/288'
+                        profile: 'http://placekitten.com/288/288',
+                        type: 'admin'
                     };
 
                     createUser(user, callback);

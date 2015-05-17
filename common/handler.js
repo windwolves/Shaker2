@@ -1,16 +1,5 @@
 var db = require('../models');
 
-
-var getRes = exports.getRes = function(status, code, data) {
-    var res = {};
-
-    res.status = status || 'success';
-    code && (res.code = code);
-    data && (res.data = data);
-
-    return res;
-};
-
 exports.setSessionUser = function(req, res, next) {
     if(req.session.user) {
         next();
@@ -197,6 +186,38 @@ exports.checkOwner = function() {
         }
 
     }
+};
+
+exports.checkPermission = function(permission) {
+    var rolePermissions = {
+        operator: ['entity.list', 'entity.update', 'entity.delete', 'post.update', 'post.delete']
+    };
+
+    return function(req, res, next) {
+        if(!req.session.user) {
+            exports.needLogin(req, res, function() {
+                check(next);
+            });
+        }
+        else {
+            check(next);
+        }
+
+        function check(cb) {
+            var userRole = req.session.user.type;
+
+            if(userRole == 'admin') {
+                cb();
+            }
+            else if(rolePermissions[userRole] && rolePermissions[userRole].indexOf(permission) > -1) {
+                cb();
+            }
+            else {
+                res.warning('NO_PERMISSION');
+            }
+        }
+
+    };
 };
 
 exports.requireKeys = function(keys, reqBodyKey) {

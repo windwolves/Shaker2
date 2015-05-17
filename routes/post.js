@@ -3,6 +3,7 @@ var path = require('path');
 
 var db = require('../models');
 
+var utils = require('../common/utils');
 var handler = require('../common/handler');
 var fileUtils = require('../common/fileUtils');
 var Rest = require('../common/rest');
@@ -92,9 +93,18 @@ var post = new Rest({
             }, 1000 * 60 * 30);
         }
     },
-    put: false,
+    put: {
+        beforeCallbacks: [handler.checkPermission('post.update')],
+        updateKeys: ['likeCount', 'status'],
+        beforeUpdate: function(oldModel, newModel, req) {
+        },
+        afterUpdate: function(oldModel, newModel, req) {
+            var sql = "UPDATE `Post` SET `operateLog`=concat(`operateLog`, '" + utils.getOperateLog(oldModel.toJSON(), req.session.user) + "'),`updatedAt`='" + utils.formatDate(new Date()) + "' WHERE `id` = '" + newModel.id + "'";
+            db.sequelize.query(sql);
+        }
+    },
     delete: {
-        beforeCallbacks: [handler.needLogin, handler.checkOwner([db.Post, 'ownerId'])]
+        beforeCallbacks: [handler.checkPermission('post.delete')]
     }
 });
 

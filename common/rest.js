@@ -23,6 +23,9 @@ function createMsgCode(code, prefix, joinChar) {
         autoInit: false,
         list: {
             beforeCallbacks: [handler.needLogin],
+            searchKeys: [],
+            limit: 10,
+            offset: 0,
             include: [{ model: db.Other, as: 'Others' }],
             order: 'updatedAt desc'
         },
@@ -47,7 +50,7 @@ function createMsgCode(code, prefix, joinChar) {
             beforeCallbacks: [handler.needLogin],
             requireKeys: ['id'],
             uniqueKeys: ['telphone', 'email'],
-            updateKeys: ['nickname', 'age', 'sex', 'telphone', 'email']
+            updateKeys: ['nickname', 'age', 'sex', 'telphone', 'email'],
             beforeUpdate: function(oldModel, newModel) {
             },
             afterUpdate: function(model) {
@@ -97,11 +100,22 @@ REST.prototype = {
         if(options.list !==  false) {
             (function(list) {
                 var callbacks = toArray(list.beforeCallbacks, 'function');
+                var searchKeys = toArray(list.searchKeys);
                 var include = list.include;
                 var order = list.order || 'updatedAt desc';
 
                 callbacks.push(function(req, res) {
-                    var _findOptions = {};
+                    var _findOptions = { where: {} };
+
+                    searchKeys.forEach(function(key) {
+                        if(req.query[key]) {
+                            _findOptions.where[key] = { $like: '%' + req.query[key] + '%' };
+                        }
+                    });
+
+                    _findOptions.limit = req.query.limit || 10;
+                    _findOptions.offset = req.query.offset || 0;
+
                     include && (_findOptions.include = include);
                     order && (_findOptions.order = order);
 
@@ -215,8 +229,8 @@ REST.prototype = {
                                     beforeUpdate(item, _model, req, res);
 
                                     item.updateAttributes(_model).then(function(data) {
-                                        data && afterUpdate(data, req, res);
-                                        res.success(data);
+                                        item && afterUpdate(data, item, req, res);
+                                        res.success(item);
                                     }, res.error);
                                 }
                                 else {
