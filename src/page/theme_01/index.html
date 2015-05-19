@@ -1,5 +1,6 @@
 {{if Layout}}
 <div class="wrapper {{Layout.code}} {{title ? 'cover' : ''}}">
+
     {{if Layout.code.match('layout_01')}}
     <div class="picture swiper-lazy" data-background="{{pictures[0]}}"></div>
     <div class="wrapper-body">
@@ -16,7 +17,7 @@
     <div class="wrapper-body">
         <div class="wrapper-body-inner">
             {{if title}}<p class="title">{{title}}</p>{{/if}}
-            <p class="content" data-row="18">{{#contents[0] | superEscape}}</p>
+            <p class="content" data-row="7">{{#contents[0] | superEscape}}</p>
         </div>
     </div>
     {{/if}}
@@ -27,24 +28,13 @@
     <div class="wrapper-body">
         <div class="wrapper-body-inner">
             {{if title}}<p class="title">{{title}}</p>{{/if}}
-            <p class="content" data-row="7">{{#contents[0] | superEscape}}</p>
-        </div>
-    </div>
-    {{/if}}
-
-
-    {{if Layout.code.match('layout_04')}}
-    <div class="picture swiper-lazy" data-background="{{pictures[0]}}"></div>
-    <div class="wrapper-body">
-        <div class="wrapper-body-inner">
-            {{if title}}<p class="title">{{title}}</p>{{/if}}
             <p class="content" data-row="6">{{#contents[0] | superEscape}}</p>
         </div>
     </div>
     {{/if}}
 
 
-    {{if Layout.code.match('layout_05')}}
+    {{if Layout.code.match('layout_04')}}
     <div class="wrapper-body">
         <div class="wrapper-body-inner">
             {{if title}}<p class="title">{{title}}</p>{{/if}}
@@ -54,7 +44,7 @@
     {{/if}}
 
 
-    {{if Layout.code.match('layout_06')}}
+    {{if Layout.code.match('layout_05')}}
     <div class="wrapper-body">
         <div class="wrapper-body-inner">
             {{if title}}<p class="title">{{title}}</p>{{/if}}

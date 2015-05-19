@@ -170,6 +170,7 @@
                 !options.content && (options.content = '稀客--带你离开现实表面的互动内容社区');
 
                 options.imgUrl = (location.origin + options.imgUrl).replace(/.*http/g, 'http');
+                options.link = options.link.replace(/(_username=[^&]+)|(_password=[^&]+)/g, '');
 
                 signature(options.link, function() {
                     share(options);

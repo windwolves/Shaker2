@@ -74,7 +74,6 @@ if (!config.isRelease) {
                 layouts.push({ name: '板式3', code: theme.code + '-layout_03', themeId: theme.id });
                 layouts.push({ name: '板式4', code: theme.code + '-layout_04', themeId: theme.id });
                 layouts.push({ name: '板式5', code: theme.code + '-layout_05', themeId: theme.id });
-                layouts.push({ name: '板式6', code: theme.code + '-layout_06', themeId: theme.id });
 
                 skins.push({ name: '皮肤1', code: theme.code + '-skin_01', themeId: theme.id });
             });

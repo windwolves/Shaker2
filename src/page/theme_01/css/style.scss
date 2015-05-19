@@ -67,44 +67,6 @@
         .wrapper-body {
             background-color: $body-mask-color;
             height: 100%;
-            padding: 0 size(105px);
-            width: 100%;
-        }
-
-        .title {
-            color: #fff;
-            font-family: 'Heiti SC Medium', 'SimHei', 'Microsoft YaHei';
-            font-size: size(60px);
-            margin: size(24px) size(24px) size(24px + 24px);
-            @include multiple-row(74px, 2);
-            text-align: center;
-        }
-
-        .content {
-            color: #fff;
-            font-family: 'Hiragino Sans GB w3', 'Microsoft YaHei';
-            font-size: size(32px);
-            @include multiple-row(42px, 18);
-            margin: size(10px);
-            text-align: center;
-        }
-
-        &.cover {
-            .content {
-                @include multiple-row-max(42px, 13);
-                opacity: .5;
-            }
-        }
-    }
-
-    &-layout_02 {
-        .picture {
-            @extend %full;
-        }
-
-        .wrapper-body {
-            background-color: $body-mask-color;
-            height: 100%;
             padding: 0 size(118px);
             width: 100%;
         }
@@ -133,7 +95,7 @@
         }
     }
 
-    &-layout_03 {
+    &-layout_02 {
         .picture {
             border-radius: 50%;
             margin: size(156px) auto 0;
@@ -167,7 +129,7 @@
         }
     }
 
-    &-layout_04 {
+    &-layout_03 {
         .picture {
             margin: size(40px) auto 0;
             @include wh(670px, 670px);
@@ -200,7 +162,7 @@
         }
     }
 
-    &-layout_05 {
+    &-layout_04 {
         .wrapper-body {
             height: 100%;
             width: size(638px);
@@ -228,7 +190,7 @@
         }
     }
 
-    &-layout_06 {
+    &-layout_05 {
         .wrapper-body {
             border-color: #a7a7a7;
             border-style: solid;
