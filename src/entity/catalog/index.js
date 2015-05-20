@@ -17,7 +17,6 @@ $(function() {
     function initEntity(entity) {
         // 微信分享
         window.wechat.share({
-            imgUrl: entity.picture,
             title: entity.title + (entity.status == 'pending' ? '(审核中)' : ''),
             description: entity.content
         });

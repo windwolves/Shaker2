@@ -166,7 +166,7 @@
 
                 !options && (options = {});
                 !options.link && (options.link = location.href.split('#')[0]);
-                !options.imgUrl && (options.imgUrl = '/entity/main/img/logo.png');
+                !options.imgUrl && (options.imgUrl = '/img/wechat_share_0' + Math.ceil(Math.random() * 5) + '.png');
                 !options.content && (options.content = '稀客--带你离开现实表面的互动内容社区');
 
                 options.imgUrl = (location.origin + options.imgUrl).replace(/.*http/g, 'http');
