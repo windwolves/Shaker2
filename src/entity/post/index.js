@@ -33,6 +33,19 @@ $(function() {
             description: (isAccept ? card.contents[0] : '') || post.Entity.content
         });
 
+        // pv+1
+        var viewedPosts = localStorage.getItem('VIEWED_POSTS');
+        viewedPosts = viewedPosts ? viewedPosts.split(',') : [];
+
+        if(viewedPosts.indexOf(post.id) === -1) {
+            $.get('/services/post/' + post.id + '/view', function(result) {
+                if(result.status == 'success') {
+                    viewedPosts.push(post.id);
+                    localStorage.setItem('VIEWED_POSTS', viewedPosts.join(','));
+                }
+            });
+        }
+
         if(post.isCover) {
             post.likeCount += post.Entity.likeCount;
         }

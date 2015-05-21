@@ -138,6 +138,19 @@ router.get('/:id/unlike', function(req, res) {
     }, res.error);
 });
 
+router.get('/:id/view', function(req, res) {
+    var where = { id: req.params.id };
+
+    db.Post.find({ where: where }).then(function(post) {
+        if(post) {
+            post.increment({ pv: 1 }).then(res.success, res.error);
+        }
+        else {
+            res.warning('POST_NOT_FOUND');
+        }
+    }, res.error);
+});
+
 post.init();
 
 module.exports = router;

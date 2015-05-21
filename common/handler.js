@@ -133,7 +133,7 @@ exports.convertBodyField = function() {
                     loop(list[++i]);
                 }
                 else {
-                    errorCallback('MODEL_NOT_GOUND');
+                    errorCallback(dbModel.name.toUpperCase() +'_' + modelSearchKey.toUpperCase() + '_NOT_FOUND');
                 }
             }, errorCallback);
         }
@@ -180,7 +180,7 @@ exports.checkOwner = function() {
                     loop(list[++i]);
                 }
                 else {
-                    errorCallback('MODEL_NOT_GOUND');
+                    errorCallback(dbModel.name.toUpperCase() +'_ID_NOT_FOUND');
                 }
             }, errorCallback);
         }

@@ -9,6 +9,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.INTEGER(11),
             defaultValue: 0
         },
+        pv: {
+            type: DataTypes.INTEGER(11),
+            defaultValue: 0
+        },
         isCover: {
             type: DataTypes.BOOLEAN,
             defaultValue: false

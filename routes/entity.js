@@ -208,6 +208,19 @@ router.get('/type/:type', function(req, res) {
     }).then(res.success, res.error);
 });
 
+router.get('/:id/view', function(req, res) {
+    var where = { id: req.params.id };
+
+    db.Entity.find({ where: where }).then(function(entity) {
+        if(entity) {
+            entity.increment({ pv: 1 }).then(res.success, res.error);
+        }
+        else {
+            res.warning('ENTITY_NOT_FOUND');
+        }
+    }, res.error);
+});
+
 
 entity.init();
 

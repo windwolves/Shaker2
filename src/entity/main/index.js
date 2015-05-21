@@ -25,6 +25,19 @@ $(function() {
             description: entity.content
         });
 
+        // pv+1
+        var viewedEntitys = localStorage.getItem('VIEWED_ENTITYS');
+        viewedEntitys = viewedEntitys ? viewedEntitys.split(',') : [];
+
+        if(viewedEntitys.indexOf(entity.id) === -1) {
+            $.get('/services/entity/' + entity.id + '/view', function(result) {
+                if(result.status == 'success') {
+                    viewedEntitys.push(entity.id);
+                    localStorage.setItem('VIEWED_ENTITYS', viewedEntitys.join(','));
+                }
+            });
+        }
+
 
         var $panel = $('.panel');
 
