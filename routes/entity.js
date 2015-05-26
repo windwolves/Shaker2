@@ -118,7 +118,7 @@ var entity = new Rest({
     },
     put: {
         beforeCallbacks: [handler.checkPermission('entity.update')],
-        updateKeys: ['likeCount', 'status', 'isSelected'],
+        updateKeys: ['type', 'likeCount', 'status', 'isSelected'],
         beforeUpdate: function(oldModel, newModel, req) {
             var sql = "UPDATE `Entity` SET `operateLog`=concat(`operateLog`, '" + utils.getOperateLog(newModel, req.session.user) + "') WHERE `id` = '" + oldModel.id + "'";
             db.sequelize.query(sql);
