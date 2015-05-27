@@ -174,13 +174,14 @@ router.get('/demo', function(req, res) {
 
 router.get('/hot', function(req, res) {
     db.Entity.findAll({
-        where: { type: { $in: ['anti-realism', 'surrealism'] } },
+        where: { type: { $in: ['anti-realism', 'surrealism'] }, status: 'accept' },
         limit: 10
     }).then(res.success, res.error);
 });
 
 router.get('/type', function(req, res) {
     db.Entity.findAll({
+        where: { type: { $in: ['anti-realism', 'surrealism'] }, status: 'accept' },
         group: 'type',
         attributes: ['type']
     }).then(function(entitys) {
@@ -195,7 +196,7 @@ router.get('/type', function(req, res) {
 });
 
 router.get('/type/:type', function(req, res) {
-    var where = { type: req.params.type };
+    var where = { type: req.params.type, status: 'accept' };
     var offset = req.query.offset || 0;
     var limit = req.query.limit || 10;
 

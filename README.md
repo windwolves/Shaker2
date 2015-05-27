@@ -7,6 +7,9 @@ Shaker2 services and web
 
     #### 参数
 
+    * type
+    > _Optional_ __string__ - 传想修改到的类型.
+
     * status
     > _Optional_ __string__ - 传'accept'表示“审核通过”，传'reject'表示“审核不通过”.
 
@@ -20,6 +23,7 @@ Shaker2 services and web
 
     ```json
     {
+        "type": "anti-realism",
         "status": "accept",
         "likeCount": 200,
         "isSelected": true
