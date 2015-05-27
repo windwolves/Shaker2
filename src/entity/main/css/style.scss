@@ -301,5 +301,15 @@ $scale: 0.9;
     }
 }
 
-
+.top-mark {
+    background-color: #50e3c2;
+    color: #fff;
+    font-size: size(30px);
+    line-height: size(50px);
+    padding: 0 size(15px);
+    position: absolute;
+    right: size(50px);
+    top: 0;
+    z-index: 100;
+}
 

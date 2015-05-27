@@ -119,12 +119,12 @@
             color: #2a2a2a;
             font-family: 'STSong Regular', 'STSong', 'SimSun', 'Microsoft YaHei';
             font-size: size(32px);
-            @include multiple-row(36px, 7);
+            @include multiple-row(42px, 7);
         }
 
         &.cover {
             .content {
-                @include multiple-row-max(36px, 4);
+                @include multiple-row-max(42px, 4);
             }
         }
     }

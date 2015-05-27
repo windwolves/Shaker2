@@ -319,7 +319,7 @@ $(function() {
     // 添加卡片
     function addCard(card) {
         if(!card) {
-            var layout = post.entity.Theme.Layouts[0];
+            var layout = post.entity.Theme.Layouts[2];
             card = { layoutId: layout.id, Layout: layout, contents: [], pictures: [defaultPictrue] };
         }
 

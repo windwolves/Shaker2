@@ -207,7 +207,7 @@
 }
 
 .modal {
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA3NCSVQICAjb4U/gAAAABlBMVEXMzMz////TjRV2AAAACXBIWXMAAArrAAAK6wGCiw1aAAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAABFJREFUCJlj+M/AgBVhF/0PAH6/D/HkDxOGAAAAAElFTkSuQmCC");
+    background-color: #d8d8d8;
     height: 100%;
     left: 0;
     position: absolute;
@@ -215,10 +215,25 @@
     width: 100%;
     z-index: 9999;
 
+    .cropper-view-box {
+        outline-width: 0;
+    }
+
+    .cropper-bg {
+        background: #d8d8d8;
+    }
+
+    .cropper-dashed {
+        border-color: #cbcbcb;
+        border-style: solid;
+    }
+
     &-footer {
+        background-color: #fff;
+        border-top: 1px solid #f0f0f0;
         bottom: 0;
         left: 0;
-        padding: 20px;
+        overflow: hidden;
         position: absolute;
         text-align: right;
         width: 100%;
@@ -226,56 +241,23 @@
     }
 
     .btn {
-        display: inline-block;
-        padding: 6px 12px;
-        margin-bottom: 0;
+        background-color: transparent;
+        background-image: none;
+        border: 0;
+        border-radius: 0;
+        color: #50e3c2;
+        cursor: pointer;
+        display: block;
+        float: left;
         font-size: 14px;
         font-weight: 400;
-        line-height: 1.42857143;
+        line-height: size(88px);
+        margin-bottom: 0;
         text-align: center;
-        white-space: nowrap;
+        @include touch-action(manipulation);
+        @include user-select(none);
         vertical-align: middle;
-        -ms-touch-action: manipulation;
-        touch-action: manipulation;
-        cursor: pointer;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        background-image: none;
-        border: 1px solid transparent;
-        border-radius: 4px;
-
-        &-save {
-            background-color: #0074d9;
-            border-color: #0066bf;
-            color: #fff;
-            margin-right: 20px;
-        }
-
-        &-cancel {
-            border-color: #ccc;
-            background-color: #fff;
-            color: #333;
-        }
+        white-space: nowrap;
+        width: 50%;
     }
 }
-
-
-// .picture {
-//     overflow: hidden;
-//     position: relative;
-// }
-
-// .modal {
-//     left: 50%;
-//     position: absolute;
-//     top: 50%;
-//     @include transform(translate3d(-50%, -50%, 0));
-//     min-height: 100%;
-//     min-width: 100%;
-
-//     &-footer {
-//         display: none;
-//     }
-// }

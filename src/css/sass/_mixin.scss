@@ -197,6 +197,11 @@ $pi: 3.14159265359;
     @include css3(perspective-origin, $ap, -moz, -webkit, -o, -ms, not -khtml, official);
 }
 
+@mixin touch-action($ap) {
+    $ap: unquote($ap);
+    @include css3(touch-action, $ap, not -moz, not -webkit, not -o, -ms, not -khtml, official);
+}
+
 @mixin transform($ap) {
     $ap: unquote($ap);
     @include css3(transform, $ap, -moz, -webkit, -o, -ms, not -khtml, official);
@@ -233,7 +238,12 @@ $pi: 3.14159265359;
 
 @mixin transition-timing-function($ap) {
     $ap: unquote($ap);
-    @include css3(transition-timing-function, $ap, -moz, -webkit, -o, -ms, not -khtml, official);
+    @include css3(transition-timing-function, $ap, -moz, -webkit, not -o, -ms, not -khtml, official);
+}
+
+@mixin user-select($ap) {
+    $ap: unquote($ap);
+    @include css3(user-select, $ap, -moz, -webkit, -o, -ms, not -khtml, official);
 }
 
 @mixin wh($width, $height, $parentWidth: false) {

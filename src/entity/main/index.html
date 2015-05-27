@@ -50,6 +50,11 @@
                         {{if post.Cards[0]}}
                         {{include 'card-template' post.Cards[0]}}
                         {{/if}}
+
+                        {{if index > 0 && index < 4}}
+                        <div class="top-mark top-{{index}}">TOP {{index}}</div>
+                        {{/if}}
+
                         <div class="post-summary">
                             <div class="post-owner">
                                 <img class="owner-profile swiper-lazy" data-src="{{post.Owner.profile}}">
