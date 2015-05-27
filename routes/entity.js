@@ -181,7 +181,7 @@ router.get('/hot', function(req, res) {
 
 router.get('/type', function(req, res) {
     db.Entity.findAll({
-        where: { type: { $in: ['anti-realism', 'surrealism'] }, status: 'accept' },
+        where: { type: { $in: ['anti-realism', 'surrealism', 'recommend'] }, status: 'accept' },
         group: 'type',
         attributes: ['type']
     }).then(function(entitys) {
