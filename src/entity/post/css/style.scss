@@ -20,24 +20,16 @@
     width: 100%;
     z-index: 100;
 
-    %footer-icon {
-        background-color: transparent;
-        background-repeat: no-repeat;
-        background-position: 50% 50%;
-        bottom: 0;
-        cursor: pointer;
-        height: size($icon-size);
-        position: absolute;
-        top: 0;
-        width: size($icon-size);
-    }
-
     .footer-bar-back {
-        @extend %footer-icon;
-
-        background-image: url('../img/footer-back.png');
-        background-size: 19px / $icon-size * 100% 34px / $icon-size * 100%;
-        left: size-h(20px);
+        color: #00d8a5;
+        cursor: pointer;
+        left: 0;
+        letter-spacing: 1.2px;
+        line-height: size($footer-height);
+        padding: 0 size-h(20px);
+        position: absolute;
+        text-decoration: none;
+        top: 0;
     }
 
     .post-card-index {

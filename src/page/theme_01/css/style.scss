@@ -103,8 +103,8 @@
         }
 
         .wrapper-body {
-            height: size(426px);
-            width: size(550px);
+            height: size(400px);
+            width: size(590px);
         }
 
         .title {
@@ -119,12 +119,12 @@
             color: #2a2a2a;
             font-family: 'STSong Regular', 'STSong', 'SimSun', 'Microsoft YaHei';
             font-size: size(32px);
-            @include multiple-row(42px, 7);
+            @include multiple-row(45px, 7);
         }
 
         &.cover {
             .content {
-                @include multiple-row-max(42px, 4);
+                @include multiple-row-max(45px, 4);
             }
         }
     }
