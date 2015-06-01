@@ -14,6 +14,42 @@
 
 <body class="container" ng-controller="AdminCtrl">
 
+    <form class="form-horizontal" ng-submit="query(search)">
+        <div class="form-group">
+            <label class="control-label col-sm-1">标题</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" ng-model="search.title">
+            </div>
+
+            <label class="control-label col-sm-1">类型</label>
+            <div class="col-sm-3">
+                <select class="form-control" ng-model="search.type" ng-options="item.key as item.text for item in types_with_all"></select>
+            </div>
+
+            <label class="control-label col-sm-1">状态</label>
+            <div class="col-sm-3">
+                <select class="form-control" ng-model="search.status" ng-options="item.key as item.text for item in status_with_all"></select>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="control-label col-sm-1">是否精选</label>
+            <div class="col-sm-3">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="search.isSelected">精选内容
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-sm-2 col-sm-offset-5">
+                <button type="submit" class="btn btn-default">查询</button>
+            </div>
+        </div>
+    </form>
+
     <table class="table" ng-cloak>
         <colgroup>
             <col ng-repeat="col in columns" width="{{col.width}}" />
@@ -41,6 +77,7 @@
                     </label>
                 </div>
             </td>
+            <td>{{d.createdAt | date: 'yy/MM/dd HH:mm:ss'}}</td>
             <td>
                 <button type="button" ng-click="save(d)">保存</button>
             </td>

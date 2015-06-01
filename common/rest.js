@@ -108,7 +108,10 @@ REST.prototype = {
                     var _findOptions = { where: {} };
 
                     searchKeys.forEach(function(key) {
-                        if(req.query[key]) {
+                        if(req.query[key] === 'false' || req.query[key] === 'true') {
+                            _findOptions.where[key] = req.query[key] === 'true';
+                        }
+                        else if(req.query[key]) {
                             _findOptions.where[key] = { $like: '%' + req.query[key] + '%' };
                         }
                     });

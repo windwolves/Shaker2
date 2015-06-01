@@ -12,7 +12,7 @@ var entity = new Rest({
     msgPrefix: 'ENTITY',
     list: {
         beforeCallbacks: [handler.checkPermission('entity.list')],
-        searchKeys: ['title', 'content'],
+        searchKeys: ['title', 'type', 'status', 'isSelected'],
         include: [
             { model: db.User, as: 'Owner' },
             { model: db.Post, include: [

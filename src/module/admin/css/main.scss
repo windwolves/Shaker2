@@ -2,8 +2,8 @@
 @import "../../../css/sass/mixin";
 @import "../../../css/sass/bootstrap";
 
-.instruction {
-    padding: 20px;
+.form-horizontal {
+    padding: 30px;
 }
 
 .table {
@@ -31,5 +31,9 @@
         margin-top: -6px;
         margin-bottom: -6px;
     }
+}
+
+.instruction {
+    padding: 20px;
 }
 
