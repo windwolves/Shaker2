@@ -1,6 +1,6 @@
 angular.module('App', ['commonServices'])
 
-.controller('AdminCtrl', function ($scope, Entity) {
+.controller('AdminCtrl', function ($scope, Alertify, Entity) {
 
     $scope.columns = [
         {field: 'title', title: '标题'},
@@ -28,7 +28,7 @@ angular.module('App', ['commonServices'])
 
     $scope.save = function (d) {
         Entity.update(d).then(function (result) {
-            alert('保存成功！');
+            Alertify.log('保存成功！');
         });
     };
 

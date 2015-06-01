@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var del = require('del');
 var concat = require('gulp-concat');
+var ngAnnotate = require('gulp-ng-annotate');
 var uglify = require('gulp-uglify');
 var useref = require('gulp-useref');
 var htmlmin = require('gulp-htmlmin');
@@ -11,9 +12,10 @@ var paths = {
     distDir: 'dist',
     concat: {
         'js/common.js': ['./src/lib/zepto.js', './src/lib/template.js', './src/lib/swiper.js', './src/js/wechat.js', './src/js/device.js', './src/js/common.js'],
-        'entity/join/index.js': ['./src/lib/flow.js', './src/entity/join/index.js', './src/lib/cropper.js']
+        'entity/join/index.js': ['./src/lib/flow.js', './src/entity/join/index.js', './src/lib/cropper.js'],
+        'js/ngCommon.js': ['./src/lib/angular.js', './src/lib/angular-resource.js', './src/lib/alertify.js', './src/js/services.js'],
     },
-    js: ['./src/entity/**/*.js', '!./src/entity/join/index.js'],
+    js: ['./src/entity/**/*.js', '!./src/entity/join/index.js', './src/module/**/*.js'],
     html: ['./src/**/*.html'],
     img: ['./src/**/img/*'],
     css: ['./src/**/*.css']
@@ -34,6 +36,7 @@ gulp.task('concat', function() {
         gulp.task(task, ['clean'], function() {
             return gulp.src(files)
                 .pipe(concat(key))
+                .pipe(ngAnnotate())
                 .pipe(uglify())
                 .pipe(gulp.dest(paths.distDir));
         });
@@ -51,6 +54,7 @@ gulp.task('concat', function() {
 // 注册"jsmin"任务：混淆压缩js文件
 gulp.task('jsmin', ['clean', 'concat'], function() {
     return gulp.src(paths.js, { base: paths.srcDir })
+        .pipe(ngAnnotate())
         .pipe(uglify())
         .pipe(gulp.dest(paths.distDir));
 });

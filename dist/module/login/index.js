@@ -1,0 +1,1 @@
+angular.module("App",["commonServices"]).controller("LoginCtrl",["$scope","User",function(n,o){n.user=null,n.login=function(n){o.login(n).then(function(n){location.href="../admin"})}}]);
