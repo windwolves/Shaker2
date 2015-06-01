@@ -32,6 +32,17 @@ angular.module('App', ['commonServices'])
         });
     };
 
+    $scope.more = function () {
+        Entity.get({limit: $scope.entitys.length + 10}).then(function (result) {
+            if (result.length === $scope.entitys.length) {
+                Alertify.warn('没有更多了！');
+            }
+            else {
+                $scope.entitys = result;
+            }
+        });
+    };
+
     Entity.get().then(function (result) {
         $scope.entitys = result;
     });
