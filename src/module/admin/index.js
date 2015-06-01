@@ -21,14 +21,14 @@ angular.module('App', ['commonServices'])
 
     $scope.columns = [
         {field: 'title', title: '标题'},
-        {field: 'pv', title: '浏览量', width: 100},
-        {field: 'postLimit', title: '参与人数', width: 100},
         {field: 'likeCount', title: '点赞数', width: 100},
         {field: 'type', title: '类型', width: 150},
         {field: 'status', title: '状态', width: 150},
-        {field: 'isSelected', title: '是否精选', width: 120},
+        {field: 'isSelected', title: '是否精选', width: 100},
+        {title: '发布人', width: 120},
+        {field: 'postLimit', title: '参与人数', width: 80},
         {field: 'createdAt', title: '创建日期', width: 150},
-        {title: '操作', width: 120},
+        {title: '操作', width: 60},
     ];
 
     $scope.query = function (search) {

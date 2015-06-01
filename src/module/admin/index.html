@@ -59,8 +59,6 @@
         </tr>
         <tr ng-repeat="d in entitys">
             <td ng-bind="d.title"></td>
-            <td>{{d.pv}}</td>
-            <td>{{d.postLimit}}</td>
             <td>
                 <input type="text" class="form-control" ng-model="d.likeCount" />
             </td>
@@ -77,6 +75,8 @@
                     </label>
                 </div>
             </td>
+            <td>{{d.Owner.nickname}}</td>
+            <td>{{d.postLimit === '0' ? '仅自己' : d.postLimit}}</td>
             <td>{{d.createdAt | date: 'yy/MM/dd HH:mm:ss'}}</td>
             <td>
                 <button type="button" ng-click="save(d)">保存</button>
