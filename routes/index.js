@@ -6,42 +6,64 @@ var fileUtils = require('../common/fileUtils');
 var handler = require('../common/handler');
 // var flow = require('../common/flow')('upload/temp');
 
-var staticDir = config.isProduction ? 'dist' : 'src';
+var root = __dirname + '/../' + (config.isProduction ? 'dist' : 'src');
 
 
 router.get('/', function(req, res) {
     res.sendFile('/index.html', {
-        root: __dirname + '/../' + staticDir
+        root: root
     });
+});
+
+router.get('/login', function(req, res) {
+    if(req.session.user) {
+        res.redirect('/admin');
+    }
+    else {
+        res.sendFile('/module/login/index.html', {
+            root: root
+        });
+    }
+});
+
+router.get('/admin', function(req, res) {
+    if(req.session.user) {
+        res.sendFile('/module/admin/index.html', {
+            root: root
+        });
+    }
+    else {
+        res.redirect('/login');
+    }
 });
 
 router.get('/entity/:id', function(req, res) {
     res.sendFile('/entity/main/index.html', {
-        root: __dirname + '/../' + staticDir
+        root: root
     });
 });
 
 router.get('/entity/:id/catalog', function(req, res) {
     res.sendFile('/entity/catalog/index.html', {
-        root: __dirname + '/../' + staticDir
+        root: root
     });
 });
 
 router.get('/entity/:id/join', function(req, res) {
     res.sendFile('/entity/join/index.html', {
-        root: __dirname + '/../' + staticDir
+        root: root
     });
 });
 
 router.get('/entity/:id/joined/:postid', function(req, res) {
     res.sendFile('/entity/joined/index.html', {
-        root: __dirname + '/../' + staticDir
+        root: root
     });
 });
 
 router.get('/post/:id', function(req, res) {
     res.sendFile('/entity/post/index.html', {
-        root: __dirname + '/../' + staticDir
+        root: root
     });
 });
 

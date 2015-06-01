@@ -10,6 +10,10 @@ fs.readdirSync('./src/page/').forEach(function(dir) {
     sassFiles['src/page/' + dir + '/css/style.css'] = 'src/page/' + dir + '/css/style.scss';
 });
 
+fs.readdirSync('./src/module/').forEach(function(dir) {
+    sassFiles['src/module/' + dir + '/css/main.css'] = 'src/module/' + dir + '/css/main.scss';
+});
+
 module.exports = function(grunt) {
     'use strict';
 

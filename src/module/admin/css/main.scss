@@ -1,0 +1,35 @@
+
+@import "../../../css/sass/mixin";
+@import "../../../css/sass/bootstrap";
+
+.instruction {
+    padding: 20px;
+}
+
+.table {
+
+    input[type=text] {
+        height: 31px;
+        margin-top: -6px;
+        margin-bottom: -6px;
+    }
+
+    select {
+        height: 31px;
+        margin-top: -6px;
+        margin-bottom: -6px;
+        padding-top: 4px;
+    }
+
+    .checkbox {
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+
+    button {
+        height: 31px;
+        margin-top: -6px;
+        margin-bottom: -6px;
+    }
+}
+

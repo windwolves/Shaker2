@@ -1,0 +1,14 @@
+
+@import "../../../css/sass/mixin";
+@import "../../../css/sass/bootstrap";
+
+.login-form {
+    margin: 120px auto 0;
+    max-width: 250px;
+
+    h3 {
+        font-size: 16px;
+        font-weight: bold;
+    }
+}
+
