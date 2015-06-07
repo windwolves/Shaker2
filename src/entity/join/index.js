@@ -131,7 +131,7 @@ $(function() {
                 }
                 else if(enterContents.length < mustEnterTextLength) {
                     swiper.slideTo(index);
-                    alert('请先上传填写文字再发布！');
+                    alert('请先填写文字再发布！');
                     return false;
                 }
 
@@ -139,6 +139,8 @@ $(function() {
             });
 
             if(!isValid) return;
+
+            if(!confirm('确认发布？！')) return;
 
             $(this).addClass('disabled');
 

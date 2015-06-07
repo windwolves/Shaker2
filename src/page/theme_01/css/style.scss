@@ -10,7 +10,7 @@
         width: 100%;
     }
 
-    $body-mask-color: rgba(0, 0, 0, .25);
+    $body-mask-color: rgba(0, 0, 0, .6);
 
     .wrapper {
         background-color: #fff;
@@ -103,7 +103,7 @@
         }
 
         .wrapper-body {
-            height: size(400px);
+            height: size(386px);
             width: size(590px);
         }
 
@@ -136,7 +136,7 @@
         }
 
         .wrapper-body {
-            height: size(448px);
+            height: size(408px);
             width: size(638px);
         }
 

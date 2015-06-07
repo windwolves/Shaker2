@@ -79,6 +79,7 @@ var entity = new Rest({
         uniqueKeys: [],
         createKeys: ['title', 'content', 'postLimit', 'themeId', 'categoryId'],
         beforeCreate: function(model, req, res) {
+            model.status = 'accept';
             model.type = 'realism';
             model.ownerId = req.session.user.id;
         },
@@ -92,6 +93,7 @@ var entity = new Rest({
 
             db.Post.create({ entityId: model.id, ownerId: model.ownerId, isCover: true }).then(function(post) {
                 db.Card.create({
+                    status: 'accept',
                     postId: post.id,
                     layoutId: req.body.layoutId,
                     index: 0,
@@ -100,20 +102,6 @@ var entity = new Rest({
                     pictures: JSON.stringify([model.picture])
                 });
             });
-
-            setTimeout(function() {
-                db.Entity.find({ where: { id: model.id, status: 'pending' } }).then(function(entity) {
-                    if(entity) {
-                        entity.updateAttributes({ status: 'accept' });
-
-                        db.Post.find({ where: { entityId: entity.id, isCover: true, status: 'pending' } }).then(function(post) {
-                            if(post) {
-                                post.updateAttributes({ status: 'accept' });
-                            }
-                        });
-                    }
-                });
-            }, 1000 * 60 * 30);
         }
     },
     put: {
@@ -202,11 +190,55 @@ router.get('/type/:type', function(req, res) {
 
     db.Entity.findAll({
         where: where,
-        order: 'likeCount',
-        include: [{ model: db.User, as: 'Owner' }],
+        order: 'likeCount desc, createdAt desc',
+        include: [
+            { model: db.User, as: 'Owner' },
+            { model: db.Post }
+        ],
         limit: limit,
         offset: offset
-    }).then(res.success, res.error);
+    }).then(function(entitys) {
+        entitys.forEach(function(entity) {
+            var likeCount = entity.likeCount;
+
+            entity.Posts.forEach(function(post) {
+                likeCount += post.likeCount;
+            });
+
+            entity.likeCount = likeCount;
+        });
+
+        res.success(entitys);
+    }, res.error);
+});
+
+router.get('/selected', function(req, res) {
+    var where = { isSelected: true, status: 'accept' };
+    var offset = req.query.offset || 0;
+    var limit = req.query.limit || 10;
+
+    db.Entity.findAll({
+        where: where,
+        order: 'likeCount desc, createdAt desc',
+        include: [
+            { model: db.User, as: 'Owner' },
+            { model: db.Post }
+        ],
+        limit: limit,
+        offset: offset
+    }).then(function(entitys) {
+        entitys.forEach(function(entity) {
+            var likeCount = entity.likeCount;
+
+            entity.Posts.forEach(function(post) {
+                likeCount += post.likeCount;
+            });
+
+            entity.likeCount = likeCount;
+        });
+
+        res.success(entitys);
+    }, res.error);
 });
 
 router.get('/:id/view', function(req, res) {

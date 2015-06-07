@@ -51,6 +51,7 @@ var post = new Rest({
         uniqueKeys: [],
         createKeys: ['entityId'],
         beforeCreate: function(model, req, res) {
+            model.status = 'accept';
             model.ownerId = req.session.user.id;
         },
         afterCreate: function(model, req, res) {
@@ -83,14 +84,6 @@ var post = new Rest({
             db.Card.bulkCreate(cards);
 
             model.Cards = cards;
-
-            setTimeout(function() {
-                db.Post.find({ where: { id: model.id, status: 'pending' } }).then(function(post) {
-                    if(post) {
-                        post.updateAttributes({ status: 'accept' });
-                    }
-                });
-            }, 1000 * 60 * 30);
         }
     },
     put: {
