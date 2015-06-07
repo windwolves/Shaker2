@@ -113,7 +113,7 @@ if (!config.isRelease) {
             var posts = [];
 
             entitys.forEach(function(entity) {
-                posts.push({ entityId: entity.id, ownerId: user.id, likeCount: 30, status: 'accept', isCover: true });
+                posts.push({ entityId: entity.id, ownerId: user.id, likeCount: 70, status: 'accept', isCover: true });
                 posts.push({ entityId: entity.id, ownerId: user.id, likeCount: 20, status: 'accept' });
                 posts.push({ entityId: entity.id, ownerId: user.id, likeCount: 10, status: 'accept' });
             });

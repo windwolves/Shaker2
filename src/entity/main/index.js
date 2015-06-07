@@ -71,10 +71,6 @@ $(function() {
                 }
             });
 
-            if(entity.Posts[0]) {
-                entity.Posts[0].likeCount += entity.likeCount;
-            }
-
             $panel.append(template('entity-template', entity));
 
             var swiper = new Swiper('.swiper-container', {

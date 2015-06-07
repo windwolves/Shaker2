@@ -46,10 +46,6 @@ $(function() {
             });
         }
 
-        if(post.isCover) {
-            post.likeCount += post.Entity.likeCount;
-        }
-
         $('<link rel="stylesheet"/>').attr('href', '/page/' + post.Entity.Theme.code + '/css/style.css').appendTo('head');
 
         $.get('/page/' + post.Entity.Theme.code + '/index.html', function(cardTemplate) {

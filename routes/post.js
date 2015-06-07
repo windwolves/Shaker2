@@ -106,8 +106,9 @@ router.get('/:id/like', function(req, res) {
         id: req.params.id
     };
 
-    db.Post.find({ where: _where }).then(function(post) {
+    db.Post.find({ where: _where, include: [db.Entity] }).then(function(post) {
         if(post) {
+            post.Entity.increment({ likeCount: 1 });
             post.increment({ likeCount: 1 }).then(res.success, res.error);
         }
         else {
@@ -121,8 +122,9 @@ router.get('/:id/unlike', function(req, res) {
         id: req.params.id
     };
 
-    db.Post.find({ where: _where }).then(function(post) {
+    db.Post.find({ where: _where, include: [db.Entity] }).then(function(post) {
         if(post) {
+            post.Entity.decrement({ likeCount: 1 });
             post.decrement({ likeCount: 1 }).then(res.success, res.error);
         }
         else {

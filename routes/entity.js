@@ -110,6 +110,15 @@ var entity = new Rest({
         beforeUpdate: function(oldModel, newModel, req) {
             var sql = "UPDATE `Entity` SET `operateLog`=concat(`operateLog`, '" + utils.getOperateLog(newModel, req.session.user) + "') WHERE `id` = '" + oldModel.id + "'";
             db.sequelize.query(sql);
+
+            if(typeof newModel.likeCount !== 'undefined') {
+                var diff = newModel.likeCount - oldModel.likeCount;
+                db.Post.find({ where: { entityId: oldModel.id, isCover: true } }).then(function(post) {
+                    if(post) {
+                        post.increment({ likeCount: diff });
+                    }
+                });
+            }
         }
     },
     delete: {
@@ -197,19 +206,7 @@ router.get('/type/:type', function(req, res) {
         ],
         limit: limit,
         offset: offset
-    }).then(function(entitys) {
-        entitys.forEach(function(entity) {
-            var likeCount = entity.likeCount;
-
-            entity.Posts.forEach(function(post) {
-                likeCount += post.likeCount;
-            });
-
-            entity.likeCount = likeCount;
-        });
-
-        res.success(entitys);
-    }, res.error);
+    }).then(res.success, res.error);
 });
 
 router.get('/selected', function(req, res) {
@@ -226,19 +223,7 @@ router.get('/selected', function(req, res) {
         ],
         limit: limit,
         offset: offset
-    }).then(function(entitys) {
-        entitys.forEach(function(entity) {
-            var likeCount = entity.likeCount;
-
-            entity.Posts.forEach(function(post) {
-                likeCount += post.likeCount;
-            });
-
-            entity.likeCount = likeCount;
-        });
-
-        res.success(entitys);
-    }, res.error);
+    }).then(res.success, res.error);
 });
 
 router.get('/:id/view', function(req, res) {
