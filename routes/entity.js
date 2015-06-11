@@ -43,7 +43,7 @@ var entity = new Rest({
                 var posts = [];
 
                 model.Posts.forEach(function(post) {
-                    if(post.status == 'accept' || post.ownerId == ownerId) {
+                    if(post.status == 'accept' || post.ownerId == ownerId || post.isCover) {
                         post.Cards.forEach(function(card) {
                             try {
                                 card.contents = JSON.parse(card.contents);
@@ -71,6 +71,7 @@ var entity = new Rest({
     post: {
         beforeCallbacks: [
             handler.needLogin,
+            handler.requireKeys(['thumbnail'], 'files'),
             handler.convertBodyField('theme', [db.Theme, 'code', 'id'], 'themeId'),
             handler.convertBodyField('layout', [db.Layout, 'code', 'id'], 'layoutId'),
             handler.convertBodyField('category', [db.Category, 'name', 'id'], 'categoryId')
@@ -84,12 +85,13 @@ var entity = new Rest({
             model.ownerId = req.session.user.id;
         },
         afterCreate: function(model, req, res) {
-            if(req.files && req.files.thumbnail && req.files.photo) {
-                model.thumbnail = movePicture(model.id, req.files.thumbnail, true);
-                model.picture = movePicture(model.id, req.files.photo);
+            model.thumbnail = movePicture(model.id, req.files.thumbnail, true);
 
-                model.save();
+            if(req.files && req.files.photo) {
+                model.picture = movePicture(model.id, req.files.photo);
             }
+
+            model.save();
 
             db.Post.create({ entityId: model.id, ownerId: model.ownerId, isCover: true }).then(function(post) {
                 db.Card.create({
