@@ -96,7 +96,7 @@ router.post('/login',
 
 router.get('/logout',
     handler.needLogin,
-    function(req, res) {
+        function(req, res) {
         req.session.user = null;
         res.success('LOGOUT_SUCCESS');
     }

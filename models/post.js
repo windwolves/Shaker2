@@ -22,7 +22,8 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: 'pending'
         },
         operateLog: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT,
+            defaultValue: ''
         }
     }, {
         freezeTableName: true,

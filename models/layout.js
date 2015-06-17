@@ -10,7 +10,8 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         },
         description: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT,
+            defaultValue: ''
         },
         code: {
             type: DataTypes.STRING(50),
