@@ -11,7 +11,17 @@ var Rest = require('../common/rest');
 var post = new Rest({
     model: db.Post,
     msgPrefix: 'POST',
-    list: false,
+    list: {
+        beforeCallbacks: [handler.checkPermission('post.list')],
+        searchKeys: ['status'],
+        include: [
+            { model: db.User, as: 'Owner' },
+            { model: db.Entity, include: [
+                { model: db.User, as: 'Owner' },
+            ] }
+        ],
+        order: 'Post.createdAt'
+    },
     get: {
         beforeCallbacks: [handler.setSessionUser],
         include: [
