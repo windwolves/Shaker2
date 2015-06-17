@@ -11,8 +11,7 @@ module.exports = function(sequelize, DataTypes) {
             unique: true
         },
         description: {
-            type: DataTypes.TEXT,
-            defaultValue: ''
+            type: DataTypes.TEXT
         },
         code: {
             type: DataTypes.STRING(50),

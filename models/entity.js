@@ -50,8 +50,7 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: false
         },
         operateLog: {
-            type: DataTypes.TEXT,
-            defaultValue: ''
+            type: DataTypes.TEXT
         }
     }, {
         freezeTableName: true,
