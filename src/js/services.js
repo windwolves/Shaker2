@@ -61,11 +61,18 @@ angular.module('commonServices', ['ngResource'])
     return User;
 })
 
-
 .factory('Entity', function(BaseService) {
     var Entity = new BaseService('/services/entity/:id', { id: '@id' }, {
         update: { method: 'PUT' }
     });
 
     return Entity;
+})
+
+.factory('Post', function(BaseService) {
+    var Post = new BaseService('/services/post/:id', { id: '@id' }, {
+        update: { method: 'PUT' }
+    });
+
+    return Post;
 });
