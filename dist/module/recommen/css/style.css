@@ -1,0 +1,227 @@
+html, body {
+    position: relative;
+    height: 100%;
+}
+body {
+    margin: 0;
+    padding: 0;
+    color:#fff;
+    font-size: 14px;
+    background: #fff;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+p{
+    margin: 0;
+    padding: 0;
+}
+a,a:link,a:visited,a:hover{
+	color: #000;
+	text-decoration: none;
+}
+.swiper-container {
+    width: 100%;
+    height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.wrapper{
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+.swiper-slide {
+    overflow-y: auto;
+    background-size: cover;
+    background-position: center;
+}
+.gallery-thumbs {
+    height: 42px;
+    background: #00d8a5;
+    padding: 2% 40%;
+    box-sizing: border-box;
+	position: fixed;
+    z-index: 10;
+}
+.gallery-thumbs .swiper-slide {
+    width: 30%;
+    height: 100%;
+    opacity: 0.4;
+}
+.gallery-thumbs .swiper-slide-active {
+    opacity: 1;
+    text-align: center;
+    border-bottom: 5px solid #000;
+}
+.gallery-content {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+.gallery-content *{
+	box-sizing: border-box;
+}
+.gallery-content .swiper-wrapper{
+	top: 42px;
+}
+.gallery-thumbs .logo{
+    height: 95%;
+}
+/* 话题 */
+.topic .topics_category{
+	display: -webkit-box;
+	background: #ececed;
+    text-align: center;
+    line-height: 22px;
+	width: 100%;
+	height: 5.5%;
+	color: #000;
+}
+.topic .topics_antireality{
+	width: 50%;
+	height: 100%;
+    padding: 2% 0;
+}
+.topic .topics_category .topics_active{
+    background: rgba(0,216,165,0.35);
+}
+.topic .topics_antireality:active{
+    background: rgba(0,216,165,0.35);
+}
+.topic .topics_surreal{
+	width: 50%;
+	height: 100%;
+    padding: 2% 0;
+}
+.topic .topics_surreal:active{
+    background: rgba(0,216,165,0.35);
+}
+.topic .topics{
+    padding: 4% 3% 4% 3%;
+    width: 100%;
+    height: 80%;
+    margin-bottom: 35%;
+}
+.topic .topic_list{
+	background: rgba(0,0,0,0.2);
+	display: inline-block;
+	position: relative;
+	margin: 1% 1%;
+}
+.topic .topic_list{
+    width: 48%;
+    height: 37.597%;
+}
+.topic .topic_list a{
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.topic .topic_title{
+	position: absolute;
+	font-size: 14px;
+	line-height: 18px;
+	width: 68%;
+	left: 7%;
+	bottom: 35%;
+}
+.topic .topic_category{
+    background: url(/module/recommen/images/category.png) left no-repeat;
+    background-size: 4%;
+	position: absolute;
+	font-size: 8px;
+    line-height: 14px;
+    padding-left: 5%;
+    width: 68%;
+	left: 7%;
+	top: 70%;
+}
+/*.topic .topic_list:first-child{
+	width: 97%;
+	height: 40%;
+}
+.topic .topic_list:first-child .topic_title{
+	font-size: 20px;
+	width: 48%;
+	bottom: 35%;
+}
+.topic .topic_list:first-child .topic_category{
+	font-size: 10px;
+	width: 48%;
+	top: 70%;
+}
+.topic .topic_list:not(:first-child){
+	background: rgba(0,0,0,0.2);
+    width: 47%;
+    height: 27.8%;
+}*/
+.topic .topic_switch{
+	background: rgba(0,0,0,0.6);
+	position: relative;
+	width: 100%;
+	height: 25%;
+}
+.topic .topic_bottom{
+	position: absolute;
+	left: 30%;
+	top: 16%;
+}
+.topic .topic_button{
+	background: rgba(255,255,255,0.15);
+ 	border: 1px solid #fff;
+	position: absolute;
+    padding: 5px 50px;
+	left: 25%;
+	top: 35%;
+}
+/* 稀客精选 */
+.choiceness .choiceness_recommen{
+    width: 100%;
+    height: 67%;
+    margin-bottom: 22%;
+}
+.choiceness .choiceness_topic{
+    width: 100%;
+    height: 45%;
+    background: rgba(0,0,0,0.2);
+    position: relative;
+}
+.choiceness .choiceness_topic:nth-child(2n+0){
+    background: #ececed;
+}
+.choiceness .choiceness_topic .choiceness_title{
+    position: absolute;
+    width: 43%;
+    left: 7%;
+    bottom: 40%;
+    font-size: 20px;
+    line-height: 24px;
+    margin-bottom: 14px;
+}
+.choiceness .choiceness_category{
+    background: url(/module/recommen/images/category.png) left no-repeat;
+    background-size: 4%;
+    position: absolute;
+    line-height: 14px;
+    padding-left: 5%;
+    font-size: 10px;
+    width: 43%;
+    left: 7%;
+    top: 60%;
+}
+.choiceness .choiceness_bottom{
+	width: 100%;
+	height: 33%;
+}
+.choiceness .choiceness_button{
+	background: #ececed;
+	text-align: center;
+	font-size: 16px;
+    padding: 5% 0;
+	margin-top: 1%;
+	color: #000;
+	width: 100%;
+	height: 25%;
+}
+.choiceness .choiceness_button:active{
+	background: rgba(0,216,165,0.35);
+}
