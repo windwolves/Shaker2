@@ -37,6 +37,23 @@ router.get('/admin', function(req, res) {
     }
 });
 
+router.get('/admin/post', function(req, res) {
+    if(req.session.user) {
+        res.sendFile('/module/post/index.html', {
+            root: root
+        });
+    }
+    else {
+        res.redirect('/login');
+    }
+});
+
+router.get('/recommen', function(req, res) {
+    res.sendFile('/module/recommen/index.html', {
+        root: root
+    });
+});
+
 router.get('/entity/:id', function(req, res) {
     res.sendFile('/entity/main/index.html', {
         root: root
