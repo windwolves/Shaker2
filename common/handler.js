@@ -190,7 +190,7 @@ exports.checkOwner = function() {
 
 exports.checkPermission = function(permission) {
     var rolePermissions = {
-        operator: ['entity.list', 'entity.update', 'entity.delete', 'post.update', 'post.delete']
+        operator: ['entity.list', 'entity.update', 'entity.delete', 'post.list', 'post.update', 'post.delete']
     };
 
     return function(req, res, next) {
