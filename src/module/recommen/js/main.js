@@ -58,9 +58,9 @@ function antireality(entitys) {
     entitys.forEach(function(entity) {
         var $div = $('<div class="topic_list" style="background:url('+entity.thumbnail+') no-repeat 50%;background-size:100%;" />').appendTo($entitys);
         var $link = $('<a class="topic_link" href="/entity/'+entity.id+'"/>').appendTo($div);
-        var $title = $('<p class="topic_title" />').html(entity.title);
+        //var $title = $('<p class="topic_title" />').html(entity.title);
 
-        $div.append($title);
+        //$div.append($title);
     });
 }
 
@@ -72,8 +72,8 @@ function surreal(entitys) {
     entitys.forEach(function(entity) {
         var $div = $('<div class="topic_list" style="background:url('+entity.thumbnail+') no-repeat 50%;background-size:100%;" />').appendTo($entitys);
         var $link = $('<a class="topic_link" href="/entity/'+entity.id+'"/>').appendTo($div);
-        var $title = $('<p class="topic_title" />').html(entity.title);
+        //var $title = $('<p class="topic_title" />').html(entity.title);
 
-        $div.append($title);
+        //$div.append($title);
     });
 }
