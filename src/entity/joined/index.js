@@ -46,6 +46,7 @@ $(function() {
         // 微信分享
         window.wechat.share({
             link: backUrl,
+            imgUrl: entity.shareIcon,
             title: entity.title,
             description: (isAccept ? card.contents[0] : '') || entity.content
         });

@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var gm = require('gm');
 
 var db = require('../models');
 
@@ -88,12 +89,27 @@ var entity = new Rest({
                 model.thumbnail = movePicture(model.id, req.files.thumbnail, true);
                 model.picture = movePicture(model.id, req.files.photo);
 
+                model.shareIcon = '/entity/' + model.id + '/share-icon.jpg';
+
+                var resizeFrom = getAbsolutePath(model.thumbnail);
+                var resizeTo = getAbsolutePath(model.shareIcon);
+
+                gm(resizeFrom).resize(140, 210, '!').autoOrient().write(resizeTo, function(err) {
+                    if(err) {
+                        console.log('Resize the thumbnail of ' + model.id + ' failed: ' + err);
+                    }
+                });
+
                 model.save();
             }
 
-            db.Post.create({ entityId: model.id, ownerId: model.ownerId, isCover: true }).then(function(post) {
+            db.Post.create({
+                entityId: model.id,
+                status: 'accept',
+                ownerId: model.ownerId,
+                isCover: true
+            }).then(function(post) {
                 db.Card.create({
-                    status: 'accept',
                     postId: post.id,
                     layoutId: req.body.layoutId,
                     index: 0,
@@ -254,15 +270,23 @@ function removePicture(picture) {
 
 function movePicture(entityDirName, photo, isThumb) {
     var relativeDir = '/entity/' + entityDirName;
-    var absoluteDir = path.join(__dirname, '/../upload' + relativeDir);
+    var absoluteDir = getAbsolutePath(relativeDir);
 
     if(!fs.existsSync(absoluteDir)) {
         fs.mkdirSync(absoluteDir);
     }
 
-    var pictureFileName = ['thumbnail', Date.now(), Math.round(Math.random()) * 10000,'photo.jpg'].slice(isThumb ? 0 : 1).join('-');
+    var pictureFileName = [
+        'thumbnail',
+        Date.now(), Math.round(Math.random() * 10000),
+        'photo.jpg'
+    ].slice(isThumb ? 0 : 1).join('-');
 
     fs.renameSync(photo.path, path.join(absoluteDir, pictureFileName));
 
     return relativeDir + '/' + pictureFileName;
+}
+
+function getAbsolutePath(relativePath) {
+    return path.join(__dirname, '/../upload' + relativePath);
 }

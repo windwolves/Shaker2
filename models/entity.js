@@ -21,6 +21,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING(256),
             allowNull: true
         },
+        shareIcon: {
+            type: DataTypes.STRING(256),
+            allowNull: true
+        },
         postLimit: {
             type: DataTypes.INTEGER(11),
             defaultValue: 0
