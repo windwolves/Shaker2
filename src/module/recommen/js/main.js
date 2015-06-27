@@ -2,7 +2,7 @@ $(function(){
     initWechat({
         imgUrl: location.origin + '/module/recommen/img/icon.jpg',
         title: '稀客',
-        description: '一个' + \n + '未知的' + \n + '内容互动社区'
+        description: '一个\n未知的\n内容互动社区'
     });
 
     $.getJSON('/services/entity/type/anti-realism', function(result) {
