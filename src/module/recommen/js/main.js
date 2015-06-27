@@ -1,8 +1,8 @@
 $(function(){
     initWechat({
         imgUrl: location.origin + '/module/recommen/img/icon.jpg',
-        title: 'Shaker',
-        description: '稀客--一个内容互动社区'
+        title: '稀客',
+        description: '一个内容互动社区'
     });
 
     $.getJSON('/services/entity/type/anti-realism', function(result) {
@@ -80,7 +80,7 @@ function initWechat(options) {
 
     var link = options.link || location.href.split('#')[0];
 
-    $.post('/services/wechat/signature', {
+    $.post('/services/wechat-old/signature', {
         url: link
     }, function(result) {
         if (result.status == 'success') {
@@ -138,7 +138,7 @@ function initWechat(options) {
 
             wx.error(function(reason) {
                 if (reason == 'invalid signature') {
-                    $.get('/services/wechat/cleartoken');
+                    $.get('/services/wechat-old/cleartoken');
                 }
             });
 
