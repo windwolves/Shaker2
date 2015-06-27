@@ -50,7 +50,6 @@ $(function() {
 
         window.wechat.share({
             link: location.origin + '/entity/' + entity.id,
-            imgUrl: entity.shareIcon,
             title: entity.title,
             description: entity.content
         });

@@ -98,8 +98,7 @@ a,a:link,a:visited,a:hover{
 .topic .topics{
     padding: 4% 3% 4% 3%;
     width: 100%;
-    height: 80%;
-    margin-bottom: 35%;
+    height: 100%;
 }
 .topic .topic_list{
 	background: rgba(0,0,0,0.2);
@@ -109,7 +108,7 @@ a,a:link,a:visited,a:hover{
 }
 .topic .topic_list{
     width: 48%;
-    height: 37.597%;
+    height: 32.76%;
 }
 .topic .topic_list a{
     width: 100%;

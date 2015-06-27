@@ -29,7 +29,6 @@ $(function() {
         // 微信分享
         window.wechat.share({
             link: !isAccept ? location.origin + '/entity/' + post.Entity.id : '',
-            imgUrl: post.Entity.shareIcon,
             title: post.Entity.title,
             description: (isAccept ? card.contents[0] : '') || post.Entity.content
         });
