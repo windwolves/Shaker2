@@ -1,5 +1,6 @@
 $(function(){
-    initWechat({
+    // 微信分享
+    window.wechat.share({
         imgUrl: location.origin + '/module/recommen/img/icon.jpg',
         title: '稀客',
         description: '一个\n未知的\n内容互动社区'
@@ -72,78 +73,5 @@ function surreal(entitys) {
         //var $title = $('<p class="topic_title" />').html(entity.title);
 
         //$div.append($title);
-    });
-}
-
-function initWechat(options) {
-    options || (options = {});
-
-    var link = options.link || location.href.split('#')[0];
-
-    $.post('/services/wechat-old/signature', {
-        url: link
-    }, function(result) {
-        if (result.status == 'success') {
-            wx.config({
-                debug: !!location.search.slice(1).match(/debug=true/),
-                appId: result.data.appId,
-                nonceStr: result.data.nonceStr,
-                timestamp: result.data.timestamp,
-                signature: result.data.signature,
-                jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo']
-            });
-
-            wx.ready(function() {
-                wx.onMenuShareTimeline({
-                    title: options.title,
-                    link: link,
-                    imgUrl: options.imgUrl,
-                    fail: function(err) {
-                        console.log(err);
-                    }
-                });
-
-                wx.onMenuShareAppMessage({
-                    title: options.title,
-                    desc: options.description,
-                    link: link,
-                    imgUrl: options.imgUrl,
-                    success: function(err) {
-                        console.log(err);
-                    },
-                    fail: function(err) {
-                        console.log(err);
-                    }
-                });
-
-                wx.onMenuShareQQ({
-                    title: options.title,
-                    desc: options.description,
-                    link: link,
-                    imgUrl: options.imgUrl,
-                    fail: function(err) {
-                        console.log(err);
-                    }
-                });
-
-                wx.onMenuShareWeibo({
-                    title: options.title,
-                    link: link,
-                    imgUrl: options.imgUrl,
-                    fail: function(err) {
-                        console.log(err);
-                    }
-                });
-            });
-
-            wx.error(function(reason) {
-                if (reason == 'invalid signature') {
-                    $.get('/services/wechat-old/cleartoken');
-                }
-            });
-
-        } else {
-            console.error(result.data);
-        }
     });
 }
