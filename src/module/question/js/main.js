@@ -1,6 +1,6 @@
 $(function() {
     window.wechat.share({
-        imgUrl: location.origin + '/module/question/images/icon.png',
+        imgUrl: location.origin + '/module/question/img/icon.png',
         title: '一个和尚写给投资人的信',
         description: '不必要的谈判，不免浪费时间。若臭味相投，欢迎骚扰。必知无不言，言无不尽。',
     });

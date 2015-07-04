@@ -39,7 +39,7 @@ img{
 .topic-theme .topic-bg{
     width: 100%;
     height: 100%;
-    background:url(/module/question/images/theme-bg.png) no-repeat;
+    background:url(/module/question/img/theme-bg.png) no-repeat;
     background-size: 100% 100%;
 }
 .topic-theme .people{
@@ -217,22 +217,22 @@ img{
 	margin: 0 10%;
 }
 .interview-info .name{
-	background:url(/module/question/images/btn-name.png) center no-repeat;
+	background:url(/module/question/img/btn-name.png) center no-repeat;
 	background-size: 100%;
 	top: 15%;
 }
 .interview-info .company{
-	background:url(/module/question/images/btn-company.png) center no-repeat;
+	background:url(/module/question/img/btn-company.png) center no-repeat;
 	background-size: 100%;
 	top: 25%;
 }
 .interview-info .tel{
-	background:url(/module/question/images/btn-tel.png) center no-repeat;
+	background:url(/module/question/img/btn-tel.png) center no-repeat;
 	background-size: 100%;
 	top: 35%;
 }
 .interview-info .mail{
-	background:url(/module/question/images/btn-mail.png) center no-repeat;
+	background:url(/module/question/img/btn-mail.png) center no-repeat;
 	background-size: 100%;
 	top: 45%;
 }
@@ -255,7 +255,7 @@ img{
 	height: 28px;
 	outline: none;
 	display: inline-block;
-	background:url(/module/question/images/btn-cancel.png) no-repeat;
+	background:url(/module/question/img/btn-cancel.png) no-repeat;
 	background-size: 100% 100%;
 	position: absolute;
 	left: 0;
@@ -266,7 +266,7 @@ img{
 	height: 28px;
 	outline: none;
     border-radius: 0;
-	background:url(/module/question/images/btn-submit.png) no-repeat;
+	background:url(/module/question/img/btn-submit.png) no-repeat;
 	background-size: 100% 100%;
 	position: absolute;
 	right: 0;
@@ -314,7 +314,7 @@ img{
     height: 100%;
 }
 .page-end{
-    background:url(/module/question/images/page-end-bg.png) no-repeat;
+    background:url(/module/question/img/page-end-bg.png) no-repeat;
     background-size: 100% 100%;
 }
 .page-end .page-home{
@@ -334,7 +334,7 @@ img{
 }
 /* content1 */
 .content1 .page-1{
-    background:url(/module/question/images/content1-page1-bg.png) no-repeat;
+    background:url(/module/question/img/content1-page1-bg.png) no-repeat;
     background-size: 100% 100%;
 }
 .content1 .page-1 .page1-icon{
@@ -388,27 +388,27 @@ img{
     }
 }
 .content1 .page-2{
-    background:url(/module/question/images/content1-page2.png) no-repeat;
+    background:url(/module/question/img/content1-page2.png) no-repeat;
     background-size: 100% 100%;
 }
 .content1 .page-3{
-    background:url(/module/question/images/content1-page3.png) no-repeat;
+    background:url(/module/question/img/content1-page3.png) no-repeat;
     background-size: 100% 100%;
 }
 .content1 .page-4{
-    background:url(/module/question/images/content1-page4.png) no-repeat;
+    background:url(/module/question/img/content1-page4.png) no-repeat;
     background-size: 100% 100%;
 }
 .content1 .page-5{
-    background:url(/module/question/images/content1-page5.png) no-repeat;
+    background:url(/module/question/img/content1-page5.png) no-repeat;
     background-size: 100% 100%;
 }
 .content1 .page-6{
-    background:url(/module/question/images/content1-page6.png) no-repeat;
+    background:url(/module/question/img/content1-page6.png) no-repeat;
     background-size: 100% 100%;
 }
 .content2 .page-1{
-    background:url(/module/question/images/content2-page1-bg.png) no-repeat;
+    background:url(/module/question/img/content2-page1-bg.png) no-repeat;
     background-size: 100% 100%;
 }
 .content2 .page-1 .card{
@@ -766,19 +766,19 @@ img{
     }
 }
 .content2 .page-2{
-    background:url(/module/question/images/content2-page2.png) no-repeat;
+    background:url(/module/question/img/content2-page2.png) no-repeat;
     background-size: 100% 100%;
 }
 .content2 .page-3{
-    background:url(/module/question/images/content2-page3.png) no-repeat;
+    background:url(/module/question/img/content2-page3.png) no-repeat;
     background-size: 100% 100%;
 }
 .content2 .page-4{
-    background:url(/module/question/images/content2-page4.png) no-repeat;
+    background:url(/module/question/img/content2-page4.png) no-repeat;
     background-size: 100% 100%;
 }
 .content3 .page-1{
-    background:url(/module/question/images/content3-page1-bg.png) no-repeat;
+    background:url(/module/question/img/content3-page1-bg.png) no-repeat;
     background-size: 100% 100%;
 }
 .content3 .page-1 .phone{
@@ -1645,15 +1645,15 @@ img{
     }
 }
 .content3 .page-2{
-    background:url(/module/question/images/content3-page2.png) no-repeat;
+    background:url(/module/question/img/content3-page2.png) no-repeat;
     background-size: 100% 100%;
 }
 .content3 .page-3{
-    background:url(/module/question/images/content3-page3.png) no-repeat;
+    background:url(/module/question/img/content3-page3.png) no-repeat;
     background-size: 100% 100%;
 }
 .content4 .page-1{
-    background:url(/module/question/images/content4-page1-bg.png) no-repeat;
+    background:url(/module/question/img/content4-page1-bg.png) no-repeat;
     background-size: 100% 100%;
 }
 .content4 .page-1 .round{
@@ -2289,23 +2289,23 @@ img{
     }
 }
 .content4 .page-2{
-    background:url(/module/question/images/content4-page2.png) no-repeat;
+    background:url(/module/question/img/content4-page2.png) no-repeat;
     background-size: 100% 100%;
 }
 .content4 .page-3{
-    background:url(/module/question/images/content4-page3.png) no-repeat;
+    background:url(/module/question/img/content4-page3.png) no-repeat;
     background-size: 100% 100%;
 }
 .content4 .page-4{
-    background:url(/module/question/images/content4-page4.png) no-repeat;
+    background:url(/module/question/img/content4-page4.png) no-repeat;
     background-size: 100% 100%;
 }
 .content4 .page-5{
-    background:url(/module/question/images/content4-page5.png) no-repeat;
+    background:url(/module/question/img/content4-page5.png) no-repeat;
     background-size: 100% 100%;
 }
 .content5 .page-1{
-    background:url(/module/question/images/content5-page1-bg.png) no-repeat;
+    background:url(/module/question/img/content5-page1-bg.png) no-repeat;
     background-size: 100% 100%;
 }
 .content5 .page-1 .page1-pawn{
@@ -2381,42 +2381,42 @@ img{
     }
 }
 .content5 .page-2{
-    background:url(/module/question/images/content5-page2.png) no-repeat;
+    background:url(/module/question/img/content5-page2.png) no-repeat;
     background-size: 100% 100%;
 }
 .content5 .page-3{
-    background:url(/module/question/images/content5-page3.png) no-repeat;
+    background:url(/module/question/img/content5-page3.png) no-repeat;
     background-size: 100% 100%;
 }
 .content5 .page-4{
-    background:url(/module/question/images/content5-page4.png) no-repeat;
+    background:url(/module/question/img/content5-page4.png) no-repeat;
     background-size: 100% 100%;
 }
 .content5 .page-5{
-    background:url(/module/question/images/content5-page5.png) no-repeat;
+    background:url(/module/question/img/content5-page5.png) no-repeat;
     background-size: 100% 100%;
 }
 .content5 .page-6{
-    background:url(/module/question/images/content5-page6.png) no-repeat;
+    background:url(/module/question/img/content5-page6.png) no-repeat;
     background-size: 100% 100%;
 }
 .content5 .page-7{
-    background:url(/module/question/images/content5-page7.png) no-repeat;
+    background:url(/module/question/img/content5-page7.png) no-repeat;
     background-size: 100% 100%;
 }
 .content5 .page-8{
-    background:url(/module/question/images/content5-page8.png) no-repeat;
+    background:url(/module/question/img/content5-page8.png) no-repeat;
     background-size: 100% 100%;
 }
 .content6 .page-1{
-    background:url(/module/question/images/content6.png) no-repeat;
+    background:url(/module/question/img/content6.png) no-repeat;
     background-size: 100% 100%;
 }
 .content6 .page-2{
-    background:url(/module/question/images/content6-page2.png) no-repeat;
+    background:url(/module/question/img/content6-page2.png) no-repeat;
     background-size: 100% 100%;
 }
 .content6 .page-3{
-    background:url(/module/question/images/content6-page3.png) no-repeat;
+    background:url(/module/question/img/content6-page3.png) no-repeat;
     background-size: 100% 100%;
 }
