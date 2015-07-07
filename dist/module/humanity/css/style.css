@@ -72,7 +72,7 @@ img{
 	position: relative;
 }
 .page_1{
-	background: url(/module/humanity/images/page1_bg.png) no-repeat;
+	background: url(/module/humanity/img/page1_bg.png) no-repeat;
 	background-size: 100% 100%;
 }
 .page_1 .page1_plane{
@@ -1164,7 +1164,7 @@ img{
 	}
 }
 .page_2{
-	background: url(/module/humanity/images/page2_bg.png) no-repeat;
+	background: url(/module/humanity/img/page2_bg.png) no-repeat;
 	background-size: 100% 100%;
 }
 .page_2 .page2_head{
@@ -1555,7 +1555,7 @@ img{
 	}
 }
 .page_3{
-	background: url(/module/humanity/images/page3_bg.png) no-repeat;
+	background: url(/module/humanity/img/page3_bg.png) no-repeat;
 	background-size: 100% 100%;
 }
 .page_3 .page3_people{
@@ -2231,7 +2231,7 @@ img{
 	}
 }
 .page_4{
-	background: url(/module/humanity/images/page4_bg.png) no-repeat;
+	background: url(/module/humanity/img/page4_bg.png) no-repeat;
 	background-size: 100% 100%;
 }
 .page_4 .page4_planet{
@@ -2749,7 +2749,7 @@ img{
 	}
 }
 .page_5{
-	background: url(/module/humanity/images/page5_bg.png) no-repeat;
+	background: url(/module/humanity/img/page5_bg.png) no-repeat;
 	background-size: 100% 100%;
 }
 .page_5 .page5_talk1{
@@ -3405,7 +3405,7 @@ img{
 	}
 }
 .page_6{
-	background: url(/module/humanity/images/page6_bg.png) no-repeat;
+	background: url(/module/humanity/img/page6_bg.png) no-repeat;
 	background-size: 100% 100%;
 }
 .page_6 .page6_car{
@@ -4282,7 +4282,7 @@ img{
 	}
 }
 .page_7{
-	background: url(/module/humanity/images/page7_bg.png) no-repeat;
+	background: url(/module/humanity/img/page7_bg.png) no-repeat;
 	background-size: 100% 100%;
 }
 .page_7 .page7_word1{
