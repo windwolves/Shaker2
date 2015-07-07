@@ -195,6 +195,24 @@ img{
 	width: 100%;
 	height: 100%;
 }
+/* code */
+#code{
+    background: rgba(70,70,70,0.6);
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    top: 0;
+    left: 0;
+}
+#code img{
+    position: absolute;
+    width: 46%;
+    height: 28%;
+    top: 40%;
+    left: 28%;
+}
 /* interview */
 .interview-info{
 	display: none;

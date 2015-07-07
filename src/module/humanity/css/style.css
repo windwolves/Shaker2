@@ -37,8 +37,8 @@ div,p{
     padding: 0;
 }
 img{
-	max-width: 100%;
 	width: 100%;
+	height: 100%;
 }
 .swiper-slide {
     text-align: center;
@@ -4951,4 +4951,33 @@ img{
 	to{
 	    bottom: 2%;
 	}
+}
+.page_8{
+	background: url(/module/humanity/img/page8_bg.png) no-repeat;
+	background-size: 100% 100%;
+}
+.page_8 .page8_dowload{
+	display: block;
+    position: absolute;
+    bottom: 20%;
+    left: 25%;
+    width: 42%;
+    padding: 5%;
+}
+.page_8 #code{
+	background: rgba(70,70,70,0.6);
+	position: absolute;
+	display: none;
+	width: 100%;
+	height: 100%;
+	z-index: 100;
+	top: 0;
+	left: 0;
+}
+.page_8 #code img{
+    position: absolute;
+    width: 46%;
+    height: 28%;
+    top: 40%;
+    left: 28%;
 }
