@@ -60,6 +60,12 @@ router.get('/question', function(req, res) {
     });
 });
 
+router.get('/humanity', function(req, res) {
+    res.sendFile('/module/humanity/index.html', {
+        root: root
+    });
+});
+
 router.get('/entity/:id', function(req, res) {
     res.sendFile('/entity/main/index.html', {
         root: root
